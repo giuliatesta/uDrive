@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.prototipo1">
+    package="com.example.udrive">
 
     <application
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.it.giuliatesta.udrive.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,18 +18,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".DriveActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name="com.example.it.giuliatesta.udrive.DriveActivity"
+            android:parentActivityName="com.example.it.giuliatesta.udrive.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.example.it.giuliatesta.udrive.MainActivity" />
         </activity>
 
-        <activity android:name=".ResultsActivity"
-            android:parentActivityName=".DriveActivity">
+        <activity android:name="com.example.it.giuliatesta.udrive.ResultsActivity"
+            android:parentActivityName="com.example.it.giuliatesta.udrive.DriveActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".DriveActivity"/>
+                android:value="com.example.it.giuliatesta.udrive.DriveActivity"/>
         </activity>
 
     </application>

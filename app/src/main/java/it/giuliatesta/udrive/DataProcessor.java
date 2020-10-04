@@ -1,5 +1,15 @@
 package it.giuliatesta.udrive;
 
+import it.giuliatesta.udrive.accelerometer.Acceleration;
+import it.giuliatesta.udrive.accelerometer.DataEvent;
+import it.giuliatesta.udrive.accelerometer.Direction;
+
+import static it.giuliatesta.udrive.accelerometer.Acceleration.NEGATIVE;
+import static it.giuliatesta.udrive.accelerometer.Acceleration.POSITIVE;
+import static it.giuliatesta.udrive.accelerometer.Acceleration.ZERO;
+import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
+import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
+import static it.giuliatesta.udrive.accelerometer.Direction.STRAIGHT;
 import static java.lang.Math.*;
 import static java.lang.Math.pow;
 
@@ -12,21 +22,42 @@ public class DataProcessor {
         Calcola il modulo del vettore accelerazione
      */
     public double getAccelerationVector(double x, double y, double z) {
-        return sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+        double absVector = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+        // Se la componente y è positiva significa che sta accelerando nel senso di marcia --> accelera
+        if(y > 0) {
+            return absVector;
+        } else {
+            // Altrimenti sta decelerando
+            return (-absVector);
+        }
     }
-
+    /*
+        Calcola la direzione
+     */
+    public Direction getDirection(double x, double y) {
+        // Se si trova nel primo o nel quarto quadrante sta girando a destra
+        if (x > 0) {
+            return RIGHT;
+        } else if (x < 0) {
+            // Se si trova nel secondo o terzo quadrante sta girando a sinistra
+            return LEFT;
+        } else {
+            // Altrimenti sta andando dritto
+            return STRAIGHT;
+        }
+    }
     /*
         Se il vettore supera il valore massimo oppure è minore del valore minino il punteggio è zero;
         mentre se rientra nel range viene calcolata una percentuale particolare
      */
     public int getPercentage(double vector) {
-            int perc = 0;
             if(vector > MaxValue || vector < MinValue) {
-                perc = 0;
+                // Se si trova fuori dall'intervallo
+                return 0;
             } else {
-                perc = calculatePercentage(vector);
+                // Se si trova dentro, chiama il metodo per calcolare la percentuale
+                return calculatePercentage(vector);
             }
-            return perc;
     }
     /*
         Calcola una percentuale.
@@ -42,13 +73,39 @@ public class DataProcessor {
         return (int) (ratio*100);
     }
 
+    /*
+        Calcola il valore medio dell'intervallo come differenza del
+        valore massimo e del minimo divisa per due
+     */
     public double getMediumValue(int max, int min) {
-        return (max + min)/2;
+        return (max - min)/2;
     }
 
-   /* public DataEvent calculateData(double x, double y, double z) {
+    /*
+        Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
+     */
+    public DataEvent calculateData(double x, double y, double z) {
+        double vector = getAccelerationVector(x, y, z);
+        Direction direction = getDirection(x, y);
+        Acceleration acceleration = getAcceleration(vector);
+        int percentage = calculatePercentage(vector);
+        DataEvent dataEvent = new DataEvent(direction, acceleration, percentage);
+        return dataEvent;
+    }
 
-    }*/
-
-  //  DataEvent dataEvent = new DataEvent(Direction.LEFT, Acceleration.POSITIVE, 50);
+    /*
+        Calcola il tipo di accelerazione in base al vettore risultante
+     */
+    private Acceleration getAcceleration(double vector) {
+        // Se il vettore risultante è positivo c'è una accelerazione positiva
+        if(vector > 0) {
+            return POSITIVE;
+        } else if (vector < 0) {
+            // Se è negativo c'è una accelerazione negativa
+            return NEGATIVE;
+        } else {
+            // Altrimenti non sta accelerando
+            return ZERO;
+        }
+    }
 }

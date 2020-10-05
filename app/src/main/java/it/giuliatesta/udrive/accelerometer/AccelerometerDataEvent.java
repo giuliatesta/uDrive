@@ -29,4 +29,13 @@ public class AccelerometerDataEvent {
     public int getPercentage() {
         return percentage;
     }
+
+    @Override
+    public String toString() {
+        return "AccelerometerDataEvent{" +
+                "direction=" + direction +
+                ", acceleration=" + acceleration +
+                ", percentage=" + percentage +
+                '}';
+    }
 }

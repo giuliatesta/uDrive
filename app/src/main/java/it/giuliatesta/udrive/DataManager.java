@@ -7,10 +7,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
-import it.giuliatesta.udrive.accelerometer.Acceleration;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
-import it.giuliatesta.udrive.accelerometer.Direction;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
@@ -23,20 +21,32 @@ import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 public class DataManager implements SensorEventListener {
 
     private SensorManager manager;
-    public Sensor accelerometer;
-    private Context context;
+    private Sensor accelerometer;
+    private static Context context;
     private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
+    private static DataManager dataManager = null;
 
     /*
-        Costruttore
+        Costruttore singleton
      */
-    public DataManager(Context context) {
+    private DataManager(Context context) {
         this.context = context;
         // impostazioni per il sensore
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
+    }
+
+    /*
+        Metodo per restituire l'unica instanza di DataManager se è già stata creata una volta
+        oppure la crea.
+     */
+    public static DataManager getInstance() {
+        if(dataManager == null) {
+            dataManager = new DataManager(context);
+        }
+        return dataManager;
     }
 
     @Override
@@ -45,15 +55,20 @@ public class DataManager implements SensorEventListener {
             double x = event.values[0];
             double y = event.values[1];
             double z = event.values[2];
-            accelerometerDataEventListener.onDataChanged(accelerometerDataProcessor.calculateData(x,y,z));
+            AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
+            Log.d("DataManager", String.valueOf(dataEvent.acceleration));
+            Log.d("DataManager", String.valueOf(dataEvent.direction));
+            Log.d("DataManager", String.valueOf(dataEvent.percentage));
+            accelerometerDataEventListener.onDataChanged(dataEvent);
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
-
+    /*
+        Metodo per registrare il listener
+     */
     public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         this.accelerometerDataEventListener = accelerometerDataEventListener;
     }

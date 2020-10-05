@@ -2,7 +2,6 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,10 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.udrive.R;
-
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
+
+import static it.giuliatesta.udrive.DataManager.getInstance;
 
 /*
  Classe per la seconda Activity --> da usare quando si avvia la guida
@@ -24,7 +23,7 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
 
-     private DataManager dataManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         setContentView(R.layout.activity_drive);
 
         // impostazioni per il dataProcessor
-        dataManager = new DataManager(this);
+        DataManager dataManager = getInstance();
         dataManager.registerListener(this);
 
         // impostazioni dell'activity
@@ -45,7 +44,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 changeActivity(v);
             }
         });
-
     }
 
     // Metodo per cambiare activity e andare alla Results
@@ -85,6 +83,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         TextView text_z = findViewById(R.id.text_z);
         text_x.setText("Direction: " + event.direction);
         text_y.setText("Acceleration: " + event.acceleration);
-        text_z.setText("Perc: " + event.percentage);
+        text_z.setText("Perc: " + event.percentage + "%");
     }
 }

@@ -7,8 +7,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.udrive.R;
-
 public class ResultsActivity extends AppCompatActivity {
 
     @Override

@@ -1,15 +1,15 @@
 package it.giuliatesta.udrive.accelerometer;
 
-public class DataEvent {
+public class AccelerometerDataEvent {
 
     public Direction direction;
     public Acceleration acceleration;
-    public int perc;
+    public int percentage;
 
-    public DataEvent(Direction direction, Acceleration acceleration, int perc) {
+    public AccelerometerDataEvent(Direction direction, Acceleration acceleration, int percentage) {
         this.direction = direction;
         this.acceleration = acceleration;
-        this.perc = perc;
+        this.percentage = percentage;
     }
 
     public Direction getDirection() {
@@ -20,7 +20,7 @@ public class DataEvent {
         return acceleration;
     }
 
-    public int getPerc() {
-        return perc;
+    public int getPercentage() {
+        return percentage;
     }
 }

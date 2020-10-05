@@ -2,6 +2,7 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,14 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.udrive.R;
 
-import it.giuliatesta.udrive.accelerometer.DataEvent;
-import it.giuliatesta.udrive.accelerometer.DataEventListener;
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 /*
  Classe per la seconda Activity --> da usare quando si avvia la guida
  */
 
-public class DriveActivity extends AppCompatActivity implements DataEventListener {
+public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
 
      private DataManager dataManager;
 
@@ -78,12 +79,12 @@ public class DriveActivity extends AppCompatActivity implements DataEventListene
     }
 
     @Override
-    public void onDataChanged(DataEvent event) {
+    public void onDataChanged(AccelerometerDataEvent event) {
         TextView text_x = findViewById(R.id.text_x);
         TextView text_y = findViewById(R.id.text_y);
         TextView text_z = findViewById(R.id.text_z);
         text_x.setText("Direction: " + event.direction);
         text_y.setText("Acceleration: " + event.acceleration);
-        text_z.setText("Perc: " + event.perc);
+        text_z.setText("Perc: " + event.percentage);
     }
 }

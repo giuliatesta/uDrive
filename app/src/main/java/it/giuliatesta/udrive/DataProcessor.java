@@ -1,7 +1,7 @@
 package it.giuliatesta.udrive;
 
 import it.giuliatesta.udrive.accelerometer.Acceleration;
-import it.giuliatesta.udrive.accelerometer.DataEvent;
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
 import static it.giuliatesta.udrive.accelerometer.Acceleration.NEGATIVE;
@@ -84,13 +84,13 @@ public class DataProcessor {
     /*
         Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
      */
-    public DataEvent calculateData(double x, double y, double z) {
+    public AccelerometerDataEvent calculateData(double x, double y, double z) {
         double vector = getAccelerationVector(x, y, z);
         Direction direction = getDirection(x, y);
         Acceleration acceleration = getAcceleration(vector);
         int percentage = calculatePercentage(vector);
-        DataEvent dataEvent = new DataEvent(direction, acceleration, percentage);
-        return dataEvent;
+        AccelerometerDataEvent accelerometerDataEvent = new AccelerometerDataEvent(direction, acceleration, percentage);
+        return accelerometerDataEvent;
     }
 
     /*

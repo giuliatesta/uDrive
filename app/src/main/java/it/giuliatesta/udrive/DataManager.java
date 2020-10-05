@@ -5,10 +5,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import it.giuliatesta.udrive.accelerometer.Acceleration;
-import it.giuliatesta.udrive.accelerometer.DataEvent;
-import it.giuliatesta.udrive.accelerometer.DataEventListener;
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
 /*
@@ -20,7 +21,7 @@ public class DataManager implements SensorEventListener {
     private SensorManager manager;
     public Sensor accelerometer;
     private Context context;
-    private DataEventListener dataEventListener;
+    private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
 
     public DataManager(Context context) {
@@ -37,8 +38,7 @@ public class DataManager implements SensorEventListener {
             double x = event.values[0];
             double y = event.values[1];
             double z = event.values[2];
-
-            dataEventListener.onDataChanged(accelerometerDataProcessor.calculateData(x,y,z));
+            accelerometerDataEventListener.onDataChanged(accelerometerDataProcessor.calculateData(x,y,z));
         }
     }
 
@@ -47,7 +47,7 @@ public class DataManager implements SensorEventListener {
 
     }
 
-    public void registerListener(DataEventListener dataEventListener) {
-        this.dataEventListener = dataEventListener;
+    public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
+        this.accelerometerDataEventListener = accelerometerDataEventListener;
     }
 }

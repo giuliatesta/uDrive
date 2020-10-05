@@ -17,7 +17,6 @@ import com.example.udrive.R;
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("MainActivity", "onCreate!!!!!");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

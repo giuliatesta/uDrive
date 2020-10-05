@@ -12,8 +12,12 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
+import static android.content.Context.SENSOR_SERVICE;
+import static android.hardware.Sensor.TYPE_ACCELEROMETER;
+import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
+
 /*
- Classe per la seconda Activity --> da usare quando si avvia la guida
+ Classe per la gestione degli eventi causati dalla modifica dei valori del sensore
  */
 
 public class DataManager implements SensorEventListener {
@@ -24,12 +28,15 @@ public class DataManager implements SensorEventListener {
     private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
 
+    /*
+        Costruttore
+     */
     public DataManager(Context context) {
         this.context = context;
         // impostazioni per il sensore
-        manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
+        manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
     }
 
     @Override

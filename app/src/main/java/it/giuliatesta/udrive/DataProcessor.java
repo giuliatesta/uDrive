@@ -12,7 +12,9 @@ import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
 import static it.giuliatesta.udrive.accelerometer.Direction.STRAIGHT;
 import static java.lang.Math.*;
 import static java.lang.Math.pow;
-
+/*
+    Classe che si occupa di elaborare i dati del sensore e generare i dati usati dalla UI
+ */
 public class DataProcessor {
 
     int MaxValue;
@@ -22,9 +24,10 @@ public class DataProcessor {
         Calcola il modulo del vettore accelerazione
      */
     public double getAccelerationVector(double x, double y, double z) {
+        // Calcola la radice quadrata della somma dei quadrati delle coordinate
         double absVector = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
-        // Se la componente y è positiva significa che sta accelerando nel senso di marcia --> accelera
         if(y > 0) {
+            // Se la componente y è positiva significa che sta accelerando nel senso di marcia --> accelera
             return absVector;
         } else {
             // Altrimenti sta decelerando
@@ -35,8 +38,8 @@ public class DataProcessor {
         Calcola la direzione
      */
     public Direction getDirection(double x, double y) {
-        // Se si trova nel primo o nel quarto quadrante sta girando a destra
         if (x > 0) {
+            // Se si trova nel primo o nel quarto quadrante sta girando a destra
             return RIGHT;
         } else if (x < 0) {
             // Se si trova nel secondo o terzo quadrante sta girando a sinistra
@@ -59,8 +62,9 @@ public class DataProcessor {
                 return calculatePercentage(vector);
             }
     }
+
     /*
-        Calcola una percentuale.
+        Calcola una percentuale
      */
     private int calculatePercentage(double vector) {
         // Calcola il valore medio
@@ -85,10 +89,15 @@ public class DataProcessor {
         Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
      */
     public AccelerometerDataEvent calculateData(double x, double y, double z) {
+        // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
+        // Calcola la direzione
         Direction direction = getDirection(x, y);
+        // Calcola il tipo di accelerazione
         Acceleration acceleration = getAcceleration(vector);
+        // Calcola la percentuale
         int percentage = calculatePercentage(vector);
+        // Genera l'avento
         AccelerometerDataEvent accelerometerDataEvent = new AccelerometerDataEvent(direction, acceleration, percentage);
         return accelerometerDataEvent;
     }
@@ -97,8 +106,8 @@ public class DataProcessor {
         Calcola il tipo di accelerazione in base al vettore risultante
      */
     private Acceleration getAcceleration(double vector) {
-        // Se il vettore risultante è positivo c'è una accelerazione positiva
         if(vector > 0) {
+            // Se il vettore risultante è positivo c'è una accelerazione positiva
             return POSITIVE;
         } else if (vector < 0) {
             // Se è negativo c'è una accelerazione negativa

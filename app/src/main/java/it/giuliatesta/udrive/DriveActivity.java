@@ -31,7 +31,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         setContentView(R.layout.activity_drive);
 
         // impostazioni per il dataProcessor
-        DataManager dataManager = getInstance();
+        DataManager dataManager = getInstance(this);
         dataManager.registerListener(this);
 
         // impostazioni dell'activity

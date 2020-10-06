@@ -15,6 +15,9 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 /*
     Classe che si occupa di elaborare i dati del sensore e generare i dati usati dalla UI
+    x = indica destra sinistra
+    y = indica sopra sotto
+    z = indica avanti indietro
  */
 public class DataProcessor {
 
@@ -27,8 +30,8 @@ public class DataProcessor {
     private double getAccelerationVector(double x, double y, double z) {
         // Calcola la radice quadrata della somma dei quadrati delle coordinate
         double absVector = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
-        if(x > 0) {
-            // Se la componente x è positiva significa che sta accelerando nel senso di marcia --> accelera
+        if(z > 0) {
+            // Se la componente z è positiva significa che sta accelerando nel senso di marcia --> accelera
             return absVector;
         } else {
             // Altrimenti sta decelerando
@@ -38,11 +41,11 @@ public class DataProcessor {
     /*
         Calcola la direzione
      */
-    private Direction getDirection(double z) {
-        if (z > 0) {
+    private Direction getDirection(double x) {
+        if (x > 0) {
             // Se si trova nel primo o nel quarto quadrante sta girando a destra
             return RIGHT;
-        } else if (z < 0) {
+        } else if (x < 0) {
             // Se si trova nel secondo o terzo quadrante sta girando a sinistra
             return LEFT;
         } else {
@@ -109,7 +112,7 @@ public class DataProcessor {
         // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
         // Calcola la direzione
-        Direction direction = getDirection(z);
+        Direction direction = getDirection(x);
         // Calcola il tipo di accelerazione
         Acceleration acceleration = getAcceleration(vector);
         // Calcola la percentuale

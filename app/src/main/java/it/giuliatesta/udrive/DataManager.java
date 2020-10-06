@@ -10,7 +10,7 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 import static android.content.Context.SENSOR_SERVICE;
-import static android.hardware.Sensor.TYPE_ACCELEROMETER;
+import static android.hardware.Sensor.TYPE_LINEAR_ACCELERATION;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 
 /*
@@ -33,7 +33,7 @@ public class DataManager implements SensorEventListener {
         this.context = context;
         // impostazioni per il sensore
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
+        accelerometer = manager.getDefaultSensor(TYPE_LINEAR_ACCELERATION);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
     }

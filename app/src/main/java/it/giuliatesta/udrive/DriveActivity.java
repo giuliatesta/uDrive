@@ -22,9 +22,6 @@ import static it.giuliatesta.udrive.DataManager.getInstance;
  */
 
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

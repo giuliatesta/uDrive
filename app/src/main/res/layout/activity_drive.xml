@@ -5,57 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_y"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" "
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/diction_forward"
+        android:layout_width="72dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="57dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_x"
-        app:layout_constraintVertical_bias="0.192" />
-
-    <Button
-        android:id="@+id/btn_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="92dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:onClick="changeActivity"
-        android:text="@string/btn_stop_name"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.529"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/text_x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" "
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.334" />
+        app:srcCompat="@drawable/ic_direction_up_icon_1" />
 
-    <TextView
-        android:id="@+id/text_z"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" "
-        android:textSize="20sp"
+    <ImageView
+        android:id="@+id/direction_backward"
+        android:layout_width="72dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/diction_forward"
+        app:srcCompat="@drawable/ic_direction_down_icon_1" />
+
+    <ImageView
+        android:id="@+id/direction_left"
+        android:layout_width="72dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="129dp"
+        app:layout_constraintBottom_toTopOf="@+id/percentage_list"
+        app:layout_constraintEnd_toStartOf="@+id/direction_backward"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_direction_left_icon_1" />
+
+    <ImageView
+        android:id="@+id/direction_right"
+        android:layout_width="72dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="72dp"
+        android:layout_marginBottom="127dp"
+        app:layout_constraintBottom_toTopOf="@+id/percentage_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/direction_backward"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_direction_right_icon_1" />
+
+    <ListView
+        android:id="@+id/percentage_list"
+        android:layout_width="250dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="55dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_y"
-        app:layout_constraintVertical_bias="0.303" />
+        app:layout_constraintTop_toBottomOf="@+id/direction_backward" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,8 +8,6 @@ import static it.giuliatesta.udrive.accelerometer.Acceleration.NEGATIVE;
 import static it.giuliatesta.udrive.accelerometer.Acceleration.POSITIVE;
 import static it.giuliatesta.udrive.accelerometer.Acceleration.ZERO;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
-import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
-import static it.giuliatesta.udrive.accelerometer.Direction.STRAIGHT;
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -28,9 +26,10 @@ public class DataProcessor {
         Calcola il modulo del vettore accelerazione
      */
     private double getAccelerationVector(double x, double y, double z) {
+
         // Calcola la radice quadrata della somma dei quadrati delle coordinate
-        double absVector = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
-        if(z > 0) {
+        double absVector = sqrt(pow(x,2) + pow(y - 9.81,2) + pow(z,2));
+       if(z > 0) {
             // Se la componente z è positiva significa che sta accelerando nel senso di marcia --> accelera
             return absVector;
         } else {
@@ -41,18 +40,36 @@ public class DataProcessor {
     /*
         Calcola la direzione
      */
-    private Direction getDirection(double x) {
-        if (x > 0) {
-            // Se si trova nel primo o nel quarto quadrante sta girando a destra
+    private Direction getDirection(double x, double z) {
+
+        double vect = abs(sqrt((pow(2, x) + pow(2, z))));
+        double alpha = 0.0;
+        return LEFT;
+       /*if (x == 0) {
+            alpha = getAngleUsingOneCoordinate(vect, z);
+        } else if(z == 0) {
+            alpha = getAngleUsingOneCoordinate(vect, x);
+        }
+
+
+        if (alpha >= pi4 && alpha <= pi34) {
+            return FORWARD;
+        } else if (alpha >= pi54 && alpha <= pi74) {
+            return BACKWARD;
+        } else if ((alpha >= 0 && alpha < pi4) || (alpha > pi74 && alpha <= 2*PI)) {
             return RIGHT;
-        } else if (x < 0) {
-            // Se si trova nel secondo o terzo quadrante sta girando a sinistra
+        } else if (alpha > pi34 && alpha < pi54) {
             return LEFT;
         } else {
-            // Altrimenti sta andando dritto
-            return STRAIGHT;
-        }
+            return DEFAULT;
+        }*/
     }
+
+    private double getAngleUsingOneCoordinate(double vect, double coordinate) {
+        return Math.asin(coordinate / vect);            //restituisce l'angolo di inclinazione del vettore in 2D in radianti
+    }
+
+
     /*
         Se il vettore supera il valore massimo oppure è minore del valore minino il punteggio è zero;
         mentre se rientra nel range viene calcolata una percentuale particolare
@@ -112,7 +129,7 @@ public class DataProcessor {
         // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
         // Calcola la direzione
-        Direction direction = getDirection(x);
+        Direction direction = getDirection(x, z);
         // Calcola il tipo di accelerazione
         Acceleration acceleration = getAcceleration(vector);
         // Calcola la percentuale

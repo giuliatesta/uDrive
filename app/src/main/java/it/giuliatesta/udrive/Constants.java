@@ -1,13 +1,15 @@
 package it.giuliatesta.udrive;
 
-import static java.lang.Math.PI;
-
 public class Constants {
 
-    static double pi4 = PI/4;          // pi greco quarti
-    static double pi34 = 3 * pi4;             // tre quarti pi greco
-    static double pi54 = 5 * pi4;            // cinque quarti pi greco
-    static double pi74 = 7 * pi4;           // sette quarti pi greco
-    static double fullCircle = 2 * PI;      // angolo giro 360
+    static double ninetyDegree = 90.0;
+    static double zeroDegree = 0.0;
+    static double twoHundredSeventyDegree = 270.0;
+    static double oneHundredEightyDegree = 180.0;
+    static double fourtyFiveDegree = 45.0;
+    static double oneHundredThirtyFive = 135.0;
+    static double twoHundrenTwentyFive = 225.0;
+    static double threeHundredFifteen = 315.0;
+    static double threeHundredSixty = 360.0;
 
 }

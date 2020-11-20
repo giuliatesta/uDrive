@@ -2,7 +2,6 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,7 +35,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("DriveActivity", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
 
@@ -100,25 +98,35 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 img_backward.clearColorFilter();
                 img_left.clearColorFilter();
                 img_right.clearColorFilter();
+                break;
             case BACKWARD:
                 img_backward.setColorFilter(BLUE);
                 img_forward.clearColorFilter();
                 img_left.clearColorFilter();
                 img_right.clearColorFilter();
+                break;
             case LEFT:
                 img_left.setColorFilter(BLUE);
                 img_backward.clearColorFilter();
                 img_forward.clearColorFilter();
                 img_right.clearColorFilter();
+                break;
             case RIGHT:
                 img_right.setColorFilter(BLUE);
                 img_backward.clearColorFilter();
                 img_forward.clearColorFilter();
                 img_left.clearColorFilter();
+                break;
+            case DEFAULT:
+                img_backward.clearColorFilter();
+                img_forward.clearColorFilter();
+                img_left.clearColorFilter();
+                img_right.clearColorFilter();
+                break;
         }
 
-        percentageList.add(event.direction + ": " + event.percentage + "%");
-        adapter.notifyDataSetChanged();
+       /* percentageList.add(event.direction + ": " + event.percentage + "%");
+        adapter.notifyDataSetChanged();*/
     }
 
 }

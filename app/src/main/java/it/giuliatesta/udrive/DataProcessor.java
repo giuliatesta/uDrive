@@ -1,14 +1,30 @@
 package it.giuliatesta.udrive;
 
+import android.util.Log;
+
 import it.giuliatesta.udrive.accelerometer.Acceleration;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
+import static it.giuliatesta.udrive.Constants.fourtyFiveDegree;
+import static it.giuliatesta.udrive.Constants.ninetyDegree;
+import static it.giuliatesta.udrive.Constants.oneHundredEightyDegree;
+import static it.giuliatesta.udrive.Constants.oneHundredThirtyFive;
+import static it.giuliatesta.udrive.Constants.threeHundredFifteen;
+import static it.giuliatesta.udrive.Constants.threeHundredSixty;
+import static it.giuliatesta.udrive.Constants.twoHundredSeventyDegree;
+import static it.giuliatesta.udrive.Constants.twoHundrenTwentyFive;
+import static it.giuliatesta.udrive.Constants.zeroDegree;
 import static it.giuliatesta.udrive.accelerometer.Acceleration.NEGATIVE;
 import static it.giuliatesta.udrive.accelerometer.Acceleration.POSITIVE;
 import static it.giuliatesta.udrive.accelerometer.Acceleration.ZERO;
+import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
+import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
+import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
+import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
 import static java.lang.Math.abs;
+import static java.lang.Math.atan;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 /*
@@ -37,39 +53,63 @@ public class DataProcessor {
             return (-absVector);
         }
     }
+
+    /*
+        Calcola la posizione dell'angolo nei 4 quadranti
+     */
+    private double getPositionOfAlpha(double x, double z) {
+        double ratio = z/x;
+        double alpha = Math.toDegrees(atan(ratio));     //Angolo in gradi
+
+        // Visto che restituisce un angolo tra 0 e 90 gradi bisogna capire in quale quadrante si trova
+        // Consideriamo prima i casi particolari
+        if (x == 0) {
+            if (z > 0) {
+                // novanta gradi
+                return ninetyDegree;
+            } else if (z == 0) {
+                // zero
+                return zeroDegree;
+            } else {
+                // duecentosettanta gradi
+                return twoHundredSeventyDegree;
+            }
+        }
+
+        if (x < 0 && z < 0) {
+            // Terzo quadrante
+            alpha += oneHundredEightyDegree;
+        } else if(x < 0) {
+            // Secondo quadrante
+            alpha += ninetyDegree;
+        } else if (z < 0) {
+            // Quarto quadrante
+            alpha += twoHundredSeventyDegree;
+        }
+        Log.d("DataProcessor", ""+alpha);
+        return alpha;
+    }
+
     /*
         Calcola la direzione
      */
     private Direction getDirection(double x, double z) {
-
-        double vect = abs(sqrt((pow(2, x) + pow(2, z))));
-        double alpha = 0.0;
-        return LEFT;
-       /*if (x == 0) {
-            alpha = getAngleUsingOneCoordinate(vect, z);
-        } else if(z == 0) {
-            alpha = getAngleUsingOneCoordinate(vect, x);
-        }
-
-
-        if (alpha >= pi4 && alpha <= pi34) {
+        double alpha = getPositionOfAlpha(x, z);
+        if (alpha >= fourtyFiveDegree && alpha <= oneHundredThirtyFive) {
+            // Se l'angolo è compreso tra 45 e 135
             return FORWARD;
-        } else if (alpha >= pi54 && alpha <= pi74) {
+        } else if (alpha >= twoHundrenTwentyFive && alpha <= threeHundredFifteen) {
+            // Se l'angolo è compreso tra 225 e 315
             return BACKWARD;
-        } else if ((alpha >= 0 && alpha < pi4) || (alpha > pi74 && alpha <= 2*PI)) {
+        } else if ((alpha > threeHundredFifteen && alpha <= threeHundredSixty) || (alpha >= zeroDegree && alpha < fourtyFiveDegree)) {
+            // Se l'angolo è compreso tra -45 e 45
             return RIGHT;
-        } else if (alpha > pi34 && alpha < pi54) {
+        } else if (alpha > oneHundredThirtyFive && alpha < twoHundrenTwentyFive) {
             return LEFT;
         } else {
             return DEFAULT;
-        }*/
+        }
     }
-
-    private double getAngleUsingOneCoordinate(double vect, double coordinate) {
-        return Math.asin(coordinate / vect);            //restituisce l'angolo di inclinazione del vettore in 2D in radianti
-    }
-
-
     /*
         Se il vettore supera il valore massimo oppure è minore del valore minino il punteggio è zero;
         mentre se rientra nel range viene calcolata una percentuale particolare
@@ -137,5 +177,6 @@ public class DataProcessor {
         // Genera l'avento
         return new AccelerometerDataEvent(direction, acceleration, percentage);
     }
+
 
 }

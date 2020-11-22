@@ -52,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.help:
                 //change activity ---> activity_help
                 return true;
-            case R.id.history:
-                //change activity ---> activity_history
-                return true;
             case R.id.settings:
                 //change activity ---> activity_settings
                 return true;

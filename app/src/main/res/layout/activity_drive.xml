@@ -3,67 +3,195 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:backgroundTint="#FFFFFF">
 
-    <ImageView
-        android:id="@+id/diction_forward"
-        android:layout_width="72dp"
-        android:layout_height="73dp"
-        android:layout_marginTop="57dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_direction_up_icon_1" />
-
-    <ImageView
-        android:id="@+id/direction_backward"
-        android:layout_width="72dp"
-        android:layout_height="73dp"
-        android:layout_marginTop="72dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diction_forward"
-        app:srcCompat="@drawable/ic_direction_down_icon_1" />
-
-    <ImageView
-        android:id="@+id/direction_left"
-        android:layout_width="72dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="130dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="129dp"
-        app:layout_constraintBottom_toTopOf="@+id/percentage_list"
-        app:layout_constraintEnd_toStartOf="@+id/direction_backward"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_direction_left_icon_1" />
-
-    <ImageView
-        android:id="@+id/direction_right"
-        android:layout_width="72dp"
-        android:layout_height="73dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="130dp"
-        android:layout_marginEnd="72dp"
-        android:layout_marginBottom="127dp"
-        app:layout_constraintBottom_toTopOf="@+id/percentage_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/direction_backward"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_direction_right_icon_1" />
-
-    <ListView
-        android:id="@+id/percentage_list"
-        android:layout_width="250dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="55dp"
-        android:textAlignment="center"
+    <FrameLayout
+        android:id="@+id/lower_frame"
+        android:layout_width="200dp"
+        android:layout_height="420dp"
+        android:background="@color/outlineColor"
+        android:backgroundTint="@color/outlineColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/upper_frame"
+        android:layout_width="275dp"
+        android:layout_height="275dp"
+        android:background="@color/backgroundColorFrame"
+        android:backgroundTint="@color/backgroundColorFrame"
+        app:layout_constraintBottom_toTopOf="@+id/lower_frame"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/direction_backward" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_direction_left"
+            android:layout_width="80dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/img_direction_backward"
+            app:layout_constraintStart_toStartOf="@id/img_diction_forward"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_direction_left_icon_1" />
+
+        <ImageView
+            android:id="@+id/img_diction_forward"
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_direction_up_icon_1" />
+
+        <ImageView
+            android:id="@+id/img_direction_right"
+            android:layout_width="80dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="176dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginRight="45dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/img_direction_backward"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_direction_right_icon_1" />
+
+        <ImageView
+            android:id="@+id/img_direction_backward"
+            android:layout_width="75dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="175dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_direction_down_icon_1"
+            tools:layout_editor_absoluteY="202dp" />
+
+        <View
+            android:id="@+id/divider_up"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/divider_left"
+            android:layout_width="2dp"
+            android:layout_height="275dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/divider_up"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divider_right"
+            android:layout_width="2dp"
+            android:layout_height="275dp"
+            android:layout_marginStart="275dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/left_frame"
+        android:layout_width="105dp"
+        android:layout_height="420dp"
+        android:background="@color/backgroundColorFrame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/dividerL"
+            android:layout_width="2dp"
+            android:layout_height="365dp"
+            android:layout_marginLeft="105dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor" />
+
+        <ImageView
+            android:id="@+id/img_steering_wheel"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="35dp"
+            android:rotation="15"
+            app:srcCompat="@drawable/ic_steering_wheel_icon_1" />
+
+        <ImageView
+            android:id="@+id/img_racing_cars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="220dp"
+            android:layout_marginBottom="16dp"
+            android:rotation="-15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/ic_racing" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/right_frame"
+        android:layout_width="105dp"
+        android:layout_height="420dp"
+        android:background="@color/backgroundColorFrame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/img_traffic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="35dp"
+            android:rotation="-15"
+            app:srcCompat="@drawable/ic_traffic_jam" />
+
+        <ImageView
+            android:id="@+id/img_car_road"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="220dp"
+            android:rotation="15"
+            app:srcCompat="@drawable/ic_smooth_road" />
+
+        <View
+            android:id="@+id/dividerR"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/divider_upper_lower"
+        android:layout_width="409dp"
+        android:layout_height="7dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="427dp"
+        android:background="@color/outlineColor"
+        android:backgroundTint="@color/outlineColor"
+        app:layout_constraintBottom_toBottomOf="@+id/lower_frame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upper_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

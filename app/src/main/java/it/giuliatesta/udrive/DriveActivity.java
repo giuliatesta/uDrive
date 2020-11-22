@@ -17,8 +17,12 @@ import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
+import it.giuliatesta.udrive.accelerometer.Direction;
 
 import static android.graphics.Color.BLUE;
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.RED;
+import static android.graphics.Color.YELLOW;
 import static it.giuliatesta.udrive.DataManager.getInstance;
 
 /*
@@ -43,10 +47,29 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         dataManager.registerListener(this);
 
         // impostazioni per la listView
-        percentageList = new ArrayList<String>();
+        /*percentageList = new ArrayList<String>();
         listView = findViewById(R.id.percentage_list);
         adapter = new ArrayAdapter<>(this, R.layout.activity_drive, percentageList);
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapter);*/
+
+        // Impostazioni per le immagini
+        imageSettings();
+    }
+
+
+
+    private void imageSettings() {
+        ImageView steering_wheel = findViewById(R.id.img_steering_wheel);
+        steering_wheel.setColorFilter(BLUE);
+
+        ImageView racing_cars = findViewById(R.id.img_racing_cars);
+        racing_cars.setColorFilter(BLUE);
+
+        ImageView car_road = findViewById(R.id.img_car_road);
+        car_road.setColorFilter(BLUE);
+
+        ImageView traffic = findViewById(R.id.img_traffic);
+        traffic.setColorFilter(BLUE);
     }
 
     // Metodo per cambiare activity e andare alla Results
@@ -84,49 +107,68 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
 
-        // impostazioni per le immagini delle direzioni
-        ImageView img_forward = findViewById(R.id.diction_forward);
-        ImageView img_backward = findViewById(R.id.direction_backward);
-        ImageView img_left = findViewById(R.id.direction_left);
-        ImageView img_right = findViewById(R.id.direction_right);
+        ImageView img_forward = findViewById(R.id.img_diction_forward);
+        ImageView img_backward = findViewById(R.id.img_direction_backward);
+        ImageView img_left = findViewById(R.id.img_direction_left);
+        ImageView img_right = findViewById(R.id.img_direction_right);
 
-        // DA SISTEMARE PERCHè è ORRIBILE
+        setDirectionBlack(img_forward);
+        setDirectionBlack(img_backward);
+        setDirectionBlack(img_left);
+        setDirectionBlack(img_right);
+
         switch (event.direction) {
             case FORWARD:
                 // Se la direzione ricevuta dall'evento è FORWARD cambia colore alla freccia FORWARD
-                img_forward.setColorFilter(BLUE);
-                img_backward.clearColorFilter();
-                img_left.clearColorFilter();
-                img_right.clearColorFilter();
+                setDirectionBlue(img_forward);
                 break;
             case BACKWARD:
-                img_backward.setColorFilter(BLUE);
-                img_forward.clearColorFilter();
-                img_left.clearColorFilter();
-                img_right.clearColorFilter();
+                setDirectionBlue(img_backward);
                 break;
             case LEFT:
-                img_left.setColorFilter(BLUE);
-                img_backward.clearColorFilter();
-                img_forward.clearColorFilter();
-                img_right.clearColorFilter();
+                setDirectionBlue(img_left);
                 break;
             case RIGHT:
-                img_right.setColorFilter(BLUE);
-                img_backward.clearColorFilter();
-                img_forward.clearColorFilter();
-                img_left.clearColorFilter();
-                break;
-            case DEFAULT:
-                img_backward.clearColorFilter();
-                img_forward.clearColorFilter();
-                img_left.clearColorFilter();
-                img_right.clearColorFilter();
+                setDirectionBlue(img_right);
                 break;
         }
 
-       /* percentageList.add(event.direction + ": " + event.percentage + "%");
-        adapter.notifyDataSetChanged();*/
+        setPercentageList(event.percentage, event.direction);
     }
+
+    /*
+            TO DO: bisogna aggiungere le immagini e i colori di background
+     */
+    private void setPercentageList(int percentage, Direction direction) {
+         /*percentageList.add(event.direction + ": " + event.percentage + "%");
+        adapter.notifyDataSetChanged();*/
+        int backgroundColor = getBackgroundColorForPercentageList(percentage);
+        // ImageView imageDirection = getImageByDirection(direction);
+    }
+
+
+    private int getBackgroundColorForPercentageList(int percentage) {
+        if(percentage > 75) {
+            return GREEN;
+        } else if (percentage < 25) {
+            return RED;
+        } else {
+            return YELLOW;
+        }
+    }
+    /*
+        Imposta un filtro colore sul una immagine in modo da evidenziarla
+     */
+    private void setDirectionBlue(ImageView image) {
+        image.setColorFilter(BLUE);
+    }
+
+    /*
+        Elimina il filtro colore facendo tornare l'immagine nera
+     */
+    private void setDirectionBlack(ImageView image) {
+        image.clearColorFilter();
+    }
+
 
 }

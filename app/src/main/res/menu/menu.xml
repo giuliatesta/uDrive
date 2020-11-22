@@ -5,16 +5,8 @@
        android:icon="@drawable/ic_settings_black_24dp"
        android:title="Settings"/>
 
-    <item android:id="@+id/history"
-        android:icon="@drawable/ic_history_black_24dp"
-        android:title="History" />
-
     <item android:id="@+id/help"
         android:icon="@drawable/ic_help_black_24dp"
         android:title="Help"/>
-
-    <item android:id="@+id/settings"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Settings"/>
 
 </menu>

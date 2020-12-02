@@ -10,7 +10,7 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 import static android.content.Context.SENSOR_SERVICE;
-import static android.hardware.Sensor.TYPE_LINEAR_ACCELERATION;
+import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 
 /*
@@ -33,7 +33,7 @@ public class DataManager implements SensorEventListener {
         this.context = context;
         // impostazioni per il sensore
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        accelerometer = manager.getDefaultSensor(TYPE_LINEAR_ACCELERATION);
+        accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
     }
@@ -53,11 +53,28 @@ public class DataManager implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
             double x = event.values[0];
-            double y = event.values[1];
             double z = event.values[2];
+            double gravity = 0.0;
+
+            // Misuro la accelerazione di gravità che viene misurata dal sensore
+            if ( x == 0 && z == 0) {
+                gravity = event.values[1];
+            }
+
+            double y = getOrdinateValue(gravity, event.values[1]);
             AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
             accelerometerDataEventListener.onDataChanged(dataEvent);
         }
+    }
+
+    /**
+     * Metodo per eliminare la componente di gravità da y.
+     * @param gravity   valore dell'accelerazione di gravità
+     * @param y         valore di accelerazione misurata al momento dell'evento
+     * @return          valore dell'accelerazione senza l'accelerazione di gravità. Pronto per i calcoli
+     */
+    private double getOrdinateValue(double gravity, double y) {
+        return (y - gravity);
     }
 
     @Override

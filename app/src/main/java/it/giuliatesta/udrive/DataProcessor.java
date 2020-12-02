@@ -1,7 +1,5 @@
 package it.giuliatesta.udrive;
 
-import android.util.Log;
-
 import it.giuliatesta.udrive.accelerometer.Acceleration;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
@@ -86,8 +84,10 @@ public class DataProcessor {
             // Quarto quadrante
             alpha += twoHundredSeventyDegree;
         }
-        Log.d("DataProcessor", ""+alpha);
         return alpha;
+
+
+
     }
 
     /*

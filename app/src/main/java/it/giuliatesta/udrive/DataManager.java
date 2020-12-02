@@ -26,6 +26,9 @@ public class DataManager implements SensorEventListener {
     private DataProcessor accelerometerDataProcessor;
     private static DataManager dataManager = null;
 
+    private double historyX = 0.0;
+    private double historyY = 0.0;
+    private double historyZ = 0.0;
     /*
         Costruttore singleton
      */
@@ -51,20 +54,45 @@ public class DataManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
             double x = event.values[0];
             double z = event.values[2];
-            double gravity = 0.0;
 
+            double gravity = 0.0;
             // Misuro la accelerazione di gravità che viene misurata dal sensore
             if ( x == 0 && z == 0) {
                 gravity = event.values[1];
             }
 
             double y = getOrdinateValue(gravity, event.values[1]);
-            AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
-            accelerometerDataEventListener.onDataChanged(dataEvent);
+
+            // Calcolo i valori di variazione del precedente con il corrente
+            double zChange = historyZ - z;
+            double xChange = historyX - x;
+            double yChange = historyY - y;
+
+            // Imposto i nuovi history
+            setNewHistoryValue(x, y, z);
+
+            // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
+            if (xChange > 2 || yChange > 2 || zChange > 2) {
+                AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
+                accelerometerDataEventListener.onDataChanged(dataEvent);
+            }
         }
+    }
+
+    /**
+     *    Imposta i valori per controllare la variazione dal precedente ai valori correnti
+     * @param NewHistoryX     valore corrente di x
+     * @param NewHistoryY     valore corrente di y
+     * @param NewHistoryZ     valore corrente di z
+     */
+    private void setNewHistoryValue(double NewHistoryX, double NewHistoryY, double NewHistoryZ) {
+        historyX = NewHistoryX;
+        historyY = NewHistoryY;
+        historyZ = NewHistoryZ;
     }
 
     /**

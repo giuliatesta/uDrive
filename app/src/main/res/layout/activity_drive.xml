@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppTheme"
+    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTint="#FFFFFF">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/lower_frame"
@@ -17,6 +18,23 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent">
 
+        <View
+            android:id="@+id/dividerL"
+            android:layout_width="7dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor" />
+
+        <View
+            android:id="@+id/dividerR"
+            android:layout_width="7dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="195dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </FrameLayout>
 
     <FrameLayout
@@ -80,7 +98,7 @@
         <View
             android:id="@+id/divider_up"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="7dp"
             android:background="@color/outlineColor"
             android:backgroundTint="@color/outlineColor"
             app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +106,7 @@
 
         <View
             android:id="@+id/divider_left"
-            android:layout_width="2dp"
+            android:layout_width="7dp"
             android:layout_height="275dp"
             android:background="@color/outlineColor"
             android:backgroundTint="@color/outlineColor"
@@ -99,12 +117,14 @@
 
         <View
             android:id="@+id/divider_right"
-            android:layout_width="2dp"
+            android:layout_width="7dp"
             android:layout_height="275dp"
-            android:layout_marginStart="275dp"
-            android:layout_marginBottom="16dp"
             android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor" />
+            android:backgroundTint="@color/outlineColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/divider_up"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </FrameLayout>
 
@@ -112,17 +132,13 @@
         android:id="@+id/left_frame"
         android:layout_width="105dp"
         android:layout_height="420dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="1dp"
         android:background="@color/backgroundColorFrame"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <View
-            android:id="@+id/dividerL"
-            android:layout_width="2dp"
-            android:layout_height="365dp"
-            android:layout_marginLeft="105dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor" />
+        app:layout_constraintEnd_toStartOf="@+id/lower_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_upper_lower">
 
         <ImageView
             android:id="@+id/img_steering_wheel"
@@ -171,14 +187,6 @@
             android:rotation="15"
             app:srcCompat="@drawable/ic_smooth_road" />
 
-        <View
-            android:id="@+id/dividerR"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </FrameLayout>
 
     <View
@@ -193,5 +201,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/upper_frame" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="7dp"
+        android:layout_height="280dp"
+        android:layout_marginEnd="61dp"
+        android:background="@color/outlineColor"
+        android:backgroundTint="@color/outlineColor"
+        app:layout_constraintBottom_toTopOf="@+id/divider_upper_lower"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/upper_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

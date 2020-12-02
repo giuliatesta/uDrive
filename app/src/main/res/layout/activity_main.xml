@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:backgroundTint="#FFFFFF"
+    android:background="@color/backgroundColorFrame"
+    android:backgroundTint="@color/backgroundColorFrame"
     tools:context=".MainActivity">
 
     <Button
@@ -14,22 +14,24 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/btn_guida_name"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-                                        style="@style/AppTheme"
+        android:textColor="@color/outlineColor"
+        android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/img_driving"
+        android:layout_width="225dp"
+        android:layout_height="225dp"
+        android:layout_marginBottom="25dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_guida"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_drive_eta_black_120dp" />
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_driving" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

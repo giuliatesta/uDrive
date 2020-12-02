@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import static android.graphics.Color.WHITE;
 
 public class ResultsActivity extends AppCompatActivity {
 
@@ -24,6 +27,10 @@ public class ResultsActivity extends AppCompatActivity {
                 changeActivity(v);
             }
         });
+
+        //Impostazioni dell'immagine
+        ImageView img_thumbs_up = findViewById(R.id.img_thumbs_up);
+        img_thumbs_up.setColorFilter(WHITE);
 
     }
 

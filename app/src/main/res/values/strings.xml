@@ -1,11 +1,7 @@
 <resources>
-    <string name="app_name">prototipo1</string>
+    <string name="app_name">uDrive</string>
     <!--Nome del bottone della schermata Main-->
     <string name="btn_guida_name">Comincia a guidare!</string>
-    <!--Nome del bottone della schermata Drive-->
-    <string name="btn_stop_name">Fine guida</string>
     <!--Nome del bottone della schermata Results-->
     <string name="btn_home_name">Torna alla home</string>
-    <!--Stringa per indicare il risultato-->
-    <string name="txt_score">Il tuo punteggio è </string>
 </resources>

@@ -8,9 +8,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import static android.graphics.Color.WHITE;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -29,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
                 changeActivity(v);
             }
         });
+
+        // impostazioni per l'immagine
+        ImageView img_driving = findViewById(R.id.img_driving);
+        img_driving.setColorFilter(WHITE);
     }
 
     // Metodo per cambiare activity e andare alla Drive

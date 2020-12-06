@@ -45,7 +45,7 @@ public class DataManager implements SensorEventListener {
         Metodo per restituire l'unica instanza di DataManager se è già stata creata una volta
         oppure la crea.
      */
-    public static DataManager getInstance(Context context) {
+    static DataManager getInstance(Context context) {
         if(dataManager == null) {
             dataManager = new DataManager(context);
         }

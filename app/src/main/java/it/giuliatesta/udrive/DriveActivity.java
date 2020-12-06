@@ -143,8 +143,9 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
          /*percentageList.add(event.direction + ": " + event.percentage + "%");
         adapter.notifyDataSetChanged();*/
         int backgroundColor = getBackgroundColorForPercentageList(percentage);
-        // ImageView imageDirection = getImageByDirection(direction);
+        //ImageView imageDirection = getImageByDirection(direction);
     }
+
 
 
     private int getBackgroundColorForPercentageList(int percentage) {

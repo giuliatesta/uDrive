@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/stop"
-        android:icon="@drawable/ic_pause_circle_white_24dp"
+        android:icon="@drawable/img_stop_driving"
         android:title="Stop"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/img_go_home"
         android:title="Home"/>
 
     <item android:id="@+id/help"
-        android:icon="@drawable/ic_help_black_24dp"
+        android:icon="@drawable/img_help"
         android:title="Help"/>
 
 </menu>

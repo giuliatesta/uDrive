@@ -35,6 +35,15 @@
             android:backgroundTint="@color/outlineColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ListView
+            android:id="@+id/percentage_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/backgroundColorFrame"
+            android:dividerHeight="1dp"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"/>
     </FrameLayout>
 
     <FrameLayout
@@ -58,7 +67,7 @@
             app:layout_constraintEnd_toStartOf="@+id/img_direction_backward"
             app:layout_constraintStart_toStartOf="@id/img_diction_forward"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_direction_left_icon_1" />
+            app:srcCompat="@drawable/img_direction_left" />
 
         <ImageView
             android:id="@+id/img_diction_forward"
@@ -69,7 +78,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_direction_up_icon_1" />
+            app:srcCompat="@drawable/img_direction_forward" />
 
         <ImageView
             android:id="@+id/img_direction_right"
@@ -82,7 +91,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/img_direction_backward"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_direction_right_icon_1" />
+            app:srcCompat="@drawable/img_direction_right" />
 
         <ImageView
             android:id="@+id/img_direction_backward"
@@ -92,7 +101,7 @@
             android:layout_marginTop="175dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_direction_down_icon_1"
+            app:srcCompat="@drawable/img_direction_backward"
             tools:layout_editor_absoluteY="202dp" />
 
         <View
@@ -147,7 +156,7 @@
             android:layout_marginLeft="13dp"
             android:layout_marginTop="35dp"
             android:rotation="15"
-            app:srcCompat="@drawable/ic_steering_wheel_icon_1" />
+            app:srcCompat="@drawable/img_steering_wheel_drive_activity" />
 
         <ImageView
             android:id="@+id/img_racing_cars"
@@ -158,7 +167,7 @@
             android:layout_marginBottom="16dp"
             android:rotation="-15"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:srcCompat="@drawable/ic_racing" />
+            app:srcCompat="@drawable/img_racing_cars_drive_activity" />
     </FrameLayout>
 
     <FrameLayout
@@ -176,7 +185,7 @@
             android:layout_marginLeft="13dp"
             android:layout_marginTop="35dp"
             android:rotation="-15"
-            app:srcCompat="@drawable/ic_traffic_jam" />
+            app:srcCompat="@drawable/img_traffic_drive_activity" />
 
         <ImageView
             android:id="@+id/img_car_road"
@@ -185,7 +194,7 @@
             android:layout_marginLeft="13dp"
             android:layout_marginTop="220dp"
             android:rotation="15"
-            app:srcCompat="@drawable/ic_smooth_road" />
+            app:srcCompat="@drawable/img_car_road_drive_activity" />
 
     </FrameLayout>
 

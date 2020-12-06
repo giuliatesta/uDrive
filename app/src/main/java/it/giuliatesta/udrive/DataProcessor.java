@@ -25,7 +25,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
-/*
+/**
     Classe che si occupa di elaborare i dati del sensore e generare i dati usati dalla UI
     x = indica destra sinistra
     y = indica sopra sotto
@@ -36,7 +36,7 @@ public class DataProcessor {
     private int MaxValue = 10;
     private int MinValue = -10;
 
-    /*
+    /**
         Calcola il modulo del vettore accelerazione
      */
     private double getAccelerationVector(double x, double y, double z) {
@@ -52,8 +52,9 @@ public class DataProcessor {
         }
     }
 
-    /*
-        Calcola la posizione dell'angolo nei 4 quadranti
+    /**
+     TO DO: RISOLVERE I PROBLEMI LEGATI A QUESTO ALGORITMO
+     Calcola la posizione dell'angolo nei 4 quadranti
      */
     private double getPositionOfAlpha(double x, double z) {
         double ratio = z/x;
@@ -85,13 +86,12 @@ public class DataProcessor {
             alpha += twoHundredSeventyDegree;
         }
         return alpha;
-
-
-
     }
 
-    /*
+    /**
         Calcola la direzione
+     @param x  coordinata x dell'accelerazione
+     @param z  coordinata z dell'accelerazione
      */
     private Direction getDirection(double x, double z) {
         double alpha = getPositionOfAlpha(x, z);
@@ -110,9 +110,11 @@ public class DataProcessor {
             return DEFAULT;
         }
     }
-    /*
+    /**
         Se il vettore supera il valore massimo oppure è minore del valore minino il punteggio è zero;
         mentre se rientra nel range viene calcolata una percentuale particolare
+        @param vector vettore accelerazione
+        @return percentuale ottenuta
      */
     private int getPercentage(double vector) {
             if(vector > MaxValue || vector < MinValue) {
@@ -124,8 +126,10 @@ public class DataProcessor {
             }
     }
 
-    /*
+    /**
         Calcola una percentuale
+        @param vector vettore accelerazione
+        @return percentuale
      */
     private int calculatePercentage(double vector) {
         // Calcola il valore medio
@@ -138,16 +142,21 @@ public class DataProcessor {
         return (int) (ratio*100);
     }
 
-    /*
+    /**
         Calcola il valore medio dell'intervallo come differenza del
         valore massimo e del minimo divisa per due
+        @param min valore minimo
+        @param max valore massimo
+        @return valore medio
      */
     private double getMediumValue(int max, int min) {
         return (max + min)/2;
     }
 
-    /*
+    /**
         Calcola il tipo di accelerazione in base al vettore risultante
+        @param vector vettore accelerazione
+        @return tipo di accelerazione
      */
     private Acceleration getAcceleration(double vector) {
         if(vector > 0) {
@@ -162,8 +171,12 @@ public class DataProcessor {
         }
     }
 
-    /*
+    /**
         Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
+        @param x coordinata x dell'accelerazione
+        @param y coordinata y dell'accelerazione
+        @param z coordinata z dell'accelerazione
+        @return evento legato alla modifica valori rilevati dall'accelerometro
      */
     public AccelerometerDataEvent calculateData(double x, double y, double z) {
         // Calcola il vettore accelerazione

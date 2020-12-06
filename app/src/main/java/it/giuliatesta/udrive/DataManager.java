@@ -13,7 +13,7 @@ import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 
-/*
+/**
  Classe per la gestione degli eventi causati dalla modifica dei valori del sensore
  */
 
@@ -26,22 +26,25 @@ public class DataManager implements SensorEventListener {
     private DataProcessor accelerometerDataProcessor;
     private static DataManager dataManager = null;
 
+    // Coordinate precedenti dell'accelerazione
     private double historyX = 0.0;
     private double historyY = 0.0;
     private double historyZ = 0.0;
-    /*
+
+    /**
         Costruttore singleton
      */
     private DataManager(Context context) {
         this.context = context;
-        // impostazioni per il sensore
+
+        // Impostazioni per il sensore
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
     }
 
-    /*
+    /**
         Metodo per restituire l'unica instanza di DataManager se è già stata creata una volta
         oppure la crea.
      */
@@ -108,7 +111,8 @@ public class DataManager implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-    /*
+
+    /**
         Metodo per registrare il listener
      */
     public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {

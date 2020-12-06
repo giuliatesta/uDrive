@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -24,8 +23,13 @@ import static android.graphics.Color.GREEN;
 import static android.graphics.Color.RED;
 import static android.graphics.Color.YELLOW;
 import static it.giuliatesta.udrive.DataManager.getInstance;
+import static it.giuliatesta.udrive.R.drawable.img_direction_backward;
+import static it.giuliatesta.udrive.R.drawable.img_direction_forward;
+import static it.giuliatesta.udrive.R.drawable.img_direction_left;
+import static it.giuliatesta.udrive.R.drawable.img_direction_right;
+import static it.giuliatesta.udrive.R.id.percentage_list_view;
 
-/*
+/**
  Classe per la seconda Activity --> da usare quando si avvia la guida
  */
 
@@ -34,30 +38,34 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private DataManager dataManager;
     private Button btn_stop;
     private ArrayList<String> percentageList;
-    private ArrayAdapter<String> adapter;
     private ListView listView;
+    private Integer[] imageId;
+    private CustomAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
 
-        // impostazioni per il dataProcessor
-        dataManager = getInstance(this);
-        dataManager.registerListener(this);
-
-        // impostazioni per la listView
-        /*percentageList = new ArrayList<String>();
-        listView = findViewById(R.id.percentage_list);
-        adapter = new ArrayAdapter<>(this, R.layout.activity_drive, percentageList);
-        listView.setAdapter(adapter);*/
+        // Impostazioni per il dataManager
+        dataManagerSettings();
 
         // Impostazioni per le immagini
         imageSettings();
     }
 
+    /**
+     * Impostazioni per il dataManager: ottengo la sua istanza e registro il listener
+     */
+    private void dataManagerSettings() {
+        dataManager = getInstance(this);
+        dataManager.registerListener(this);
+    }
 
-
+    /**
+     * Impostazioni per le immagini: associo l'imageView della DriveActivity.java
+     * con la imageView della activity_drive.xml e imposto un filtro colore
+     */
     private void imageSettings() {
         ImageView steering_wheel = findViewById(R.id.img_steering_wheel);
         steering_wheel.setColorFilter(BLUE);
@@ -72,14 +80,20 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         traffic.setColorFilter(BLUE);
     }
 
-    // Metodo per cambiare activity e andare alla Results
+    /**
+     *  Metodo per cambiare activity e andare alla Results
+     */
+
     public void changeActivity(Class cls) {
         Intent intent = new Intent(this, cls);
         startActivity(intent);
     }
 
 
-    // Metodo per la creazione del menù
+    /**
+     *   Metodo per la creazione del menù
+     */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -87,7 +101,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         return true;
     }
 
-    // Metodo per gestire cosa viene selezionato nel menù
+    /**
+     * Metodo per gestire cosa viene selezionato nel menù
+     */
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -117,7 +134,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         setDirectionBlack(img_left);
         setDirectionBlack(img_right);
 
-        switch (event.direction) {
+        switch (event.getDirection()) {
             case FORWARD:
                 // Se la direzione ricevuta dall'evento è FORWARD cambia colore alla freccia FORWARD
                 setDirectionBlue(img_forward);
@@ -133,20 +150,56 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 break;
         }
 
-        setPercentageList(event.percentage, event.direction);
+        setPercentageList(event.getPercentage(), event.getDirection());
+
     }
 
     /*
-            TO DO: bisogna aggiungere le immagini e i colori di background
+       TO DO: bisogna aggiungere le immagini e i colori di background
      */
     private void setPercentageList(int percentage, Direction direction) {
-         /*percentageList.add(event.direction + ": " + event.percentage + "%");
-        adapter.notifyDataSetChanged();*/
+        listViewSettings();
+        percentageList.add(percentage + "%");
+        int directionIndex = setDirectionIndex(direction);
         int backgroundColor = getBackgroundColorForPercentageList(percentage);
-        //ImageView imageDirection = getImageByDirection(direction);
     }
 
+    /**
+     * COSA TERRIBILE DA SISTEMARE
+     * @param direction
+     * @return
+     */
+    private int setDirectionIndex(Direction direction) {
+        int index = 0;
+        switch (direction) {
+            case LEFT:
+                index = 0;
+            case RIGHT:
+                index =  1;
+            case FORWARD:
+                index =  2;
+            case BACKWARD:
+                index =  3;
+                break;
+        }
+        return index;
+    }
 
+    /**
+     * Impostazioni per la listView: aggiungo le immagini all'array e imposto l'adapter
+     */
+    private void listViewSettings() {
+        imageId = new Integer[]{img_direction_left,
+                img_direction_right,
+                img_direction_forward,
+                img_direction_backward,
+                };
+
+        //  TO DO : DA SISTEMARE QUEL CASTING ORRIBILE
+       // adapter = new CustomAdapter(DriveActivity.this, (String[]) percentageList.toArray(), imageId);
+        listView = findViewById(percentage_list_view);
+        listView.setAdapter(adapter);
+    }
 
     private int getBackgroundColorForPercentageList(int percentage) {
         if(percentage > 75) {
@@ -157,15 +210,17 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
             return YELLOW;
         }
     }
-    /*
+    /**
         Imposta un filtro colore sul una immagine in modo da evidenziarla
+        @param image immagine a cui si vuole applicare il filtro colore
      */
     private void setDirectionBlue(ImageView image) {
         image.setColorFilter(BLUE);
     }
 
-    /*
+    /**
         Elimina il filtro colore facendo tornare l'immagine nera
+        @param image immagine a cui si vuole togliere il filtro colore
      */
     private void setDirectionBlack(ImageView image) {
         image.clearColorFilter();

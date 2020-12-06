@@ -1,15 +1,15 @@
 package it.giuliatesta.udrive.accelerometer;
 
-/*
+/**
     Classe che rappresenta l'evento di modifica che accelerazione
  */
 public class AccelerometerDataEvent {
 
-    public Direction direction;
-    public Acceleration acceleration;
-    public int percentage;
+    private Direction direction;
+    private Acceleration acceleration;
+    private int percentage;
 
-    /*
+    /**
         Costruttore
      */
     public AccelerometerDataEvent(Direction direction, Acceleration acceleration, int percentage) {
@@ -18,14 +18,26 @@ public class AccelerometerDataEvent {
         this.percentage = percentage;
     }
 
+    /**
+     * Metodo get per la direzione indicata dall'accelerometro
+     * @return direzione indicata dall'accelerometro
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     * Metodo get per capire di che tipo è l'accelerazione
+     * @return tipo di accelerazione
+     */
     public Acceleration getAcceleration() {
         return acceleration;
     }
 
+    /**
+     * Metodo get per il punteggio ottenuto
+     * @return percentuale
+     */
     public int getPercentage() {
         return percentage;
     }

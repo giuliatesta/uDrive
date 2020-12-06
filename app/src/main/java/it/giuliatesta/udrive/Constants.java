@@ -1,5 +1,8 @@
 package it.giuliatesta.udrive;
 
+/**
+ * Classe per le costanti
+ */
 public class Constants {
 
     // ANGOLI

@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static android.graphics.Color.WHITE;
 
+/**
+ * Classe per la prima Activity --> da usare quando si avvia l'applicazione
+ */
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,29 +25,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Impostazioni per l'Activity
-        Button btn_drive = findViewById(R.id.btn_guida);
+        // Impostazioni per il listener
+        listenerSettings();
 
-        // Registrazione del listener al bottone
+        // Impostazioni per l'immagine
+        imageSettings();
+
+    }
+
+    /**
+     * Metodo per le impostazioni delle immagini: associo la imageView di MainActivity.java
+     * con la imageView di activity_main.xml e applico un filtro colore
+     */
+    private void imageSettings() {
+        ImageView img_driving = findViewById(R.id.img_driving);
+        img_driving.setColorFilter(WHITE);
+    }
+
+    /**
+     * Metodo per le impostazioni del listener: associo il bottone e
+     * registro il listener quando viene schiacciato il bottone dall'utente
+     */
+    private void listenerSettings() {
+        Button btn_drive = findViewById(R.id.btn_guida);
         btn_drive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeActivity(v);
             }
         });
-
-        // impostazioni per l'immagine
-        ImageView img_driving = findViewById(R.id.img_driving);
-        img_driving.setColorFilter(WHITE);
     }
 
-    // Metodo per cambiare activity e andare alla Drive
+    /**
+     * Metodo per cambiare l'activity
+     * @param view
+     */
     public void changeActivity(View view) {
         Intent intent = new Intent(this, DriveActivity.class);
         startActivity(intent);
     }
 
-    // Metodo per la creazione del menù
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -52,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Metodo per gestire cosa viene selezionato nel menù
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

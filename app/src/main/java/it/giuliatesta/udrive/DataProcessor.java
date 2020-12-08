@@ -149,7 +149,7 @@ public class DataProcessor {
         @param max valore massimo
         @return valore medio
      */
-    private double getMediumValue(int max, int min) {
+    private double getMediumValue(double max, double min) {
         return (max + min)/2;
     }
 

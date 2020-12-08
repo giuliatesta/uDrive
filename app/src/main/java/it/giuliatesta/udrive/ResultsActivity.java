@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 import static android.graphics.Color.WHITE;
 
@@ -14,17 +17,46 @@ import static android.graphics.Color.WHITE;
  * Classe per la terza Activity --> da usare quando si termina la guida
  */
 public class ResultsActivity extends AppCompatActivity {
+    private ArrayList<Integer> percentageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        // Impostazioni per le percentuali
+        Intent intent = getIntent();
+        percentageList = (ArrayList<Integer>)intent.getSerializableExtra("percentageList");
+        textViewSettings();
+
         // Impostazioni del listener
         listenerSettings();
 
         //Impostazioni dell'immagine
         imageSettings();
+    }
+
+    /**
+     * Impostazioni per il textView: associa il textView e imposta il messaggio da mostrare
+     */
+    private void textViewSettings() {
+        TextView textResult = findViewById(R.id.txt_results);
+        int meanValue = getMeanValue(percentageList);
+        String message = "Punteggio: " + meanValue + "/100";
+        textResult.setText(message);
+    }
+
+    /**
+     * Calcola la media tra i valori della lista
+     * @param percentageList lista di percentuali
+     * @return media delle percentuali = voto finale
+     */
+    private int getMeanValue(ArrayList<Integer> percentageList) {
+        int mean = 0;
+        for(int percentage: percentageList) {
+            mean += percentage;
+        }
+        return (int) mean/percentageList.size();
     }
 
     /**

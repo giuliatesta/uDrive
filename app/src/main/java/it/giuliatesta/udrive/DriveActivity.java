@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -36,8 +35,7 @@ import static it.giuliatesta.udrive.R.id.percentage_list_view;
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
 
     private DataManager dataManager;
-    private Button btn_stop;
-    private ArrayList<String> percentageList;
+    private ArrayList<Integer> percentageList;
     private ListView listView;
     private Integer[] imageId;
     private CustomAdapter adapter;
@@ -46,6 +44,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
+
+        percentageList = new ArrayList<>();
 
         // Impostazioni per il dataManager
         dataManagerSettings();
@@ -83,17 +83,15 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     /**
      *  Metodo per cambiare activity e andare alla Results
      */
-
     public void changeActivity(Class cls) {
         Intent intent = new Intent(this, cls);
+        intent.putExtra("percentageList", percentageList);
         startActivity(intent);
     }
-
 
     /**
      *   Metodo per la creazione del menù
      */
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -104,7 +102,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     /**
      * Metodo per gestire cosa viene selezionato nel menù
      */
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -120,10 +117,9 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
-
+        // Per la direzione
         ImageView img_forward = findViewById(R.id.img_diction_forward);
         ImageView img_backward = findViewById(R.id.img_direction_backward);
         ImageView img_left = findViewById(R.id.img_direction_left);
@@ -150,18 +146,18 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 break;
         }
 
-        setPercentageList(event.getPercentage(), event.getDirection());
-
+        // Per la percentuale
+        percentageList.add(event.getPercentage());
     }
 
     /*
        TO DO: bisogna aggiungere le immagini e i colori di background
      */
-    private void setPercentageList(int percentage, Direction direction) {
+    private void setListView(int percentage, Direction direction) {
         listViewSettings();
-        percentageList.add(percentage + "%");
-        int directionIndex = setDirectionIndex(direction);
-        int backgroundColor = getBackgroundColorForPercentageList(percentage);
+
+        //int directionIndex = setDirectionIndex(direction);
+        //int backgroundColor = getBackgroundColorForPercentageList(percentage);
     }
 
     /**
@@ -196,7 +192,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 };
 
         //  TO DO : DA SISTEMARE QUEL CASTING ORRIBILE
-       // adapter = new CustomAdapter(DriveActivity.this, (String[]) percentageList.toArray(), imageId);
+        adapter = new CustomAdapter(DriveActivity.this, percentageList);
         listView = findViewById(percentage_list_view);
         listView.setAdapter(adapter);
     }

@@ -1,9 +1,11 @@
 package it.giuliatesta.udrive.accelerometer;
 
+import java.io.Serializable;
+
 /**
     Classe che rappresenta l'evento di modifica che accelerazione
  */
-public class AccelerometerDataEvent {
+public class AccelerometerDataEvent implements Serializable {
 
     private Direction direction;
     private Acceleration acceleration;

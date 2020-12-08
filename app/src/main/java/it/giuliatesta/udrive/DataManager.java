@@ -19,7 +19,6 @@ import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 
 public class DataManager implements SensorEventListener {
 
-    private SensorManager manager;
     private Sensor accelerometer;
     private Context context;
     private AccelerometerDataEventListener accelerometerDataEventListener;
@@ -37,8 +36,16 @@ public class DataManager implements SensorEventListener {
     private DataManager(Context context) {
         this.context = context;
 
-        // Impostazioni per il sensore
-        manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        sensorSettings();
+
+    }
+
+    /**
+     * Metodo per le impostazioni del sensore: scelgo il tipo di sensore, registro
+     * il suo listener e credo un nuovo DataProcessor per manipolare i dati
+     */
+    private void sensorSettings() {
+        SensorManager manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();

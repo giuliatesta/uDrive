@@ -8,15 +8,13 @@ import java.io.Serializable;
 public class AccelerometerDataEvent implements Serializable {
 
     private Direction direction;
-    private Acceleration acceleration;
     private int percentage;
 
     /**
         Costruttore
      */
-    public AccelerometerDataEvent(Direction direction, Acceleration acceleration, int percentage) {
+    public AccelerometerDataEvent(Direction direction, int percentage) {
         this.direction = direction;
-        this.acceleration = acceleration;
         this.percentage = percentage;
     }
 
@@ -28,13 +26,6 @@ public class AccelerometerDataEvent implements Serializable {
         return direction;
     }
 
-    /**
-     * Metodo get per capire di che tipo è l'accelerazione
-     * @return tipo di accelerazione
-     */
-    public Acceleration getAcceleration() {
-        return acceleration;
-    }
 
     /**
      * Metodo get per il punteggio ottenuto
@@ -48,7 +39,6 @@ public class AccelerometerDataEvent implements Serializable {
     public String toString() {
         return "AccelerometerDataEvent{" +
                 "direction=" + direction +
-                ", acceleration=" + acceleration +
                 ", percentage=" + percentage +
                 '}';
     }

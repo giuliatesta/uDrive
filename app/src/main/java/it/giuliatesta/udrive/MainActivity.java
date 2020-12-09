@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Impostazioni per l'immagine
         imageSettings();
-
     }
 
     /**

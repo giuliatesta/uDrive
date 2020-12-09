@@ -1,6 +1,5 @@
 package it.giuliatesta.udrive;
 
-import it.giuliatesta.udrive.accelerometer.Acceleration;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
@@ -13,9 +12,6 @@ import static it.giuliatesta.udrive.Constants.threeHundredSixty;
 import static it.giuliatesta.udrive.Constants.twoHundredSeventyDegree;
 import static it.giuliatesta.udrive.Constants.twoHundrenTwentyFive;
 import static it.giuliatesta.udrive.Constants.zeroDegree;
-import static it.giuliatesta.udrive.accelerometer.Acceleration.NEGATIVE;
-import static it.giuliatesta.udrive.accelerometer.Acceleration.POSITIVE;
-import static it.giuliatesta.udrive.accelerometer.Acceleration.ZERO;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
@@ -154,24 +150,6 @@ public class DataProcessor {
     }
 
     /**
-        Calcola il tipo di accelerazione in base al vettore risultante
-        @param vector vettore accelerazione
-        @return tipo di accelerazione
-     */
-    private Acceleration getAcceleration(double vector) {
-        if(vector > 0) {
-            // Se il vettore risultante è positivo c'è una accelerazione positiva
-            return POSITIVE;
-        } else if (vector < 0) {
-            // Se è negativo c'è una accelerazione negativa
-            return NEGATIVE;
-        } else {
-            // Altrimenti non sta accelerando
-            return ZERO;
-        }
-    }
-
-    /**
         Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
         @param x coordinata x dell'accelerazione
         @param y coordinata y dell'accelerazione
@@ -181,14 +159,15 @@ public class DataProcessor {
     public AccelerometerDataEvent calculateData(double x, double y, double z) {
         // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
+
         // Calcola la direzione
         Direction direction = getDirection(x, z);
-        // Calcola il tipo di accelerazione
-        Acceleration acceleration = getAcceleration(vector);
+
         // Calcola la percentuale
         int percentage = getPercentage(vector);
+
         // Genera l'avento
-        return new AccelerometerDataEvent(direction, acceleration, percentage);
+        return new AccelerometerDataEvent(direction, percentage);
     }
 
 

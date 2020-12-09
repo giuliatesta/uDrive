@@ -10,5 +10,4 @@
         android:icon="@drawable/img_go_home"
         android:title="Home"/>
 
-
 </menu>

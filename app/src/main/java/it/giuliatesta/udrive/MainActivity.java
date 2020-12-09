@@ -2,14 +2,10 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static android.graphics.Color.WHITE;
@@ -56,31 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Metodo per cambiare l'activity
+     *
      * @param view
      */
     public void changeActivity(View view) {
         Intent intent = new Intent(this, DriveActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.help:
-                //change activity ---> activity_help
-                return true;
-            case R.id.settings:
-                //change activity ---> activity_settings
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }

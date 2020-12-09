@@ -19,31 +19,35 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <View
-            android:id="@+id/dividerL"
-            android:layout_width="7dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor" />
-
-        <View
             android:id="@+id/dividerR"
             android:layout_width="7dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="195dp"
+            android:layout_marginStart="195dp"
             android:background="@color/outlineColor"
             android:backgroundTint="@color/outlineColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:id="@+id/dividerL"
+            android:layout_width="7dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:background="@color/outlineColor"
+            android:backgroundTint="@color/outlineColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <ListView
             android:id="@+id/percentage_list_view"
-            android:layout_width="match_parent"
+            android:layout_width="208dp"
             android:layout_height="match_parent"
             android:divider="@color/backgroundColorFrame"
             android:dividerHeight="1dp"
             android:footerDividersEnabled="false"
-            android:headerDividersEnabled="false"/>
+            android:headerDividersEnabled="false">
+
+        </ListView>
     </FrameLayout>
 
     <FrameLayout
@@ -67,13 +71,14 @@
             app:layout_constraintEnd_toStartOf="@+id/img_direction_backward"
             app:layout_constraintStart_toStartOf="@id/img_diction_forward"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/img_direction_left" />
+            app:srcCompat="@drawable/img_direction_left"
+            android:contentDescription="TODO" />
 
         <ImageView
             android:id="@+id/img_diction_forward"
             android:layout_width="75dp"
             android:layout_height="80dp"
-            android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

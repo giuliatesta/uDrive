@@ -1,9 +1,20 @@
 <resources>
     <string name="app_name">uDrive</string>
-    <!--Nome del bottone della schermata Main-->
     <string name="btn_guida_name">Comincia a guidare!</string>
-    <!--Nome del bottone della schermata Results-->
     <string name="btn_home_name">Torna alla home</string>
     <string name="direction_image">Direction image</string>
     <string name="percentage_value">percentage value</string>
+    <string name="left_turn">Left turn</string>
+    <string name="straight_forward">Straight forward</string>
+    <string name="right_turn">Right turn</string>
+    <string name="backward">Backward</string>
+    <string name="steering_wheel">Steering Wheel</string>
+    <string name="racing_cars">Racing cars</string>
+    <string name="traffic">Traffic</string>
+    <string name="car_road">Car road</string>
+    <string name="driving">Driving</string>
+    <string name="textview">TextView</string>
+    <string name="thumbs_up">Thumbs up</string>
+    <string name="stop">Stop</string>
+    <string name="home">Home</string>
 </resources>

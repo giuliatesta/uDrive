@@ -68,11 +68,11 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="15dp"
+            android:contentDescription="@string/left_turn"
             app:layout_constraintEnd_toStartOf="@+id/img_direction_backward"
             app:layout_constraintStart_toStartOf="@id/img_diction_forward"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/img_direction_left"
-            android:contentDescription="TODO" />
+            app:srcCompat="@drawable/img_direction_left" />
 
         <ImageView
             android:id="@+id/img_diction_forward"
@@ -80,6 +80,7 @@
             android:layout_height="80dp"
             android:layout_marginStart="100dp"
             android:layout_marginTop="20dp"
+            android:contentDescription="@string/straight_forward"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +92,8 @@
             android:layout_height="75dp"
             android:layout_marginStart="176dp"
             android:layout_marginTop="100dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginEnd="45dp"
+            android:contentDescription="@string/right_turn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/img_direction_backward"
@@ -102,8 +104,9 @@
             android:id="@+id/img_direction_backward"
             android:layout_width="75dp"
             android:layout_height="80dp"
-            android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp"
             android:layout_marginTop="175dp"
+            android:contentDescription="@string/backward"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/img_direction_backward"
@@ -158,8 +161,9 @@
             android:id="@+id/img_steering_wheel"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="35dp"
+            android:contentDescription="@string/steering_wheel"
             android:rotation="15"
             app:srcCompat="@drawable/img_steering_wheel_drive_activity" />
 
@@ -167,9 +171,10 @@
             android:id="@+id/img_racing_cars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="220dp"
             android:layout_marginBottom="16dp"
+            android:contentDescription="@string/racing_cars"
             android:rotation="-15"
             app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/img_racing_cars_drive_activity" />
@@ -187,8 +192,9 @@
             android:id="@+id/img_traffic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="35dp"
+            android:contentDescription="@string/traffic"
             android:rotation="-15"
             app:srcCompat="@drawable/img_traffic_drive_activity" />
 
@@ -196,8 +202,9 @@
             android:id="@+id/img_car_road"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="220dp"
+            android:contentDescription="@string/car_road"
             android:rotation="15"
             app:srcCompat="@drawable/img_car_road_drive_activity" />
 

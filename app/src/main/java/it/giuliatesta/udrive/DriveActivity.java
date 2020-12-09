@@ -17,6 +17,7 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 import static android.graphics.Color.BLUE;
+import static android.graphics.Color.WHITE;
 import static it.giuliatesta.udrive.DataManager.getInstance;
 import static it.giuliatesta.udrive.R.id.percentage_list_view;
 import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
@@ -32,6 +33,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private ListView listView;
     private Integer[] imageId;
     private CustomAdapter adapter;
+    private ImageView img_forward, img_backward, img_left, img_right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +45,12 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         // Impostazioni per il dataManager
         dataManagerSettings();
 
-        // Impostazioni per le immagini
+        // Impostazioni per le immagini di decorazione
         imageSettings();
+
+        // Impostazioni per le immagini delle direzioni
+        directionImageSettings();
+
     }
 
     /**
@@ -56,10 +62,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     }
 
     /**
-     * Impostazioni per le immagini: associo l'imageView della DriveActivity.java
-     * con la imageView della activity_drive.xml e imposto un filtro colore
+     * Impostazioni per le immagini: associo le immagini e imposto un filtro colore
      */
     private void imageSettings() {
+
         ImageView steering_wheel = findViewById(R.id.img_steering_wheel);
         steering_wheel.setColorFilter(BLUE);
 
@@ -71,6 +77,21 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
         ImageView traffic = findViewById(R.id.img_traffic);
         traffic.setColorFilter(BLUE);
+    }
+
+    /**
+     * Associo le immagini legate alle 4 direzioni e applico un filtro colore
+     */
+    private void directionImageSettings() {
+        img_forward = findViewById(R.id.img_diction_forward);
+        img_backward = findViewById(R.id.img_direction_backward);
+        img_left = findViewById(R.id.img_direction_left);
+        img_right = findViewById(R.id.img_direction_right);
+
+        setDirectionImageWhite(img_forward);
+        setDirectionImageWhite(img_backward);
+        setDirectionImageWhite(img_left);
+        setDirectionImageWhite(img_right);
     }
 
     /**
@@ -110,30 +131,25 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
-        // Per la direzione
-        ImageView img_forward = findViewById(R.id.img_diction_forward);
-        ImageView img_backward = findViewById(R.id.img_direction_backward);
-        ImageView img_left = findViewById(R.id.img_direction_left);
-        ImageView img_right = findViewById(R.id.img_direction_right);
 
-        setDirectionBlack(img_forward);
-        setDirectionBlack(img_backward);
-        setDirectionBlack(img_left);
-        setDirectionBlack(img_right);
+        setDirectionImageWhite(img_forward);
+        setDirectionImageWhite(img_backward);
+        setDirectionImageWhite(img_left);
+        setDirectionImageWhite(img_right);
 
         switch (event.getDirection()) {
             case FORWARD:
                 // Se la direzione ricevuta dall'evento è FORWARD cambia colore alla freccia FORWARD
-                setDirectionBlue(img_forward);
+                setDirectionImageBlue(img_forward);
                 break;
             case BACKWARD:
-                setDirectionBlue(img_backward);
+                setDirectionImageBlue(img_backward);
                 break;
             case LEFT:
-                setDirectionBlue(img_left);
+                setDirectionImageBlue(img_left);
                 break;
             case RIGHT:
-                setDirectionBlue(img_right);
+                setDirectionImageBlue(img_right);
                 break;
         }
 
@@ -159,7 +175,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         Imposta un filtro colore sul una immagine in modo da evidenziarla
         @param image immagine a cui si vuole applicare il filtro colore
      */
-    private void setDirectionBlue(ImageView image) {
+    private void setDirectionImageBlue(ImageView image) {
         image.setColorFilter(BLUE);
     }
 
@@ -167,8 +183,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         Elimina il filtro colore facendo tornare l'immagine nera
         @param image immagine a cui si vuole togliere il filtro colore
      */
-    private void setDirectionBlack(ImageView image) {
-        image.clearColorFilter();
+    private void setDirectionImageWhite(ImageView image) {
+        image.setColorFilter(WHITE);
     }
 
 

@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/stop"
         android:icon="@drawable/img_stop_driving"
-        android:title="Stop"
-        app:showAsAction="ifRoom"/>
+        android:title="@string/stop"
+        app:showAsAction="always"/>
 
     <item android:id="@+id/home"
-        android:icon="@drawable/img_go_home"
-        android:title="Home"/>
+        android:icon="@drawable/img_home"
+        android:title="@string/home"
+        app:showAsAction="ifRoom"/>
 
 </menu>

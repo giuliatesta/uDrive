@@ -3,23 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:dividerHeight="2dp"
+    android:dividerHeight="5dp"
     android:layout_marginTop="10dp">
-    <TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/list_item_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="@string/direction_image" />
+            android:contentDescription="@string/direction_image"/>
 
         <TextView
             android:id="@+id/list_item_text"
-            android:layout_width="355dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:contentDescription="@string/percentage_value"
+            android:layout_marginLeft="50dp"
             android:textSize="30sp"
             android:textStyle="bold"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            />
     </TableRow>
 </TableLayout>

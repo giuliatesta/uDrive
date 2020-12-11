@@ -2,6 +2,7 @@ package it.giuliatesta.udrive;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,7 @@ import java.util.ArrayList;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
-import static android.graphics.Color.GREEN;
-import static android.graphics.Color.RED;
 import static android.graphics.Color.WHITE;
-import static android.graphics.Color.YELLOW;
 import static it.giuliatesta.udrive.R.drawable.img_direction_backward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_forward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_left;
@@ -100,10 +98,9 @@ public class CustomAdapter implements ListAdapter {
 
         // Trovo il colore di sfondo da mettere
         int backgroundColor = setBackgroundColor(percentage);
-        listItemImage.setBackgroundColor(backgroundColor);
-        listItemText.setBackgroundColor(backgroundColor);
+        listItemImage.setColorFilter(backgroundColor);
+        listItemText.setTextColor(Color.BLUE);
     }
-
 
     /**
      * Sceglie il colore di sfondo in base al punteggio ottenuto
@@ -112,11 +109,14 @@ public class CustomAdapter implements ListAdapter {
      */
     private int setBackgroundColor(int percentage) {
         if(percentage > 75) {
-             return GREEN;
+            // Verde
+             return Color.parseColor("#04c717");
         } else if (percentage < 25) {
-            return RED;
+            // Rosso
+            return Color.parseColor("#ff0000");
         } else {
-            return YELLOW;
+            // Giallo
+            return Color.parseColor("#ffbf00");
         }
     }
 

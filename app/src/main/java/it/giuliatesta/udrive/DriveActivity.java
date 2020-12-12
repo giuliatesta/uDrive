@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
+import it.giuliatesta.udrive.accelerometer.Direction;
+import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
@@ -137,35 +139,55 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         setDirectionImageWhite(img_left);
         setDirectionImageWhite(img_right);
 
-        switch (event.getDirection()) {
-            case FORWARD:
-                // Se la direzione ricevuta dall'evento è FORWARD cambia colore alla freccia FORWARD
-                setDirectionImageBlue(img_forward);
-                break;
-            case BACKWARD:
-                setDirectionImageBlue(img_backward);
-                break;
-            case LEFT:
-                setDirectionImageBlue(img_left);
-                break;
-            case RIGHT:
-                setDirectionImageBlue(img_right);
-                break;
-        }
+        // Per la direzione
+        setDirection(event.getDirection());
+
+        // Per il movimento verticale
+        setVerticalMotion(event.getVerticalMotion());
 
         // Per la percentuale
-        // Non iserirsco i valori di default perchè non ho cambiato direzione
-        // e quindi non mi interessa il punteggio
-        if (event.getDirection() != DEFAULT) {
-            accelerometerEventList.add(0, event);
+        listViewSettings(event);
+    }
+
+    private void setVerticalMotion(VerticalMotion verticalMotion) {
+        switch (verticalMotion) {
+            case POTHOLE:
+              //  setDirectionImageBlue();
+                break;
+            case ROADBUMP:
+            //    setDirectionImageBlue();
+                break;
+            case NONE:
+                break;
         }
-        listViewSettings();
+    }
+
+    private void setDirection(Direction direction) {
+        switch (direction) {
+        case FORWARD:
+            // Se la direzione ricevuta dall'evento è FORWARD cambia colore alla freccia FORWARD
+            setDirectionImageBlue(img_forward);
+            break;
+        case BACKWARD:
+            setDirectionImageBlue(img_backward);
+            break;
+        case LEFT:
+            setDirectionImageBlue(img_left);
+            break;
+        case RIGHT:
+            setDirectionImageBlue(img_right);
+            break;
+    }
+
     }
 
     /**
      * Impostazioni per la listView: aggiungo le immagini all'array e imposto l'adapter
      */
-    private void listViewSettings() {
+    private void listViewSettings(AccelerometerDataEvent event) {
+        if (event.getDirection() != DEFAULT) {
+            accelerometerEventList.add(0, event);
+        }
         adapter = new CustomAdapter(DriveActivity.this, accelerometerEventList);
         listView = findViewById(percentage_list_view);
         listView.setAdapter(adapter);

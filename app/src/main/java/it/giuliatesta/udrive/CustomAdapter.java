@@ -66,7 +66,7 @@ public class CustomAdapter implements ListAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(R.layout.list_single_item, null);
+            convertView = layoutInflater.inflate(R.layout.single_item_without_vertical_motion, null);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -87,7 +87,7 @@ public class CustomAdapter implements ListAdapter {
         listItemImage = convertView.findViewById(R.id.list_item_image);
 
         // Trovo la percentuale da inserire nel testo della listView
-        int percentage = event.getPercentage();
+        int percentage = event.getDirectionPercentage();
         listItemText.setText(percentage + "%");
 
         // Trovo l'immagine da inserire nella listView

@@ -2,14 +2,14 @@ package it.giuliatesta.udrive;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
+import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
+import static it.giuliatesta.udrive.Constants.MaxValue;
+import static it.giuliatesta.udrive.Constants.MinValue;
 import static it.giuliatesta.udrive.Constants.fourtyFiveDegree;
-import static it.giuliatesta.udrive.Constants.ninetyDegree;
-import static it.giuliatesta.udrive.Constants.oneHundredEightyDegree;
 import static it.giuliatesta.udrive.Constants.oneHundredThirtyFive;
 import static it.giuliatesta.udrive.Constants.threeHundredFifteen;
 import static it.giuliatesta.udrive.Constants.threeHundredSixty;
-import static it.giuliatesta.udrive.Constants.twoHundredSeventyDegree;
 import static it.giuliatesta.udrive.Constants.twoHundrenTwentyFive;
 import static it.giuliatesta.udrive.Constants.zeroDegree;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
@@ -17,8 +17,10 @@ import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
 import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
-import static java.lang.Math.abs;
-import static java.lang.Math.atan;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
+import static java.lang.Math.atan2;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 /**
@@ -28,9 +30,6 @@ import static java.lang.Math.sqrt;
     z = indica avanti indietro
  */
 public class DataProcessor {
-
-    private int MaxValue = 10;
-    private int MinValue = -10;
 
     /**
         Calcola il modulo del vettore accelerazione
@@ -49,39 +48,12 @@ public class DataProcessor {
     }
 
     /**
-     TO DO: RISOLVERE I PROBLEMI LEGATI A QUESTO ALGORITMO
      Calcola la posizione dell'angolo nei 4 quadranti
      */
     private double getPositionOfAlpha(double x, double z) {
         double ratio = z/x;
-        double alpha = Math.toDegrees(atan(ratio));     //Angolo in gradi
-
-        // Visto che restituisce un angolo tra 0 e 90 gradi bisogna capire in quale quadrante si trova
-        // Consideriamo prima i casi particolari
-        if (x == 0) {
-            if (z > 0) {
-                // novanta gradi
-                return ninetyDegree;
-            } else if (z == 0) {
-                // zero
-                return zeroDegree;
-            } else {
-                // duecentosettanta gradi
-                return twoHundredSeventyDegree;
-            }
-        }
-
-        if (x < 0 && z < 0) {
-            // Terzo quadrante
-            alpha += oneHundredEightyDegree;
-        } else if(x < 0) {
-            // Secondo quadrante
-            alpha += ninetyDegree;
-        } else if (z < 0) {
-            // Quarto quadrante
-            alpha += twoHundredSeventyDegree;
-        }
-        return alpha;
+        double alpha = Math.toDegrees(atan2(z, x));     //Angolo in gradi
+        return ((int) (alpha+360))%360;
     }
 
     /**
@@ -90,22 +62,24 @@ public class DataProcessor {
      @param z  coordinata z dell'accelerazione
      */
     private Direction getDirection(double x, double z) {
+        Direction direction = DEFAULT;
         double alpha = getPositionOfAlpha(x, z);
+
         if (alpha >= fourtyFiveDegree && alpha <= oneHundredThirtyFive) {
             // Se l'angolo è compreso tra 45 e 135
-            return FORWARD;
+            direction = FORWARD;
         } else if (alpha >= twoHundrenTwentyFive && alpha <= threeHundredFifteen) {
             // Se l'angolo è compreso tra 225 e 315
-            return BACKWARD;
+            direction= BACKWARD;
         } else if ((alpha > threeHundredFifteen && alpha <= threeHundredSixty) || (alpha >= zeroDegree && alpha < fourtyFiveDegree)) {
             // Se l'angolo è compreso tra -45 e 45
-            return RIGHT;
+            direction = RIGHT;
         } else if (alpha > oneHundredThirtyFive && alpha < twoHundrenTwentyFive) {
-            return LEFT;
-        } else {
-            return DEFAULT;
+            direction = LEFT;
         }
+        return direction;
     }
+
     /**
         Se il vettore supera il valore massimo oppure è minore del valore minino il punteggio è zero;
         mentre se rientra nel range viene calcolata una percentuale particolare
@@ -113,29 +87,25 @@ public class DataProcessor {
         @return percentuale ottenuta
      */
     private int getPercentage(double vector) {
-            if(vector > MaxValue || vector < MinValue) {
-                // Se si trova fuori dall'intervallo
+            if(vector > MaxValue) {
+                // Se si trova al di sopra dell'intervallo significa che si ha il minimo comfort
                 return 0;
+            } else if (vector< MinValue) {
+                // Se si trova al di sotto dell'intervallo significa che si ha il massimo comfort
+                return 100;
             } else {
-                // Se si trova dentro, chiama il metodo per calcolare la percentuale
+                // Se si trova all'interno dell'intervallo, chiama il metodo per calcolare la percentuale
                 return calculatePercentage(vector);
             }
     }
 
     /**
-        Calcola una percentuale
+        Calcola una percentuale. Fa la proporzione x : 100 = vector : MaxValue
         @param vector vettore accelerazione
         @return percentuale
      */
     private int calculatePercentage(double vector) {
-        // Calcola il valore medio
-        double mediumValue = getMediumValue(MaxValue, MinValue);
-        // Calcola il valore dell'intervallo dei valori
-        double range = MaxValue - MinValue;
-        // rapporto tra la variazione dal valor medio e l'intervallo di valori
-        double ratio = abs(vector - mediumValue)/range;
-        // La percentuale è il rapporto per 100
-        return (int) (ratio*100);
+        return (int) ((vector*100)/MaxValue);
     }
 
     /**
@@ -147,6 +117,35 @@ public class DataProcessor {
      */
     private double getMediumValue(double max, double min) {
         return (max + min)/2;
+    }
+
+    /**
+     * Calcola il movimento verticale
+     * @param y coomponente y del vettore accelerazione
+     * @return corrispondente movimento verticale
+     */
+    private VerticalMotion getVerticalMotion(double y) {
+        VerticalMotion verticalMotion = NONE;
+        if (y > 0) {
+            verticalMotion = ROADBUMP;
+        } else if (y < 0) {
+            verticalMotion = POTHOLE;
+        }
+        return verticalMotion;
+    }
+
+    /**
+     * Calcola la percentuale per il movimento verticale
+     * @param verticalMotion tipo di movimento vertical
+     * @param y valore di accelerazione
+     * @return percentuale ottenuta
+     */
+    private int getVerticalMotionPercentage(VerticalMotion verticalMotion, double y) {
+        if (verticalMotion != NONE) {
+            return getPercentage(y);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -163,12 +162,19 @@ public class DataProcessor {
         // Calcola la direzione
         Direction direction = getDirection(x, z);
 
-        // Calcola la percentuale
-        int percentage = getPercentage(vector);
+        // Calcola la percentuale della direzione
+        int directionPercentage = getPercentage(vector);
 
-        // Genera l'avento
-        return new AccelerometerDataEvent(direction, percentage);
+        // Calcola il movimento vertical
+        VerticalMotion verticalMotion = getVerticalMotion(y);
+
+        // Calcola la percentuale legata al movimento verticale
+        int verticalMotionPercentage = getVerticalMotionPercentage(verticalMotion, y);
+
+        // Genera l'evento
+        return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage);
     }
+
 
 
 }

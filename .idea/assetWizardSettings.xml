@@ -28,8 +28,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="img_home" />
-                            <entry key="sourceFile" value="C:\Users\giuli\Desktop\Icone App\thumbs-up.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_road_bump" />
+                            <entry key="sourceFile" value="C:\Users\giuli\Desktop\bump.svg" />
                           </map>
                         </option>
                       </PersistentState>

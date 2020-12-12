@@ -8,15 +8,23 @@ import java.io.Serializable;
 public class AccelerometerDataEvent implements Serializable {
 
     private Direction direction;
-    private int percentage;
+    private int directionPercentage;
+    private VerticalMotion verticalMotion;
+    private int verticalMotionPercentage;
 
     /**
-        Costruttore
+     * Costruttore
+     * @param direction
+     * @param percentage
+     * @param verticalMotion
      */
-    public AccelerometerDataEvent(Direction direction, int percentage) {
+    public AccelerometerDataEvent(Direction direction, int percentage, VerticalMotion verticalMotion, int verticalMotionPercentage) {
         this.direction = direction;
-        this.percentage = percentage;
+        this.directionPercentage = percentage;
+        this.verticalMotion = verticalMotion;
+        this.verticalMotionPercentage = verticalMotionPercentage;
     }
+
 
     /**
      * Metodo get per la direzione indicata dall'accelerometro
@@ -26,20 +34,29 @@ public class AccelerometerDataEvent implements Serializable {
         return direction;
     }
 
-
     /**
      * Metodo get per il punteggio ottenuto
      * @return percentuale
      */
-    public int getPercentage() {
-        return percentage;
+    public int getDirectionPercentage() {
+        return directionPercentage;
+    }
+
+    public int getVerticalMotionPercentage() {
+        return verticalMotionPercentage;
+    }
+
+    public VerticalMotion getVerticalMotion() {
+        return verticalMotion;
     }
 
     @Override
     public String toString() {
         return "AccelerometerDataEvent{" +
                 "direction=" + direction +
-                ", percentage=" + percentage +
+                ", directionPercentage=" + directionPercentage +
+                "verticalMotion=" + verticalMotion +
+                ", verticalMotionPercentage=" + verticalMotionPercentage +
                 '}';
     }
 }

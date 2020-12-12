@@ -5,6 +5,10 @@ package it.giuliatesta.udrive;
  */
 public class Constants {
 
+    // Intervalli
+    static double MaxValue = 15.0;     // 1.5g = circa 15 m/s^2
+    static double MinValue = 0.5;
+
     // ANGOLI
     static double ninetyDegree = 90.0;
     static double zeroDegree = 0.0;

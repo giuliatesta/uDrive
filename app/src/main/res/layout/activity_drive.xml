@@ -112,6 +112,17 @@
             app:srcCompat="@drawable/img_direction_backward"
             tools:layout_editor_absoluteY="202dp" />
 
+        <ImageView
+            android:id="@+id/img_road_bump"
+            android:layout_width="70dp"
+            android:layout_height="65dp"
+            android:layout_marginStart="102dp"
+            android:layout_marginTop="105dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/road_bump"
+            app:srcCompat="@drawable/ic_road_bump" />
+
         <View
             android:id="@+id/divider_up"
             android:layout_width="match_parent"

@@ -16,18 +16,23 @@ import java.util.ArrayList;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
+import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
 import static it.giuliatesta.udrive.R.drawable.img_direction_backward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_forward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_left;
 import static it.giuliatesta.udrive.R.drawable.img_direction_right;
 import static it.giuliatesta.udrive.R.id.img_diction_forward;
+import static it.giuliatesta.udrive.R.layout.single_item_with_vertical_motion;
+import static it.giuliatesta.udrive.R.layout.single_item_without_vertical_motion;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
 
 public class CustomAdapter implements ListAdapter {
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private Context context;
-    private TextView listItemText;
-    private ImageView listItemImage;
+    private TextView listItemText, listItemText2;
+    private ImageView listItemImage, listItemImage2;
+
 
     public CustomAdapter(Context context, ArrayList<AccelerometerDataEvent> list) {
         this.accelerometerEventList = list;
@@ -64,17 +69,46 @@ public class CustomAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        int rowType = getItemViewType(position);
+        System.out.println("rowType = " + rowType);
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(R.layout.single_item_without_vertical_motion, null);
+            convertView = layoutInflater.inflate(single_item_without_vertical_motion, null);
+            listItemSettingsWithoutVerticalMotion(accelerometerEventList.get(position), convertView);
+
+            if(rowType == 1) {
+                convertView = layoutInflater.inflate(single_item_with_vertical_motion, null);
+            } else {
+                convertView = layoutInflater.inflate(single_item_without_vertical_motion, null);
+            }
+
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                 }
             });
-            listItemSettings(accelerometerEventList.get(position), convertView);
+            listItemSettingsWithoutVerticalMotion(accelerometerEventList.get(position), convertView);
+
+            if (rowType == 1) {
+                listItemSettingsWithVerticalMotion(accelerometerEventList.get(position), convertView);
+            }
         }
         return convertView;
+    }
+
+    private void listItemSettingsWithVerticalMotion(AccelerometerDataEvent event, View convertView) {
+        // Impostazioni per la seconda riga (Moviemento verticale)
+        listItemImage2 = convertView.findViewById(R.id.list_item_image2);
+        listItemText2 = convertView.findViewById(R.id.list_item_text2);
+
+        int percentage = event.getVerticalMotionPercentage();
+        listItemText2.setText(percentage + "%");
+        listItemText2.setTextColor(BLUE);
+        Drawable imageDrawable = context.getResources().getDrawable(R.drawable.img_road_bump);
+        listItemImage2.setImageDrawable(imageDrawable);
+
+        int colorFilter = setColor(percentage);
+        listItemImage2.setColorFilter(colorFilter);
     }
 
     /**
@@ -82,7 +116,7 @@ public class CustomAdapter implements ListAdapter {
      * @param event evento da cui ricavare le impostazioni da visualizzare
      * @param convertView view della singola riga
      */
-    private void listItemSettings(AccelerometerDataEvent event, View convertView) {
+    private void listItemSettingsWithoutVerticalMotion(AccelerometerDataEvent event, View convertView) {
         listItemText = convertView.findViewById(R.id.list_item_text);
         listItemImage = convertView.findViewById(R.id.list_item_image);
 
@@ -97,8 +131,8 @@ public class CustomAdapter implements ListAdapter {
         listItemImage.setColorFilter(WHITE);
 
         // Trovo il colore di sfondo da mettere
-        int backgroundColor = setBackgroundColor(percentage);
-        listItemImage.setColorFilter(backgroundColor);
+        int colorFilter = setColor(percentage);
+        listItemImage.setColorFilter(colorFilter);
         listItemText.setTextColor(Color.BLUE);
     }
 
@@ -107,7 +141,7 @@ public class CustomAdapter implements ListAdapter {
      * @param percentage punteggio
      * @return colore scelto
      */
-    private int setBackgroundColor(int percentage) {
+    private int setColor(int percentage) {
         if(percentage > 75) {
             // Verde
              return Color.parseColor("#04c717");
@@ -144,12 +178,18 @@ public class CustomAdapter implements ListAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return 0;
+        if(accelerometerEventList.get(position).getVerticalMotion() == NONE) {
+            // Se non c'è movimento verticale
+            return 0;
+        } else {
+            // Se c'è movimento verticale
+            return 1;
+        }
     }
 
     @Override
     public int getViewTypeCount() {
-        return 1;
+        return 2;
     }
 
     @Override

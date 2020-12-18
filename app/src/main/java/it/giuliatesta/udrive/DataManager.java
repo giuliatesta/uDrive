@@ -37,7 +37,6 @@ public class DataManager implements SensorEventListener {
         this.context = context;
 
         sensorSettings();
-
     }
 
     /**

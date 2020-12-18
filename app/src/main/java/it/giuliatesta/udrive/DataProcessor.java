@@ -126,9 +126,11 @@ public class DataProcessor {
      */
     private VerticalMotion getVerticalMotion(double y) {
         VerticalMotion verticalMotion = NONE;
-        if (y > 0) {
+        if (y > MinValue) {
+            System.out.println("y>MinValue");
             verticalMotion = ROADBUMP;
-        } else if (y < 0) {
+        } else if (y < -MinValue) {
+            System.out.println("else");
             verticalMotion = POTHOLE;
         }
         return verticalMotion;

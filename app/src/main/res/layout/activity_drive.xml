@@ -121,7 +121,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:contentDescription="@string/road_bump"
-            app:srcCompat="@drawable/ic_road_bump" />
+            app:srcCompat="@drawable/img_road_bump" />
 
         <View
             android:id="@+id/divider_up"

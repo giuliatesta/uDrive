@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.util.ArrayList;
+
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
@@ -23,6 +25,8 @@ public class DataManager implements SensorEventListener {
     private Context context;
     private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
+    private ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList;
+    private AccelerometerDataEventAnalizer analizer;
     private static DataManager dataManager = null;
 
     // Coordinate precedenti dell'accelerazione
@@ -48,6 +52,8 @@ public class DataManager implements SensorEventListener {
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
+        accelerometerDataEventArrayList = new ArrayList<AccelerometerDataEvent>();
+        analizer = AccelerometerDataEventAnalizer.getInstance();
     }
 
     /**
@@ -87,6 +93,8 @@ public class DataManager implements SensorEventListener {
             // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
             if (xChange > 2 || yChange > 2 || zChange > 2) {
                 AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
+                accelerometerDataEventArrayList.add(0, dataEvent);
+                analizer.analize(accelerometerDataEventArrayList);
                 accelerometerDataEventListener.onDataChanged(dataEvent);
             }
         }

@@ -35,7 +35,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private ListView listView;
     private Integer[] imageId;
     private CustomAdapter adapter;
-    private ImageView img_forward, img_backward, img_left, img_right, img_road_bump;
+    private ImageView img_forward, img_backward, img_left, img_right, img_vertical_motion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +89,13 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         img_backward = findViewById(R.id.img_direction_backward);
         img_left = findViewById(R.id.img_direction_left);
         img_right = findViewById(R.id.img_direction_right);
-        img_road_bump = findViewById(R.id.img_road_bump);
+        img_vertical_motion = findViewById(R.id.img_road_bump);
 
         setImageWhite(img_forward);
         setImageWhite(img_backward);
         setImageWhite(img_left);
         setImageWhite(img_right);
-        setImageWhite(img_road_bump);
+        setImageWhite(img_vertical_motion);
     }
 
     /**
@@ -135,12 +135,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
-        img_road_bump.setColorFilter(WHITE);
         setImageWhite(img_forward);
         setImageWhite(img_backward);
         setImageWhite(img_left);
         setImageWhite(img_right);
-        setImageWhite(img_road_bump);
 
         // Per la direzione
         setDirection(event.getDirection());
@@ -157,13 +155,13 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private void setVerticalMotion(VerticalMotion verticalMotion) {
         switch (verticalMotion) {
             case POTHOLE:
-                setImageBlue(img_road_bump);
+                setImageBlue(img_vertical_motion);
                 break;
             case ROADBUMP:
-                setImageBlue(img_road_bump);
+                setImageBlue(img_vertical_motion);
                 break;
             case NONE:
-                setImageBlue(img_road_bump);
+                setImageWhite(img_vertical_motion);
                 break;
         }
     }

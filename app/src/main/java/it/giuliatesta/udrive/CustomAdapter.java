@@ -104,7 +104,7 @@ public class CustomAdapter implements ListAdapter {
         int percentage = event.getVerticalMotionPercentage();
         listItemText2.setText(percentage + "%");
         listItemText2.setTextColor(BLUE);
-        Drawable imageDrawable = context.getResources().getDrawable(R.drawable.img_road_bump);
+        Drawable imageDrawable = context.getResources().getDrawable(R.drawable.img_vertical_motion);
         listItemImage2.setImageDrawable(imageDrawable);
 
         int colorFilter = setColor(percentage);

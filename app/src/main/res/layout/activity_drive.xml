@@ -118,10 +118,10 @@
             android:layout_height="65dp"
             android:layout_marginStart="102dp"
             android:layout_marginTop="105dp"
+            android:contentDescription="@string/road_bump"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/road_bump"
-            app:srcCompat="@drawable/img_road_bump" />
+            app:srcCompat="@drawable/img_vertical_motion" />
 
         <View
             android:id="@+id/divider_up"

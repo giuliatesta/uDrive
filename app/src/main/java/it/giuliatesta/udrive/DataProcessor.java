@@ -1,6 +1,11 @@
 package it.giuliatesta.udrive;
 
+import android.hardware.SensorEvent;
+
+import java.util.ArrayList;
+
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
@@ -12,6 +17,7 @@ import static it.giuliatesta.udrive.Constants.threeHundredFifteen;
 import static it.giuliatesta.udrive.Constants.threeHundredSixty;
 import static it.giuliatesta.udrive.Constants.twoHundrenTwentyFive;
 import static it.giuliatesta.udrive.Constants.zeroDegree;
+import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.NEED_OTHER_EVENTS;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
@@ -31,6 +37,8 @@ import static java.lang.Math.sqrt;
  */
 public class DataProcessor {
 
+    private AccelerometerDataEventListener accelerometerDataEventListener;
+    public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
     /**
         Calcola il modulo del vettore accelerazione
      */
@@ -173,9 +181,59 @@ public class DataProcessor {
         int verticalMotionPercentage = getVerticalMotionPercentage(verticalMotion, y);
 
         // Genera l'evento
-        return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage);
+        return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage, vector);
+    }
+
+    public AnalyzeResult analyze(ArrayList<SensorEvent> sensorEventArrayList) {
+        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(sensorEventArrayList);
+        if (singleEvent(accelerometerDataEventArrayList)) {
+            // crea evento
+            // lancia evento
+        } else if (leftEvent(accelerometerDataEventArrayList)) {
+            AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
+            accelerometerDataEventListener.onDataChanged(leftTurnEvent);
+        }
+        return NEED_OTHER_EVENTS;
+    }
+
+    private AccelerometerDataEvent createLeftEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        Direction direction = LEFT;
+        int directionPercentage = calculateMediumValue(accelerometerDataEventArrayList);
+        return AccelerometerDataEvent.createDirectionEvent(direction, directionPercentage);
+    }
+
+    private int calculateMediumValue(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        double sum = 0.0;
+        for (AccelerometerDataEvent event : accelerometerDataEventArrayList) {
+            sum += event.getDirectionPercentage();
+        }
+        return (int) (sum / 4);
+    }
+
+    private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<SensorEvent> sensorEventArrayList) {
+        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = new ArrayList<>();
+        for(SensorEvent event : sensorEventArrayList) {
+            AccelerometerDataEvent accelerometerDataEvent = calculateData(event.values[0], event.values[1], event.values[2]);
+            accelerometerDataEventArrayList.add(0, accelerometerDataEvent);
+        }
+        return accelerometerDataEventArrayList;
+    }
+
+    private boolean leftEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        AccelerometerDataEvent event0 = accelerometerDataEventArrayList.get(0);
+        AccelerometerDataEvent event1 = accelerometerDataEventArrayList.get(1);
+        AccelerometerDataEvent event2 = accelerometerDataEventArrayList.get(2);
+        AccelerometerDataEvent event3 = accelerometerDataEventArrayList.get(3);
+        if(event0.getDirection() == LEFT && event1.getVectorValue() < MinValue &&
+                event2.getDirection() == RIGHT && event3.getVectorValue() < MinValue) {
+            return true;
+        }
+        return false;
     }
 
 
+    private boolean singleEvent(ArrayList<AccelerometerDataEvent> sensorEventArrayList) {
+        return false;
+    }
 
 }

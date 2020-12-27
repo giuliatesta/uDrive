@@ -17,21 +17,21 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
 import static android.graphics.Color.BLUE;
-import static android.graphics.Color.WHITE;
 import static it.giuliatesta.udrive.R.drawable.img_direction_backward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_forward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_left;
 import static it.giuliatesta.udrive.R.drawable.img_direction_right;
 import static it.giuliatesta.udrive.R.id.img_diction_forward;
-import static it.giuliatesta.udrive.R.layout.single_item_with_vertical_motion;
-import static it.giuliatesta.udrive.R.layout.single_item_without_vertical_motion;
-import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
+import static it.giuliatesta.udrive.R.layout.direction_and_vertical_motion_event_view;
+import static it.giuliatesta.udrive.R.layout.direction_or_vertical_motion_event_view;
+import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
+import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
 
 public class CustomAdapter implements ListAdapter {
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private Context context;
-    private TextView listItemText, listItemText2;
-    private ImageView listItemImage, listItemImage2;
+    private TextView textFirstRow, textSecondRow;
+    private ImageView imageFirstRow, imageSecondRow;
 
 
     public CustomAdapter(Context context, ArrayList<AccelerometerDataEvent> list) {
@@ -70,16 +70,14 @@ public class CustomAdapter implements ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int rowType = getItemViewType(position);
-        System.out.println("rowType = " + rowType);
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(single_item_without_vertical_motion, null);
-            listItemSettingsWithoutVerticalMotion(accelerometerEventList.get(position), convertView);
 
+            // Scelgo il tipo di View
             if(rowType == 1) {
-                convertView = layoutInflater.inflate(single_item_with_vertical_motion, null);
+                convertView = layoutInflater.inflate(direction_and_vertical_motion_event_view, null);
             } else {
-                convertView = layoutInflater.inflate(single_item_without_vertical_motion, null);
+                convertView = layoutInflater.inflate(direction_or_vertical_motion_event_view, null);
             }
 
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -87,54 +85,84 @@ public class CustomAdapter implements ListAdapter {
                 public void onClick(View v) {
                 }
             });
-            listItemSettingsWithoutVerticalMotion(accelerometerEventList.get(position), convertView);
-
-            if (rowType == 1) {
-                listItemSettingsWithVerticalMotion(accelerometerEventList.get(position), convertView);
-            }
+            
+            textFirstRow = convertView.findViewById(R.id.list_item_text);
+            imageFirstRow = convertView.findViewById(R.id.list_item_image);
+            imageSecondRow = convertView.findViewById(R.id.list_item_image2);
+            textSecondRow = convertView.findViewById(R.id.list_item_text2);
+            listItemSettingsDirectionAndVerticalMotionEvent(accelerometerEventList.get(position), convertView);
+            
+            if (rowType == 0) {
+                chooseTypeOfView(accelerometerEventList.get(position), convertView);
+            } 
         }
         return convertView;
     }
 
-    private void listItemSettingsWithVerticalMotion(AccelerometerDataEvent event, View convertView) {
-        // Impostazioni per la seconda riga (Moviemento verticale)
-        listItemImage2 = convertView.findViewById(R.id.list_item_image2);
-        listItemText2 = convertView.findViewById(R.id.list_item_text2);
-
-        int percentage = event.getVerticalMotionPercentage();
-        listItemText2.setText(percentage + "%");
-        listItemText2.setTextColor(BLUE);
-        Drawable imageDrawable = context.getResources().getDrawable(R.drawable.img_vertical_motion);
-        listItemImage2.setImageDrawable(imageDrawable);
-
-        int colorFilter = setColor(percentage);
-        listItemImage2.setColorFilter(colorFilter);
+    private void chooseTypeOfView(AccelerometerDataEvent event, View convertView) {
+        if(event.getType() == DIRECTION_EVENT) {
+            listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event, convertView);
+        } else {
+            listItemSettingsVerticalMotionEvent(textFirstRow, imageFirstRow, event, convertView);
+        }
     }
 
     /**
-     * Imposto le impostazioni per la singola riga della listView
+     * Gestisce le impostazioni per la view con una riga e con un evento di tipo VERTICAL_MOTION_EVENT
+     * @param text
+     * @param image
+     * @param event evento da cui ricavare le informazioni da visualizzare
+     * @param convertView view della singola riga
+     */
+    private void listItemSettingsVerticalMotionEvent(TextView text, ImageView image, AccelerometerDataEvent event, View convertView) {
+        // Trovo la percentuale da inserire nel testo della listView
+        int percentage = event.getVerticalMotionPercentage();
+        // Trovo l'immagine da inserire nella listView
+        Drawable imageDrawable = context.getResources().getDrawable(R.drawable.img_vertical_motion);
+        text.setText(percentage + "%");
+        text.setTextColor(BLUE);
+
+        image.setImageDrawable(imageDrawable);
+        // Trovo il colore di sfondo da mettere
+        int colorFilter = setColor(percentage);
+        image.setColorFilter(colorFilter);
+    }
+
+    /**
+     * Imposto le impostazioni per la view con una riga e con un evento di tipo DIRECTION_EVENT
      * @param event evento da cui ricavare le impostazioni da visualizzare
      * @param convertView view della singola riga
      */
-    private void listItemSettingsWithoutVerticalMotion(AccelerometerDataEvent event, View convertView) {
-        listItemText = convertView.findViewById(R.id.list_item_text);
-        listItemImage = convertView.findViewById(R.id.list_item_image);
-
+    private void listItemSettingsDirectionEvent(TextView text, ImageView image, AccelerometerDataEvent event, View convertView) {
         // Trovo la percentuale da inserire nel testo della listView
         int percentage = event.getDirectionPercentage();
-        listItemText.setText(percentage + "%");
-
         // Trovo l'immagine da inserire nella listView
         int imageResource = getImageResourceFromDirection(event.getDirection());
         Drawable imageDrawable = context.getResources().getDrawable(imageResource);
-        listItemImage.setImageDrawable(imageDrawable);
-        listItemImage.setColorFilter(WHITE);
 
+        text.setText(percentage + "%");
+        text.setTextColor(BLUE);
+
+        image.setImageDrawable(imageDrawable);
         // Trovo il colore di sfondo da mettere
         int colorFilter = setColor(percentage);
-        listItemImage.setColorFilter(colorFilter);
-        listItemText.setTextColor(Color.BLUE);
+        image.setColorFilter(colorFilter);
     }
+
+
+    /**
+     * Imposta le impostazioni per la view con due righe con un evento di tipo BOTH
+     * @param event evento da cui recuperare le informazioni da visualizzare
+     * @param convertView view
+     */
+    private void listItemSettingsDirectionAndVerticalMotionEvent(AccelerometerDataEvent event, View convertView) {
+        // Per la prima riga uso la direzione
+        listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event, convertView);
+
+        //Per la seconda riga uso il movimento verticale
+        listItemSettingsVerticalMotionEvent(textSecondRow, imageSecondRow, event, convertView);
+    }
+
 
     /**
      * Sceglie il colore di sfondo in base al punteggio ottenuto
@@ -178,11 +206,10 @@ public class CustomAdapter implements ListAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(accelerometerEventList.get(position).getVerticalMotion() == NONE) {
-            // Se non c'è movimento verticale
+        if(accelerometerEventList.get(position).getType() == DIRECTION_EVENT ||
+                accelerometerEventList.get(position).getType() == VERTICAL_MOTION_EVENT) {
             return 0;
         } else {
-            // Se c'è movimento verticale
             return 1;
         }
     }

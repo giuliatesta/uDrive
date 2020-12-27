@@ -25,8 +25,7 @@ public class DataManager implements SensorEventListener {
     private Context context;
     private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
-    private ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList;
-    private AccelerometerDataEventAnalizer analizer;
+    private ArrayList<SensorEvent> sensorEventArrayList;
     private static DataManager dataManager = null;
 
     // Coordinate precedenti dell'accelerazione
@@ -52,8 +51,7 @@ public class DataManager implements SensorEventListener {
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
-        accelerometerDataEventArrayList = new ArrayList<AccelerometerDataEvent>();
-        analizer = AccelerometerDataEventAnalizer.getInstance();
+        sensorEventArrayList = new ArrayList<SensorEvent>();
     }
 
     /**
@@ -74,13 +72,7 @@ public class DataManager implements SensorEventListener {
             double x = event.values[0];
             double z = event.values[2];
 
-            double gravity = 0.0;
-            // Misuro la accelerazione di gravità che viene misurata dal sensore
-            if ( x == 0 && z == 0) {
-                gravity = event.values[1];
-            }
-
-            double y = getOrdinateValue(gravity, event.values[1]);
+            double y = getOrdinateValue(event.values[1]);
 
             // Calcolo i valori di variazione del precedente con il corrente
             double zChange = historyZ - z;
@@ -93,8 +85,11 @@ public class DataManager implements SensorEventListener {
             // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
             if (xChange > 2 || yChange > 2 || zChange > 2) {
                 AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
-                accelerometerDataEventArrayList.add(0, dataEvent);
-                analizer.analize(accelerometerDataEventArrayList);
+                sensorEventArrayList.add(0, event);
+                /*AnalyzeResult result = accelerometerDataProcessor.analyze(sensorEventArrayList);
+                if (result == PROCESSED) {
+                    sensorEventArrayList.clear();
+                }*/
                 accelerometerDataEventListener.onDataChanged(dataEvent);
             }
         }
@@ -114,12 +109,11 @@ public class DataManager implements SensorEventListener {
 
     /**
      * Metodo per eliminare la componente di gravità da y.
-     * @param gravity   valore dell'accelerazione di gravità
      * @param y         valore di accelerazione misurata al momento dell'evento
      * @return          valore dell'accelerazione senza l'accelerazione di gravità. Pronto per i calcoli
      */
-    private double getOrdinateValue(double gravity, double y) {
-        return (y - gravity);
+    private double getOrdinateValue(double y) {
+        return (y - 9.78);
     }
 
     @Override

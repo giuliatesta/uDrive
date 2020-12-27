@@ -100,7 +100,7 @@ public class AccelerometerDataEvent implements Serializable {
 
     public Direction getDirection() {
         if (type == VERTICAL_MOTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. This is a VerticalMotionEvent!");
+            throw new IllegalArgumentException("IMPOSSIBLE. Its type is VERTICAL_MOTION_EVENT!");
         } else {
             return direction;
         }
@@ -114,7 +114,7 @@ public class AccelerometerDataEvent implements Serializable {
 
     public int getDirectionPercentage() {
         if (type == VERTICAL_MOTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. This is a VerticalMotionEvent!");
+            throw new IllegalArgumentException("IMPOSSIBLE. Its type is VERTICAL_MOTION_EVENT!");
         } else {
             return directionPercentage;
         }
@@ -127,7 +127,7 @@ public class AccelerometerDataEvent implements Serializable {
      */
     public int getVerticalMotionPercentage() {
         if (type == DIRECTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. This is a VerticalMotionEvent!");
+            throw new IllegalArgumentException("IMPOSSIBLE. Its type is DIRECTION_EVENT!");
         } else {
             return verticalMotionPercentage;
         }
@@ -140,7 +140,7 @@ public class AccelerometerDataEvent implements Serializable {
      */
     public VerticalMotion getVerticalMotion() {
         if (type == DIRECTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. This is a VerticalMotionEvent!");
+            throw new IllegalArgumentException("IMPOSSIBLE. Its type is DIRECTION_EVENT!");
         } else {
             return verticalMotion;
         }

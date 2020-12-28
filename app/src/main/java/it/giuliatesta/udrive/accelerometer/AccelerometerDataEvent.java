@@ -2,9 +2,11 @@ package it.giuliatesta.udrive.accelerometer;
 
 import java.io.Serializable;
 
+import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.EventType.BOTH;
 import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
 import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
 
 /**
     Classe che rappresenta l'evento di modifica che accelerazione
@@ -78,7 +80,10 @@ public class AccelerometerDataEvent implements Serializable {
     private AccelerometerDataEvent(Direction direction, int directionPercentage) {
         this.direction = direction;
         this.directionPercentage = directionPercentage;
+        this.verticalMotion = NONE;
+        this.verticalMotionPercentage = 0;
         type = DIRECTION_EVENT;
+
     }
 
     /**
@@ -89,6 +94,8 @@ public class AccelerometerDataEvent implements Serializable {
     private AccelerometerDataEvent(VerticalMotion verticalMotion, int verticalMotionPercentage) {
         this.verticalMotion = verticalMotion;
         this.verticalMotionPercentage = verticalMotionPercentage;
+        this.direction = DEFAULT;
+        this.directionPercentage = 0;
         type = VERTICAL_MOTION_EVENT;
     }
 
@@ -164,10 +171,11 @@ public class AccelerometerDataEvent implements Serializable {
     @Override
     public String toString() {
         return "AccelerometerDataEvent{" +
-                "direction=" + direction +
-                ", directionPercentage=" + directionPercentage +
-                "verticalMotion=" + verticalMotion +
-                ", verticalMotionPercentage=" + verticalMotionPercentage +
+                "direction = " + direction +
+                ", directionPercentage = " + directionPercentage +
+                ", verticalMotion = " + verticalMotion +
+                ", verticalMotionPercentage = " + verticalMotionPercentage +
+                ", type = " + type +
                 '}';
     }
 }

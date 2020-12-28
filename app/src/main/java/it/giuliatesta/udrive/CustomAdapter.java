@@ -24,8 +24,8 @@ import static it.giuliatesta.udrive.R.drawable.img_direction_right;
 import static it.giuliatesta.udrive.R.id.img_diction_forward;
 import static it.giuliatesta.udrive.R.layout.direction_and_vertical_motion_event_view;
 import static it.giuliatesta.udrive.R.layout.direction_or_vertical_motion_event_view;
+import static it.giuliatesta.udrive.accelerometer.EventType.BOTH;
 import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
-import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
 
 public class CustomAdapter implements ListAdapter {
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
@@ -90,11 +90,14 @@ public class CustomAdapter implements ListAdapter {
             imageFirstRow = convertView.findViewById(R.id.list_item_image);
             imageSecondRow = convertView.findViewById(R.id.list_item_image2);
             textSecondRow = convertView.findViewById(R.id.list_item_text2);
-            listItemSettingsDirectionAndVerticalMotionEvent(accelerometerEventList.get(position), convertView);
-            
+
             if (rowType == 0) {
+                // Se il tipo di evento è VERTICAL_MOTION_EVENT oppure DIRECTION_EVENT
                 chooseTypeOfView(accelerometerEventList.get(position), convertView);
-            } 
+            } else {
+                // Se il tipo di evento è BOTH
+                listItemSettingsDirectionAndVerticalMotionEvent(accelerometerEventList.get(position), convertView);
+            }
         }
         return convertView;
     }
@@ -206,11 +209,11 @@ public class CustomAdapter implements ListAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(accelerometerEventList.get(position).getType() == DIRECTION_EVENT ||
-                accelerometerEventList.get(position).getType() == VERTICAL_MOTION_EVENT) {
-            return 0;
-        } else {
+        if(accelerometerEventList.get(position).getType() == BOTH) {
             return 1;
+        } else {
+            // Se è VERTICAL_MOTION_EVENT oppure DIRECTION_EVENT
+            return 0;
         }
     }
 

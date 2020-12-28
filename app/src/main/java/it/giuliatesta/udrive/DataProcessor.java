@@ -1,6 +1,7 @@
 package it.giuliatesta.udrive;
 
 import android.hardware.SensorEvent;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -18,11 +19,14 @@ import static it.giuliatesta.udrive.Constants.threeHundredSixty;
 import static it.giuliatesta.udrive.Constants.twoHundrenTwentyFive;
 import static it.giuliatesta.udrive.Constants.zeroDegree;
 import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.NEED_OTHER_EVENTS;
+import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.PROCESSED;
+import static it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent.createDirectionEvent;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
 import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
+import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
@@ -35,10 +39,11 @@ import static java.lang.Math.sqrt;
     y = indica sopra sotto
     z = indica avanti indietro
  */
-public class DataProcessor {
+class DataProcessor {
 
     private AccelerometerDataEventListener accelerometerDataEventListener;
     public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
+
     /**
         Calcola il modulo del vettore accelerazione
      */
@@ -164,7 +169,7 @@ public class DataProcessor {
         @param z coordinata z dell'accelerazione
         @return evento legato alla modifica valori rilevati dall'accelerometro
      */
-    public AccelerometerDataEvent calculateData(double x, double y, double z) {
+    AccelerometerDataEvent calculateData(double x, double y, double z) {
         // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
 
@@ -184,32 +189,71 @@ public class DataProcessor {
         return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage, vector);
     }
 
-    public AnalyzeResult analyze(ArrayList<SensorEvent> sensorEventArrayList) {
+    AnalyzeResult analyze(ArrayList<SensorEvent> sensorEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(sensorEventArrayList);
-        if (singleEvent(accelerometerDataEventArrayList)) {
-            // crea evento
-            // lancia evento
+        if (forwardEvent(accelerometerDataEventArrayList)) {
+            //checkCorrectLength(accelerometerDataEventArrayList, 1);
+            AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
+            notifyListener(straightForwardEvent);
+            return PROCESSED;
         } else if (leftEvent(accelerometerDataEventArrayList)) {
-            AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
-            accelerometerDataEventListener.onDataChanged(leftTurnEvent);
+            // checkCorrectLength(accelerometerDataEventArrayList, 4);
+            //AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
+            // notifyListener(leftTurnEvent);
+            return PROCESSED;
         }
         return NEED_OTHER_EVENTS;
     }
 
+    private void checkCorrectLength(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList, int size) {
+        if (accelerometerDataEventArrayList.size() > size) {
+            throw new IllegalArgumentException("The list is too long! Expected list size: 1  Real list size: "+ accelerometerDataEventArrayList.size());
+        }
+    }
+
+    private void notifyListener(AccelerometerDataEvent event) {
+        if (accelerometerDataEventListener != null) {
+            accelerometerDataEventListener.onDataChanged(event);
+        }
+    }
+
+    /**
+     * Crea un evento dell'accelerometro che ha direzione FORWARD di tipo DIRECTION_EVENT
+     * @param accelerometerDataEventArrayList lista di eventi considerata
+     * @return evento FORWARD
+     */
+    private AccelerometerDataEvent createForwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        Direction direction = FORWARD;
+        int directionPercentage = findDirectionPercentage(direction, accelerometerDataEventArrayList);
+        return createDirectionEvent(direction, directionPercentage);
+    }
+
+    /**
+     * Crea un evento dell'accelerometro che ha direzione LEFT di tipo DIRECTION_EVENT
+     * @param accelerometerDataEventArrayList lista degli eventi considerati
+     * @return evento LEFT
+     */
     private AccelerometerDataEvent createLeftEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         Direction direction = LEFT;
-        int directionPercentage = calculateMediumValue(accelerometerDataEventArrayList);
-        return AccelerometerDataEvent.createDirectionEvent(direction, directionPercentage);
+        int directionPercentage = findDirectionPercentage(direction, accelerometerDataEventArrayList);
+        return createDirectionEvent(direction, directionPercentage);
     }
 
-    private int calculateMediumValue(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        double sum = 0.0;
-        for (AccelerometerDataEvent event : accelerometerDataEventArrayList) {
-            sum += event.getDirectionPercentage();
-        }
-        return (int) (sum / 4);
+    /**
+     * Cerca il valore della percentuale ottenuta dall'evento in base ad una direzione particolare
+     * @param accelerometerDataEventArrayList
+     * @return
+     */
+    private int findDirectionPercentage(Direction direction, ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
+        return lastEvent.getDirectionPercentage();
     }
 
+    /**
+     * Crea una lista di AccelerometerDataEvent a partire da SensorEvent
+     * @param sensorEventArrayList lista di SensorEvent
+     * @return lista di AccelerometerDataEvent
+     */
     private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<SensorEvent> sensorEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = new ArrayList<>();
         for(SensorEvent event : sensorEventArrayList) {
@@ -220,20 +264,39 @@ public class DataProcessor {
     }
 
     private boolean leftEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        // Se la lista non contiene abbastanza elementi
+        if(accelerometerDataEventArrayList.size() < 4) {
+            return false;
+        }
         AccelerometerDataEvent event0 = accelerometerDataEventArrayList.get(0);
         AccelerometerDataEvent event1 = accelerometerDataEventArrayList.get(1);
         AccelerometerDataEvent event2 = accelerometerDataEventArrayList.get(2);
         AccelerometerDataEvent event3 = accelerometerDataEventArrayList.get(3);
         if(event0.getDirection() == LEFT && event1.getVectorValue() < MinValue &&
                 event2.getDirection() == RIGHT && event3.getVectorValue() < MinValue) {
+            Log.d("DataProcessor", "leftEvent: YESSSSSS");
             return true;
         }
         return false;
     }
 
 
-    private boolean singleEvent(ArrayList<AccelerometerDataEvent> sensorEventArrayList) {
-        return false;
+    private boolean forwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        // Se la lista è vuota
+        if(accelerometerDataEventArrayList.size() < 1) {
+            return false;
+        }
+
+        AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
+        // Se l'ultimo evento nella lista è di tipo DIRECTION_EVENT e la sua direzione è FORWARD
+        return lastEvent.getType() != VERTICAL_MOTION_EVENT && lastEvent.getDirection() == FORWARD;
     }
 
+    /**
+     * Metodo per registrare il listener.
+     * @param accelerometerDataEventListener
+     */
+    public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
+        this.accelerometerDataEventListener = accelerometerDataEventListener;
+    }
 }

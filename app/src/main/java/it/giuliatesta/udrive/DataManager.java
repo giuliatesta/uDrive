@@ -8,12 +8,13 @@ import android.hardware.SensorManager;
 
 import java.util.ArrayList;
 
-import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
+import it.giuliatesta.udrive.DataProcessor.AnalyzeResult;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
+import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.PROCESSED;
 
 /**
  Classe per la gestione degli eventi causati dalla modifica dei valori del sensore
@@ -84,13 +85,13 @@ public class DataManager implements SensorEventListener {
 
             // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
             if (xChange > 2 || yChange > 2 || zChange > 2) {
-                AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
+                //AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
                 sensorEventArrayList.add(0, event);
-                /*AnalyzeResult result = accelerometerDataProcessor.analyze(sensorEventArrayList);
+                AnalyzeResult result = accelerometerDataProcessor.analyze(sensorEventArrayList);
                 if (result == PROCESSED) {
                     sensorEventArrayList.clear();
-                }*/
-                accelerometerDataEventListener.onDataChanged(dataEvent);
+                }
+                //accelerometerDataEventListener.onDataChanged(dataEvent);
             }
         }
     }
@@ -125,5 +126,6 @@ public class DataManager implements SensorEventListener {
      */
     public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         this.accelerometerDataEventListener = accelerometerDataEventListener;
+        accelerometerDataProcessor.registerListener(accelerometerDataEventListener);
     }
 }

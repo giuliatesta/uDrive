@@ -22,18 +22,15 @@ import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
 import static it.giuliatesta.udrive.DataManager.getInstance;
 import static it.giuliatesta.udrive.R.id.percentage_list_view;
-import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 
 /**
  Classe per la seconda Activity --> da usare quando si avvia la guida
  */
 
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
-
     private DataManager dataManager;
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private ListView listView;
-    private Integer[] imageId;
     private CustomAdapter adapter;
     private ImageView img_forward, img_backward, img_left, img_right, img_vertical_motion;
 
@@ -44,8 +41,9 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
         accelerometerEventList = new ArrayList<>();
 
-        // Impostazioni per il dataManager
-        dataManagerSettings();
+        // Impostazioni per il dataManager: ottengo la sua istanza e registro il listener
+        dataManager = getInstance(this);
+        dataManager.registerListener(this);
 
         // Impostazioni per le immagini di decorazione
         decorationImageSettings();
@@ -55,18 +53,9 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     }
 
     /**
-     * Impostazioni per il dataManager: ottengo la sua istanza e registro il listener
-     */
-    private void dataManagerSettings() {
-        dataManager = getInstance(this);
-        dataManager.registerListener(this);
-    }
-
-    /**
      * Impostazioni per le immagini: associo le immagini e imposto un filtro colore
      */
     private void decorationImageSettings() {
-
         ImageView steering_wheel = findViewById(R.id.img_steering_wheel);
         setImageBlue(steering_wheel);
 
@@ -78,7 +67,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
         ImageView traffic = findViewById(R.id.img_traffic);
         setImageBlue(traffic);
-
     }
 
     /**
@@ -86,15 +74,18 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      */
     private void directionAndVerticalMotionImageSettings() {
         img_forward = findViewById(R.id.img_diction_forward);
-        img_backward = findViewById(R.id.img_direction_backward);
-        img_left = findViewById(R.id.img_direction_left);
-        img_right = findViewById(R.id.img_direction_right);
-        img_vertical_motion = findViewById(R.id.img_road_bump);
-
         setImageWhite(img_forward);
+
+        img_backward = findViewById(R.id.img_direction_backward);
         setImageWhite(img_backward);
+
+        img_left = findViewById(R.id.img_direction_left);
         setImageWhite(img_left);
+
+        img_right = findViewById(R.id.img_direction_right);
         setImageWhite(img_right);
+
+        img_vertical_motion = findViewById(R.id.img_road_bump);
         setImageWhite(img_vertical_motion);
     }
 
@@ -140,11 +131,19 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         setImageWhite(img_left);
         setImageWhite(img_right);
 
-        // Per la direzione
-        setDirection(event.getDirection());
-
-        // Per il movimento verticale
-        setVerticalMotion(event.getVerticalMotion());
+        // In base al tipo di evento, imposto diverse visualizzazioni
+        switch (event.getType()) {
+            case DIRECTION_EVENT:
+                setDirection(event.getDirection());
+                break;
+            case VERTICAL_MOTION_EVENT:
+                setVerticalMotion(event.getVerticalMotion());
+                break;
+            case BOTH:
+                setDirection(event.getDirection());
+                setVerticalMotion(event.getVerticalMotion());
+                break;
+        }
 
         // Per la percentuale
         listViewSettings(event);
@@ -152,6 +151,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         System.out.println(event.toString());
     }
 
+    /**
+     * In base al tipo di movimento verticale, imposto un filtro colore all'immagine associata
+     * @param verticalMotion movimento verticale
+     */
     private void setVerticalMotion(VerticalMotion verticalMotion) {
         switch (verticalMotion) {
             case POTHOLE:
@@ -166,10 +169,13 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         }
     }
 
+    /**
+     * In base alla direzione, imposto un filtro colore all'immagine associata
+     * @param direction
+     */
     private void setDirection(Direction direction) {
         switch (direction) {
         case FORWARD:
-            // Se la direzione ricevuta dall'evento è FORWARD cambia colore alla freccia FORWARD
             setImageBlue(img_forward);
             break;
         case BACKWARD:
@@ -188,9 +194,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      * Impostazioni per la listView: aggiungo le immagini all'array e imposto l'adapter
      */
     private void listViewSettings(AccelerometerDataEvent event) {
-        if (event.getDirection() != DEFAULT) {
-            accelerometerEventList.add(0, event);
-        }
+        accelerometerEventList.add(0, event);
         adapter = new CustomAdapter(DriveActivity.this, accelerometerEventList);
         listView = findViewById(percentage_list_view);
         listView.setAdapter(adapter);

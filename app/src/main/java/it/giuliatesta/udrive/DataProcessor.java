@@ -122,17 +122,6 @@ class DataProcessor {
     }
 
     /**
-        Calcola il valore medio dell'intervallo come differenza del
-        valore massimo e del minimo divisa per due
-        @param min valore minimo
-        @param max valore massimo
-        @return valore medio
-     */
-    private double getMediumValue(double max, double min) {
-        return (max + min)/2;
-    }
-
-    /**
      * Calcola il movimento verticale
      * @param y coomponente y del vettore accelerazione
      * @return corrispondente movimento verticale
@@ -192,7 +181,6 @@ class DataProcessor {
     AnalyzeResult analyze(ArrayList<SensorEvent> sensorEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(sensorEventArrayList);
         if (isAForwardEvent(accelerometerDataEventArrayList)) {
-            Log.d("DATAPROCESSOR", "analyze: FORWARD");
             //checkCorrectLength(accelerometerDataEventArrayList, 1);
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
             notifyListener(straightForwardEvent);

@@ -191,16 +191,16 @@ class DataProcessor {
 
     AnalyzeResult analyze(ArrayList<SensorEvent> sensorEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(sensorEventArrayList);
-        if (forwardEvent(accelerometerDataEventArrayList)) {
+        if (isAForwardEvent(accelerometerDataEventArrayList)) {
+            Log.d("DATAPROCESSOR", "analyze: FORWARD");
             //checkCorrectLength(accelerometerDataEventArrayList, 1);
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
             notifyListener(straightForwardEvent);
             return PROCESSED;
-        } else if (leftEvent(accelerometerDataEventArrayList)) {
-            // checkCorrectLength(accelerometerDataEventArrayList, 4);
-            //AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
-            // notifyListener(leftTurnEvent);
-            return PROCESSED;
+        } else if(isABackwardEvent(accelerometerDataEventArrayList)) {
+            //checkCorrectLength(accelerometerDataEventArrayList, 1);
+            AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
+            notifyListener(backwardEvent);
         }
         return NEED_OTHER_EVENTS;
     }
@@ -224,6 +224,17 @@ class DataProcessor {
      */
     private AccelerometerDataEvent createForwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         Direction direction = FORWARD;
+        int directionPercentage = findDirectionPercentage(direction, accelerometerDataEventArrayList);
+        return createDirectionEvent(direction, directionPercentage);
+    }
+
+    /**
+     * Crea un evento dell'accelerometro che ha direzione BACKWARD di tipo DIRECTION_EVENT
+     * @param accelerometerDataEventArrayList lista di eventi considerata
+     * @return evento BACKWARD
+     */
+    private AccelerometerDataEvent createBackwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        Direction direction = BACKWARD;
         int directionPercentage = findDirectionPercentage(direction, accelerometerDataEventArrayList);
         return createDirectionEvent(direction, directionPercentage);
     }
@@ -263,33 +274,58 @@ class DataProcessor {
         return accelerometerDataEventArrayList;
     }
 
-    private boolean leftEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+    private boolean isALeftTurnEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         // Se la lista non contiene abbastanza elementi
         if(accelerometerDataEventArrayList.size() < 4) {
             return false;
         }
+
+        // Se la lista contiene 4 elementi
         AccelerometerDataEvent event0 = accelerometerDataEventArrayList.get(0);
         AccelerometerDataEvent event1 = accelerometerDataEventArrayList.get(1);
         AccelerometerDataEvent event2 = accelerometerDataEventArrayList.get(2);
         AccelerometerDataEvent event3 = accelerometerDataEventArrayList.get(3);
-        if(event0.getDirection() == LEFT && event1.getVectorValue() < MinValue &&
-                event2.getDirection() == RIGHT && event3.getVectorValue() < MinValue) {
+
+
+
+        if(event3.getDirection() == LEFT && event2.getVectorValue() < MinValue &&
+                event1.getDirection() == RIGHT && event0.getVectorValue() < MinValue) {
             Log.d("DataProcessor", "leftEvent: YESSSSSS");
             return true;
         }
         return false;
     }
 
-
-    private boolean forwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+    /**
+     * Controlla il tipo di evento che è appena arrivato dal sensore
+     * @param accelerometerDataEventArrayList   lista degli eventi
+     * @return  true se l'ultimo è FORWARD
+     */
+    private boolean isAForwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         // Se la lista è vuota
         if(accelerometerDataEventArrayList.size() < 1) {
             return false;
         }
 
         AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
+        Log.d("forwardEvent", "lastEvent: " + lastEvent);
         // Se l'ultimo evento nella lista è di tipo DIRECTION_EVENT e la sua direzione è FORWARD
         return lastEvent.getType() != VERTICAL_MOTION_EVENT && lastEvent.getDirection() == FORWARD;
+    }
+
+    /**
+     * Controlla il tipo di evento che è appena arrivato dal sensore
+     * @param accelerometerDataEventArrayList   lista degli eventi
+     * @return  true se l'ultimo è BACKARD
+     */
+    private boolean isABackwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        // Se la lista è vuota
+        if(accelerometerDataEventArrayList.size() < 1) {
+            return false;
+        }
+
+        AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
+        return lastEvent.getType() != VERTICAL_MOTION_EVENT && lastEvent.getDirection() == BACKWARD;
     }
 
     /**

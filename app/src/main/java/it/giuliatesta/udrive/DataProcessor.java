@@ -1,6 +1,5 @@
 package it.giuliatesta.udrive;
 
-import android.hardware.SensorEvent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -42,6 +41,7 @@ import static java.lang.Math.sqrt;
 class DataProcessor {
 
     private AccelerometerDataEventListener accelerometerDataEventListener;
+    private AccelerometerDataEvent previousEvent;
     public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
 
     /**
@@ -178,17 +178,35 @@ class DataProcessor {
         return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage, vector);
     }
 
-    AnalyzeResult analyze(ArrayList<SensorEvent> sensorEventArrayList) {
-        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(sensorEventArrayList);
+    AnalyzeResult analyze(ArrayList<EventData> eventDataArrayList) {
+        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(eventDataArrayList);
+
         if (isAForwardEvent(accelerometerDataEventArrayList)) {
             //checkCorrectLength(accelerometerDataEventArrayList, 1);
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
-            notifyListener(straightForwardEvent);
+            if(previousEvent != null && previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != FORWARD) {
+                notifyListener(straightForwardEvent);
+                previousEvent = straightForwardEvent;
+            }
             return PROCESSED;
         } else if(isABackwardEvent(accelerometerDataEventArrayList)) {
             //checkCorrectLength(accelerometerDataEventArrayList, 1);
-            AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
-            notifyListener(backwardEvent);
+            if(previousEvent != null && previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != BACKWARD) {
+                AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
+                notifyListener(backwardEvent);
+                previousEvent = backwardEvent;
+            }
+            return PROCESSED;
+        }
+        else if (isALeftTurnEvent(eventDataArrayList)) {
+            Log.d("DATAPROCESSOR", "analyze: LEFT TURN" + previousEvent);
+            if(previousEvent != null && previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != RIGHT) {
+                AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
+                Log.d("TAG", "analyze: " + leftTurnEvent);
+                notifyListener(leftTurnEvent);
+                previousEvent = leftTurnEvent;
+            }
+            return PROCESSED;
         }
         return NEED_OTHER_EVENTS;
     }
@@ -250,38 +268,32 @@ class DataProcessor {
 
     /**
      * Crea una lista di AccelerometerDataEvent a partire da SensorEvent
-     * @param sensorEventArrayList lista di SensorEvent
+     * @param eventDataArrayList lista di SensorEvent
      * @return lista di AccelerometerDataEvent
      */
-    private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<SensorEvent> sensorEventArrayList) {
+    private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<EventData> eventDataArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = new ArrayList<>();
-        for(SensorEvent event : sensorEventArrayList) {
-            AccelerometerDataEvent accelerometerDataEvent = calculateData(event.values[0], event.values[1], event.values[2]);
+        for(EventData event : eventDataArrayList) {
+            AccelerometerDataEvent accelerometerDataEvent = calculateData(event.getX(), event.getY(), event.getZ());
             accelerometerDataEventArrayList.add(0, accelerometerDataEvent);
         }
         return accelerometerDataEventArrayList;
     }
 
-    private boolean isALeftTurnEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        // Se la lista non contiene abbastanza elementi
-        if(accelerometerDataEventArrayList.size() < 4) {
+    private boolean isALeftTurnEvent(ArrayList<EventData> eventDataArrayList) {
+            if(eventDataArrayList.size() < 2) {
+                return false;
+            }
+
+            EventData firstEvent = eventDataArrayList.get(0);
+            EventData secondEvent = eventDataArrayList.get(1);
+            float x1 = firstEvent.getX();
+            float x2 = secondEvent.getX();
+
+            if(x1 == 0.0 && x2 < 0.0) {
+                return true;
+            }
             return false;
-        }
-
-        // Se la lista contiene 4 elementi
-        AccelerometerDataEvent event0 = accelerometerDataEventArrayList.get(0);
-        AccelerometerDataEvent event1 = accelerometerDataEventArrayList.get(1);
-        AccelerometerDataEvent event2 = accelerometerDataEventArrayList.get(2);
-        AccelerometerDataEvent event3 = accelerometerDataEventArrayList.get(3);
-
-
-
-        if(event3.getDirection() == LEFT && event2.getVectorValue() < MinValue &&
-                event1.getDirection() == RIGHT && event0.getVectorValue() < MinValue) {
-            Log.d("DataProcessor", "leftEvent: YESSSSSS");
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -290,15 +302,14 @@ class DataProcessor {
      * @return  true se l'ultimo è FORWARD
      */
     private boolean isAForwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        // Se la lista è vuota
-        if(accelerometerDataEventArrayList.size() < 1) {
+        if(accelerometerDataEventArrayList.size() < 2) {
             return false;
         }
 
-        AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
-        Log.d("forwardEvent", "lastEvent: " + lastEvent);
+        AccelerometerDataEvent firstEvent = accelerometerDataEventArrayList.get(1);
+
         // Se l'ultimo evento nella lista è di tipo DIRECTION_EVENT e la sua direzione è FORWARD
-        return lastEvent.getType() != VERTICAL_MOTION_EVENT && lastEvent.getDirection() == FORWARD;
+        return firstEvent.getType() != VERTICAL_MOTION_EVENT && firstEvent.getDirection() == FORWARD;
     }
 
     /**

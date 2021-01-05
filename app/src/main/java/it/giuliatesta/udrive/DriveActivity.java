@@ -2,6 +2,7 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -126,6 +127,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
+        Log.d("DriveActivity", "onDataChanged: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         setImageWhite(img_forward);
         setImageWhite(img_backward);
         setImageWhite(img_left);
@@ -144,11 +146,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 setVerticalMotion(event.getVerticalMotion());
                 break;
         }
-
         // Per la percentuale
         listViewSettings(event);
-
-        System.out.println(event.toString());
     }
 
     /**

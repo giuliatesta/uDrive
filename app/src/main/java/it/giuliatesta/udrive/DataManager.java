@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class DataManager implements SensorEventListener {
     private Context context;
     private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
-    private ArrayList<SensorEvent> sensorEventArrayList;
+    private ArrayList<EventData> eventDataArrayList;
     private static DataManager dataManager = null;
 
     // Coordinate precedenti dell'accelerazione
@@ -52,7 +53,7 @@ public class DataManager implements SensorEventListener {
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
-        sensorEventArrayList = new ArrayList<SensorEvent>();
+        eventDataArrayList = new ArrayList<EventData>();
     }
 
     /**
@@ -70,10 +71,11 @@ public class DataManager implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
-            double x = event.values[0];
-            double z = event.values[2];
+            Log.d("DataManager", "onSensorChanged: " + event);
+            float x = event.values[0];
+            float z = event.values[2];
 
-            double y = getOrdinateValue(event.values[1]);
+            float y = getOrdinateValue(event.values[1]);
 
             // Calcolo i valori di variazione del precedente con il corrente
             double zChange = historyZ - z;
@@ -82,17 +84,16 @@ public class DataManager implements SensorEventListener {
 
             // Imposto i nuovi history
             setNewHistoryValue(x, y, z);
-
+            Log.d("DataManager", "onSensorChanged : " + x + "   " + y + "    "+ z);
             // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
-            if (xChange > 2 || yChange > 2 || zChange > 2) {
                 //AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
-                sensorEventArrayList.add(0, event);
-                AnalyzeResult result = accelerometerDataProcessor.analyze(sensorEventArrayList);
-                if (result == PROCESSED) {
-                    sensorEventArrayList.clear();
-                }
-                //accelerometerDataEventListener.onDataChanged(dataEvent);
+            eventDataArrayList.add(0, new EventData(x, y, z));
+            AnalyzeResult result = accelerometerDataProcessor.analyze(eventDataArrayList);
+            if (result == PROCESSED) {
+                eventDataArrayList.clear();
             }
+                //accelerometerDataEventListener.onDataChanged(dataEvent);
+
         }
     }
 
@@ -113,8 +114,8 @@ public class DataManager implements SensorEventListener {
      * @param y         valore di accelerazione misurata al momento dell'evento
      * @return          valore dell'accelerazione senza l'accelerazione di gravità. Pronto per i calcoli
      */
-    private double getOrdinateValue(double y) {
-        return (y - 9.78);
+    private float getOrdinateValue(float y) {
+        return (y - 9.78F);
     }
 
     @Override

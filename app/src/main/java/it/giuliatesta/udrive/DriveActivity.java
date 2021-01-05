@@ -2,7 +2,6 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,19 +74,11 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      */
     private void directionAndVerticalMotionImageSettings() {
         img_forward = findViewById(R.id.img_diction_forward);
-        setImageWhite(img_forward);
-
         img_backward = findViewById(R.id.img_direction_backward);
-        setImageWhite(img_backward);
-
         img_left = findViewById(R.id.img_direction_left);
-        setImageWhite(img_left);
-
         img_right = findViewById(R.id.img_direction_right);
-        setImageWhite(img_right);
-
         img_vertical_motion = findViewById(R.id.img_road_bump);
-        setImageWhite(img_vertical_motion);
+        setAllImagesWhite();
     }
 
     /**
@@ -127,12 +118,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
-        Log.d("DriveActivity", "onDataChanged: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        setImageWhite(img_forward);
-        setImageWhite(img_backward);
-        setImageWhite(img_left);
-        setImageWhite(img_right);
-
         // In base al tipo di evento, imposto diverse visualizzazioni
         switch (event.getType()) {
             case DIRECTION_EVENT:
@@ -145,6 +130,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 setDirection(event.getDirection());
                 setVerticalMotion(event.getVerticalMotion());
                 break;
+            default:
+                setAllImagesWhite();
         }
         // Per la percentuale
         listViewSettings(event);
@@ -165,12 +152,14 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
             case NONE:
                 setImageWhite(img_vertical_motion);
                 break;
+            default:
+                setAllImagesWhite();
         }
     }
 
     /**
      * In base alla direzione, imposto un filtro colore all'immagine associata
-     * @param direction
+     * @param direction direzione dell'evento arrivato
      */
     private void setDirection(Direction direction) {
         switch (direction) {
@@ -184,9 +173,22 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
             setImageBlue(img_left);
             break;
         case RIGHT:
-            setImageWhite(img_right);
+            setImageBlue(img_right);
             break;
+        case DEFAULT:
+            setAllImagesWhite();
+            break;
+        default:
+            setAllImagesWhite();
         }
+    }
+
+    private void setAllImagesWhite() {
+        setImageWhite(img_forward);
+        setImageWhite(img_backward);
+        setImageWhite(img_left);
+        setImageWhite(img_right);
+        setImageWhite(img_vertical_motion);
     }
 
     /**
@@ -214,6 +216,4 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private void setImageWhite(ImageView image) {
         image.setColorFilter(WHITE);
     }
-
-
 }

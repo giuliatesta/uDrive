@@ -21,7 +21,6 @@ import static it.giuliatesta.udrive.R.drawable.img_direction_backward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_forward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_left;
 import static it.giuliatesta.udrive.R.drawable.img_direction_right;
-import static it.giuliatesta.udrive.R.id.img_diction_forward;
 import static it.giuliatesta.udrive.R.layout.direction_and_vertical_motion_event_view;
 import static it.giuliatesta.udrive.R.layout.direction_or_vertical_motion_event_view;
 import static it.giuliatesta.udrive.accelerometer.EventType.BOTH;
@@ -97,6 +96,7 @@ public class CustomAdapter implements ListAdapter {
             } else {
                 // Se il tipo di evento è BOTH
                 listItemSettingsDirectionAndVerticalMotionEvent(accelerometerEventList.get(position), convertView);
+
             }
         }
         return convertView;
@@ -173,10 +173,10 @@ public class CustomAdapter implements ListAdapter {
      * @return colore scelto
      */
     private int setColor(int percentage) {
-        if(percentage > 75) {
+        if(percentage >= 75) {
             // Verde
              return Color.parseColor("#04c717");
-        } else if (percentage < 25) {
+        } else if (percentage <= 25) {
             // Rosso
             return Color.parseColor("#ff0000");
         } else {
@@ -203,7 +203,7 @@ public class CustomAdapter implements ListAdapter {
                 return img_direction_backward;
             default:
                 // Non dovrebbe mai finire qui.
-                return img_diction_forward;
+                return img_direction_forward;
         }
     }
 

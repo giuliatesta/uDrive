@@ -18,4 +18,6 @@
     <string name="stop">Stop</string>
     <string name="home">Home</string>
     <string name="road_bump">Road bump</string>
+    <string name="secondrow">secondRow</string>
+    <string name="firstrow">firstRow</string>
 </resources>

@@ -8,7 +8,8 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:contentDescription="@string/firstrow">
 
         <ImageView
             android:id="@+id/list_item_image"
@@ -30,22 +31,23 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:contentDescription="@string/secondrow">
 
         <ImageView
             android:id="@+id/list_item_image2"
-            android:layout_marginTop="10dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
             android:contentDescription="@string/direction_image" />
 
         <TextView
             android:id="@+id/list_item_text2"
-            android:layout_marginTop="10dp"
             android:layout_width="307dp"
             android:layout_height="50dp"
             android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp"
             android:contentDescription="@string/percentage_value"
             android:textSize="30sp"
             android:textStyle="bold"

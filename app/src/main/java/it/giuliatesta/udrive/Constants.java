@@ -3,7 +3,7 @@ package it.giuliatesta.udrive;
 /**
  * Classe per le costanti
  */
-public class Constants {
+class Constants {
 
     // Intervalli
     static double MaxValue = 15.0;     // 1.5g = circa 15 m/s^2
@@ -19,7 +19,6 @@ public class Constants {
     static double twoHundrenTwentyFive = 225.0;
     static double threeHundredFifteen = 315.0;
     static double threeHundredSixty = 360.0;
-
 
 
 }

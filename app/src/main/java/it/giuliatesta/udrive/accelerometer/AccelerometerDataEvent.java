@@ -21,6 +21,12 @@ public class AccelerometerDataEvent implements Serializable {
     private EventType type;
 
     /**
+     * Costruttore vuoto
+     */
+    public AccelerometerDataEvent() {
+    }
+
+    /**
      * Costruttore di un evento completo
      * @param direction tipo di direzione
      * @param directionPercentage   punteggio associato alla direzione
@@ -71,6 +77,7 @@ public class AccelerometerDataEvent implements Serializable {
     public static AccelerometerDataEvent createVerticalMotionEvent(VerticalMotion verticalMotion, int verticalMotionPercentage) {
         return new AccelerometerDataEvent(verticalMotion, verticalMotionPercentage);
     }
+
 
     /**
      * Costrutore per un evento di tipo DIRECTION_EVENT
@@ -151,6 +158,10 @@ public class AccelerometerDataEvent implements Serializable {
         } else {
             return verticalMotion;
         }
+    }
+
+    public void setType(EventType type) {
+        this.type = type;
     }
 
     /**

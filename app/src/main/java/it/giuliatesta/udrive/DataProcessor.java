@@ -23,6 +23,7 @@ import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
 import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
+import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
 import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
@@ -178,7 +179,6 @@ class DataProcessor {
 
     AnalyzeResult analyze(ArrayList<EventData> eventDataArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(eventDataArrayList);
-
         if (isAForwardEvent(accelerometerDataEventArrayList)) {
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
             if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != FORWARD) {
@@ -205,11 +205,31 @@ class DataProcessor {
         else if (isARightTurnEvent(eventDataArrayList)) {
             if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != LEFT) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
+                notifyListener(rightTurnEvent);
+                previousEvent = rightTurnEvent;
             }
         }
+        else if (isARoadBumpEvent(eventDataArrayList)) {
+            if(previousEvent.getType() != DIRECTION_EVENT && previousEvent.getVerticalMotion() != POTHOLE) {
+                AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
+                notifyListener(roadBumpEvent);
+                previousEvent = roadBumpEvent;
+            }
+        }
+        else if (isaPotholeEvent(eventDataArrayList)) {
+            if(previousEvent.getType() != DIRECTION_EVENT && previousEvent.getVerticalMotion() != ROADBUMP) {
+                AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
+                notifyListener(potholeEvent);
+                previousEvent = potholeEvent;
+            }
+        }
+        AccelerometerDataEvent stopEvent = new AccelerometerDataEvent();
+        stopEvent.setAStopEvent(true);
+        notifyListener(stopEvent);
         return NEED_OTHER_EVENTS;
     }
-/*
+
+    /*
     private void checkCorrectLength(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList, int size) {
         if (accelerometerDataEventArrayList.size() > size) {
             throw new IllegalArgumentException("The list is too long! Expected list size: 1  Real list size: "+ accelerometerDataEventArrayList.size());
@@ -267,13 +287,56 @@ class DataProcessor {
     }
 
     /**
+     * Crea un evento dell'accelerometro che ha un movimento verticale di tipo ROADBUMP
+     * @param accelerometerDataEventArrayList lista degli eventi considerati
+     * @return evento ROADBUMP
+     */
+    private AccelerometerDataEvent createRoadBumpEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        VerticalMotion verticalMotion = ROADBUMP;
+        int verticalMotionPercentage = findVerticalMotionPercentage(verticalMotion, accelerometerDataEventArrayList);
+        return AccelerometerDataEvent.createVerticalMotionEvent(verticalMotion, verticalMotionPercentage);
+    }
+
+    /**
+     * Crea un evento dell'accelerometro che ha un movimento verticale di tipo POTHOLE
+     * @param accelerometerDataEventArrayList lista degli eventi considerati
+     * @return evento POTHOLE
+     */
+    private AccelerometerDataEvent createPotholeEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        VerticalMotion verticalMotion = POTHOLE;
+        int verticalMotionPercentage = findVerticalMotionPercentage(verticalMotion, accelerometerDataEventArrayList);
+        return AccelerometerDataEvent.createVerticalMotionEvent(verticalMotion, verticalMotionPercentage);
+    }
+
+    /**
+     *Cerca il valore della percentuale ottenuta dall'evento in base ad un movimento verticale particolare
+     * @param verticalMotion
+     * @param accelerometerDataEventArrayList
+     * @return
+     */
+    private int findVerticalMotionPercentage(VerticalMotion verticalMotion, ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        int percentage = 0;
+        for(AccelerometerDataEvent event : accelerometerDataEventArrayList) {
+            if(event.getType() != DIRECTION_EVENT && event.getVerticalMotion() == verticalMotion) {
+                percentage = event.getVerticalMotionPercentage();
+            }
+        }
+        return percentage;
+    }
+
+    /**
      * Cerca il valore della percentuale ottenuta dall'evento in base ad una direzione particolare
      * @param accelerometerDataEventArrayList
      * @return
      */
     private int findDirectionPercentage(Direction direction, ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
-        return lastEvent.getDirectionPercentage();
+        int percentage = 0;
+        for(AccelerometerDataEvent event : accelerometerDataEventArrayList) {
+            if(event.getType() != VERTICAL_MOTION_EVENT && event.getDirection() == direction) {
+                percentage = event.getDirectionPercentage();
+            }
+        }
+        return percentage;
     }
 
     /**
@@ -361,6 +424,38 @@ class DataProcessor {
 
         AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
         return lastEvent.getType() != VERTICAL_MOTION_EVENT && lastEvent.getDirection() == BACKWARD;
+    }
+
+    private boolean isARoadBumpEvent(ArrayList<EventData> eventDataArrayList) {
+        if(eventDataArrayList.size() < 2) {
+            return false;
+        }
+
+        EventData firstEvent = eventDataArrayList.get(0);
+        EventData secondEvent = eventDataArrayList.get(1);
+        float y1 = firstEvent.getY();
+        float y2 = secondEvent.getY();
+
+        if(y1 == 0.0 && y2 > 0.0) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isaPotholeEvent(ArrayList<EventData> eventDataArrayList) {
+        if(eventDataArrayList.size() < 2) {
+            return false;
+        }
+
+        EventData firstEvent = eventDataArrayList.get(0);
+        EventData secondEvent = eventDataArrayList.get(1);
+        float y1 = firstEvent.getY();
+        float y2 = secondEvent.getY();
+
+        if(y1 == 0.0 && y2 < 0.0) {
+            return true;
+        }
+        return false;
     }
 
     /**

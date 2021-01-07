@@ -119,22 +119,23 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
         // In base al tipo di evento, imposto diverse visualizzazioni
-        switch (event.getType()) {
-            case DIRECTION_EVENT:
-                setDirection(event.getDirection());
-                break;
-            case VERTICAL_MOTION_EVENT:
-                setVerticalMotion(event.getVerticalMotion());
-                break;
-            case BOTH:
-                setDirection(event.getDirection());
-                setVerticalMotion(event.getVerticalMotion());
-                break;
-            default:
-                setAllImagesWhite();
+        if(!event.isAStopEvent()) {
+            switch (event.getType()) {
+                case DIRECTION_EVENT:
+                    setDirection(event.getDirection());
+                    break;
+                case VERTICAL_MOTION_EVENT:
+                    setVerticalMotion(event.getVerticalMotion());
+                    break;
+                case BOTH:
+                    setDirection(event.getDirection());
+                    setVerticalMotion(event.getVerticalMotion());
+                    break;
+                default:
+                    setAllImagesWhite();
+            }
+            listViewSettings(event);
         }
-        // Per la percentuale
-        listViewSettings(event);
     }
 
     /**

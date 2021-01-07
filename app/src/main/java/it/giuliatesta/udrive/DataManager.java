@@ -73,40 +73,17 @@ public class DataManager implements SensorEventListener {
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
             Log.d("DataManager", "onSensorChanged: " + event);
             float x = event.values[0];
-            float z = event.values[2];
+            float y = getYValue(event.values[1]);
+            float z = getZValue(event.values[2]);
 
-            float y = getOrdinateValue(event.values[1]);
-
-            // Calcolo i valori di variazione del precedente con il corrente
-            double zChange = historyZ - z;
-            double xChange = historyX - x;
-            double yChange = historyY - y;
-
-            // Imposto i nuovi history
-            setNewHistoryValue(x, y, z);
             Log.d("DataManager", "onSensorChanged : " + x + "   " + y + "    "+ z);
             // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
-                //AccelerometerDataEvent dataEvent = accelerometerDataProcessor.calculateData(x, y, z);
             eventDataArrayList.add(0, new EventData(x, y, z));
             AnalyzeResult result = accelerometerDataProcessor.analyze(eventDataArrayList);
             if (result == PROCESSED) {
                 eventDataArrayList.clear();
             }
-                //accelerometerDataEventListener.onDataChanged(dataEvent);
-
         }
-    }
-
-    /**
-     *    Imposta i valori per controllare la variazione dal precedente ai valori correnti
-     * @param NewHistoryX     valore corrente di x
-     * @param NewHistoryY     valore corrente di y
-     * @param NewHistoryZ     valore corrente di z
-     */
-    private void setNewHistoryValue(double NewHistoryX, double NewHistoryY, double NewHistoryZ) {
-        historyX = NewHistoryX;
-        historyY = NewHistoryY;
-        historyZ = NewHistoryZ;
     }
 
     /**
@@ -114,8 +91,12 @@ public class DataManager implements SensorEventListener {
      * @param y         valore di accelerazione misurata al momento dell'evento
      * @return          valore dell'accelerazione senza l'accelerazione di gravità. Pronto per i calcoli
      */
-    private float getOrdinateValue(float y) {
-        return (y - 9.78F);
+    private float getYValue(float y) {
+        return (y - 9.77F);
+    }
+
+    private float getZValue(float z) {
+        return (z - 0.81F);
     }
 
     @Override

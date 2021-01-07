@@ -19,6 +19,7 @@ public class AccelerometerDataEvent implements Serializable {
     private int verticalMotionPercentage;
     private double vectorValue;
     private EventType type;
+    private boolean isAStopEvent;
 
     /**
      * Costruttore vuoto
@@ -41,6 +42,7 @@ public class AccelerometerDataEvent implements Serializable {
         this.verticalMotionPercentage = verticalMotionPercentage;
         this.vectorValue = vectorValue;
         type = BOTH;
+        isAStopEvent = false;
     }
 
     /**
@@ -56,6 +58,7 @@ public class AccelerometerDataEvent implements Serializable {
         this.verticalMotion = verticalMotion;
         this.verticalMotionPercentage = verticalMotionPercentage;
         type = BOTH;
+        isAStopEvent=false;
     }
 
     /**
@@ -90,6 +93,7 @@ public class AccelerometerDataEvent implements Serializable {
         this.verticalMotion = NONE;
         this.verticalMotionPercentage = 0;
         type = DIRECTION_EVENT;
+        isAStopEvent=false;
 
     }
 
@@ -104,6 +108,7 @@ public class AccelerometerDataEvent implements Serializable {
         this.direction = DEFAULT;
         this.directionPercentage = 0;
         type = VERTICAL_MOTION_EVENT;
+        isAStopEvent=false;
     }
 
     /**
@@ -158,6 +163,14 @@ public class AccelerometerDataEvent implements Serializable {
         } else {
             return verticalMotion;
         }
+    }
+
+    public boolean isAStopEvent() {
+        return isAStopEvent;
+    }
+
+    public void setAStopEvent(boolean AStopEvent) {
+        isAStopEvent = AStopEvent;
     }
 
     public void setType(EventType type) {

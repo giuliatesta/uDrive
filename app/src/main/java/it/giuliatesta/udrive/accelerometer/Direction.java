@@ -1,7 +1,8 @@
 package it.giuliatesta.udrive.accelerometer;
 /**
-    Classe enumerazione che rappresenta i tipi di direzioni che può prendere la macchina
+ Classe enumerazione che rappresenta i tipi di direzioni che può prendere la macchina
  */
 public enum Direction {
-    LEFT, RIGHT, FORWARD, BACKWARD, DEFAULT
+    BACKWARD, DEFAULT, FORWARD, LEFT, RIGHT
+
 }

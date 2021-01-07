@@ -28,10 +28,7 @@ import static it.giuliatesta.udrive.R.id.percentage_list_view;
  */
 
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
-    private DataManager dataManager;
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
-    private ListView listView;
-    private CustomAdapter adapter;
     private ImageView img_forward, img_backward, img_left, img_right, img_vertical_motion;
 
     @Override
@@ -42,7 +39,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         accelerometerEventList = new ArrayList<>();
 
         // Impostazioni per il dataManager: ottengo la sua istanza e registro il listener
-        dataManager = getInstance(this);
+        DataManager dataManager = getInstance(this);
         dataManager.registerListener(this);
 
         // Impostazioni per le immagini di decorazione
@@ -176,9 +173,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         case RIGHT:
             setImageBlue(img_right);
             break;
-        case DEFAULT:
-            setAllImagesWhite();
-            break;
         default:
             setAllImagesWhite();
         }
@@ -197,8 +191,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      */
     private void listViewSettings(AccelerometerDataEvent event) {
         accelerometerEventList.add(0, event);
-        adapter = new CustomAdapter(DriveActivity.this, accelerometerEventList);
-        listView = findViewById(percentage_list_view);
+        CustomAdapter adapter = new CustomAdapter(DriveActivity.this, accelerometerEventList);
+        ListView listView = findViewById(percentage_list_view);
         listView.setAdapter(adapter);
     }
 

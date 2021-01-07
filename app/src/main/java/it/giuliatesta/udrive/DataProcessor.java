@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.Direction;
+import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
 import static it.giuliatesta.udrive.Constants.MaxValue;
@@ -63,7 +64,6 @@ class DataProcessor {
      Calcola la posizione dell'angolo nei 4 quadranti
      */
     private double getPositionOfAlpha(double x, double z) {
-        double ratio = z/x;
         double alpha = Math.toDegrees(atan2(z, x));     //Angolo in gradi
         return ((int) (alpha+360))%360;
     }
@@ -177,8 +177,8 @@ class DataProcessor {
         return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage, vector);
     }
 
-    AnalyzeResult analyze(ArrayList<EventData> eventDataArrayList) {
-        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(eventDataArrayList);
+    AnalyzeResult analyze(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(coordinatesDataEventArrayList);
         if (isAForwardEvent(accelerometerDataEventArrayList)) {
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
             if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != FORWARD) {
@@ -194,7 +194,7 @@ class DataProcessor {
             }
             return PROCESSED;
         }
-        else if (isALeftTurnEvent(eventDataArrayList)) {
+        else if (isALeftTurnEvent(coordinatesDataEventArrayList)) {
             if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != RIGHT) {
                 AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
                 notifyListener(leftTurnEvent);
@@ -202,21 +202,21 @@ class DataProcessor {
             }
             return PROCESSED;
         }
-        else if (isARightTurnEvent(eventDataArrayList)) {
+        else if (isARightTurnEvent(coordinatesDataEventArrayList)) {
             if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != LEFT) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
                 notifyListener(rightTurnEvent);
                 previousEvent = rightTurnEvent;
             }
         }
-        else if (isARoadBumpEvent(eventDataArrayList)) {
+        else if (isARoadBumpEvent(coordinatesDataEventArrayList)) {
             if(previousEvent.getType() != DIRECTION_EVENT && previousEvent.getVerticalMotion() != POTHOLE) {
                 AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
                 notifyListener(roadBumpEvent);
                 previousEvent = roadBumpEvent;
             }
         }
-        else if (isaPotholeEvent(eventDataArrayList)) {
+        else if (isaPotholeEvent(coordinatesDataEventArrayList)) {
             if(previousEvent.getType() != DIRECTION_EVENT && previousEvent.getVerticalMotion() != ROADBUMP) {
                 AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
                 notifyListener(potholeEvent);
@@ -310,9 +310,9 @@ class DataProcessor {
 
     /**
      *Cerca il valore della percentuale ottenuta dall'evento in base ad un movimento verticale particolare
-     * @param verticalMotion
-     * @param accelerometerDataEventArrayList
-     * @return
+     * @param verticalMotion    movemento verticale da cercare nella lista di eventi
+     * @param accelerometerDataEventArrayList   lista di eventi
+     * @return  il punteggio ottenuto da quel particolare movimento verticale
      */
     private int findVerticalMotionPercentage(VerticalMotion verticalMotion, ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         int percentage = 0;
@@ -326,8 +326,9 @@ class DataProcessor {
 
     /**
      * Cerca il valore della percentuale ottenuta dall'evento in base ad una direzione particolare
-     * @param accelerometerDataEventArrayList
-     * @return
+     * @param direction     direzione da cercare nella lista
+     * @param accelerometerDataEventArrayList   lista di eventi
+     * @return  il punteggio ottenuto da quella particolare direzione
      */
     private int findDirectionPercentage(Direction direction, ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         int percentage = 0;
@@ -341,12 +342,12 @@ class DataProcessor {
 
     /**
      * Crea una lista di AccelerometerDataEvent a partire da SensorEvent
-     * @param eventDataArrayList lista di SensorEvent
+     * @param coordinatesDataEventArrayList lista di SensorEvent
      * @return lista di AccelerometerDataEvent
      */
-    private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<EventData> eventDataArrayList) {
+    private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = new ArrayList<>();
-        for(EventData event : eventDataArrayList) {
+        for(CoordinatesDataEvent event : coordinatesDataEventArrayList) {
             AccelerometerDataEvent accelerometerDataEvent = calculateData(event.getX(), event.getY(), event.getZ());
             accelerometerDataEventArrayList.add(0, accelerometerDataEvent);
         }
@@ -355,44 +356,38 @@ class DataProcessor {
 
     /**
      * Controlla se il tipo di evento che è appena arrivato dal sensore è una curva verso sinistra
-     * @param eventDataArrayList   lista degli eventi grezzi (senza elaborazione)
+     * @param coordinatesDataEventArrayList   lista degli eventi grezzi (senza elaborazione)
      * @return  true se è una curva a sinistra
      */
-    private boolean isALeftTurnEvent(ArrayList<EventData> eventDataArrayList) {
-            if(eventDataArrayList.size() < 2) {
+    private boolean isALeftTurnEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+            if(coordinatesDataEventArrayList.size() < 2) {
                 return false;
             }
 
-            EventData firstEvent = eventDataArrayList.get(0);
-            EventData secondEvent = eventDataArrayList.get(1);
+            CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(0);
+            CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(1);
             float x1 = firstEvent.getX();
             float x2 = secondEvent.getX();
 
-            if(x1 == 0.0 && x2 < 0.0) {
-                return true;
-            }
-            return false;
+        return x1 == 0.0 && x2 < 0.0;
     }
 
     /**
      * Controlla se il tipo di evento che è appena arrivato dal sensore è una curva verso destra
-     * @param eventDataArrayList   lista degli eventi grezzi (senza elaborazione)
+     * @param coordinatesDataEventArrayList   lista degli eventi grezzi (senza elaborazione)
      * @return  true se è una curva a destra
      */
-    private boolean isARightTurnEvent(ArrayList<EventData> eventDataArrayList) {
-        if(eventDataArrayList.size() < 2) {
+    private boolean isARightTurnEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
 
-        EventData firstEvent = eventDataArrayList.get(0);
-        EventData secondEvent = eventDataArrayList.get(1);
+        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(0);
+        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(1);
         float x1 = firstEvent.getX();
         float x2 = secondEvent.getX();
 
-        if(x1 == 0.0 && x2 > 0.0) {
-            return true;
-        }
-        return false;
+        return x1 == 0.0 && x2 > 0.0;
     }
 
     /**
@@ -426,41 +421,35 @@ class DataProcessor {
         return lastEvent.getType() != VERTICAL_MOTION_EVENT && lastEvent.getDirection() == BACKWARD;
     }
 
-    private boolean isARoadBumpEvent(ArrayList<EventData> eventDataArrayList) {
-        if(eventDataArrayList.size() < 2) {
+    private boolean isARoadBumpEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
 
-        EventData firstEvent = eventDataArrayList.get(0);
-        EventData secondEvent = eventDataArrayList.get(1);
+        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(0);
+        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(1);
         float y1 = firstEvent.getY();
         float y2 = secondEvent.getY();
 
-        if(y1 == 0.0 && y2 > 0.0) {
-            return true;
-        }
-        return false;
+        return y1 == 0.0 && y2 > 0.0;
     }
 
-    private boolean isaPotholeEvent(ArrayList<EventData> eventDataArrayList) {
-        if(eventDataArrayList.size() < 2) {
+    private boolean isaPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
 
-        EventData firstEvent = eventDataArrayList.get(0);
-        EventData secondEvent = eventDataArrayList.get(1);
+        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(0);
+        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(1);
         float y1 = firstEvent.getY();
         float y2 = secondEvent.getY();
 
-        if(y1 == 0.0 && y2 < 0.0) {
-            return true;
-        }
-        return false;
+        return y1 == 0.0 && y2 < 0.0;
     }
 
     /**
      * Metodo per registrare il listener.
-     * @param accelerometerDataEventListener
+     * @param accelerometerDataEventListener    listener da registrare
      */
     public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         this.accelerometerDataEventListener = accelerometerDataEventListener;

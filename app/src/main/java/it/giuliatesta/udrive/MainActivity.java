@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Metodo per cambiare l'activity
-     *
-     * @param view
+     * @param view view
      */
     public void changeActivity(View view) {
         Intent intent = new Intent(this, DriveActivity.class);

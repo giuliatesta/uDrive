@@ -52,7 +52,7 @@ public class AccelerometerDataEvent implements Serializable {
      * @param verticalMotion    tipo di movimento verticale
      * @param verticalMotionPercentage  punteggio associato al movimento
      */
-    public AccelerometerDataEvent(Direction direction, int directionPercentage, VerticalMotion verticalMotion, int verticalMotionPercentage) {
+    private AccelerometerDataEvent(Direction direction, int directionPercentage, VerticalMotion verticalMotion, int verticalMotionPercentage) {
         this.direction = direction;
         this.directionPercentage = directionPercentage;
         this.verticalMotion = verticalMotion;
@@ -65,7 +65,7 @@ public class AccelerometerDataEvent implements Serializable {
      * Metodo per la creazione di un evento di tipo DIRECTION_EVENT
      * @param direction     tipo di direzione
      * @param directionPercentage   punteggio associato alla direzione
-     * @return
+     * @return  nuova istanza dell'AccelerometerDataEvent di tipo DIRECTION5_EVENT
      */
     public static AccelerometerDataEvent createDirectionEvent(Direction direction, int directionPercentage) {
         return new AccelerometerDataEvent(direction, directionPercentage);
@@ -75,7 +75,7 @@ public class AccelerometerDataEvent implements Serializable {
      * Metodo per la creazione di un evento di tipo VERTICAL_MOTION_EVENT
      * @param verticalMotion    tipo di movimento verticale
      * @param verticalMotionPercentage punteggio associato al movimento
-     * @return
+     * @return nuova istanza dell'AccelerometerDataEvent di tipo VERTICAL_MOTION_EVENT
      */
     public static AccelerometerDataEvent createVerticalMotionEvent(VerticalMotion verticalMotion, int verticalMotionPercentage) {
         return new AccelerometerDataEvent(verticalMotion, verticalMotionPercentage);
@@ -173,10 +173,6 @@ public class AccelerometerDataEvent implements Serializable {
         isAStopEvent = AStopEvent;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
-    }
-
     /**
      * Metodo get per il tipo di evento
      * @return tipo di evento
@@ -185,13 +181,6 @@ public class AccelerometerDataEvent implements Serializable {
         return type;
     }
 
-    /**
-     * Metodo get per il valore del modulo dell'accelerazione
-     * @return modulo dell'accelerazione
-     */
-    public double getVectorValue() {
-        return vectorValue;
-    }
     @Override
     public String toString() {
         return "AccelerometerDataEvent{" +

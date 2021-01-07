@@ -5,12 +5,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
 import it.giuliatesta.udrive.DataProcessor.AnalyzeResult;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
+import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
@@ -25,15 +25,9 @@ public class DataManager implements SensorEventListener {
 
     private Sensor accelerometer;
     private Context context;
-    private AccelerometerDataEventListener accelerometerDataEventListener;
     private DataProcessor accelerometerDataProcessor;
-    private ArrayList<EventData> eventDataArrayList;
+    private ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList;
     private static DataManager dataManager = null;
-
-    // Coordinate precedenti dell'accelerazione
-    private double historyX = 0.0;
-    private double historyY = 0.0;
-    private double historyZ = 0.0;
 
     /**
         Costruttore singleton
@@ -53,7 +47,7 @@ public class DataManager implements SensorEventListener {
         accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
         manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
         accelerometerDataProcessor = new DataProcessor();
-        eventDataArrayList = new ArrayList<EventData>();
+        coordinatesDataEventArrayList = new ArrayList<>();
     }
 
     /**
@@ -71,17 +65,14 @@ public class DataManager implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
-            Log.d("DataManager", "onSensorChanged: " + event);
             float x = event.values[0];
             float y = getYValue(event.values[1]);
             float z = getZValue(event.values[2]);
 
-            Log.d("DataManager", "onSensorChanged : " + x + "   " + y + "    "+ z);
-            // Notifico il listener dell'accelerometro con i dati calcolati solo quando la variazione è significativa
-            eventDataArrayList.add(0, new EventData(x, y, z));
-            AnalyzeResult result = accelerometerDataProcessor.analyze(eventDataArrayList);
+            coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
+            AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {
-                eventDataArrayList.clear();
+                coordinatesDataEventArrayList.clear();
             }
         }
     }
@@ -106,8 +97,7 @@ public class DataManager implements SensorEventListener {
     /**
         Metodo per registrare il listener
      */
-    public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
-        this.accelerometerDataEventListener = accelerometerDataEventListener;
+    void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         accelerometerDataProcessor.registerListener(accelerometerDataEventListener);
     }
 }

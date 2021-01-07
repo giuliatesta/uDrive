@@ -26,14 +26,17 @@ import static it.giuliatesta.udrive.R.layout.direction_or_vertical_motion_event_
 import static it.giuliatesta.udrive.accelerometer.EventType.BOTH;
 import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
 
-public class CustomAdapter implements ListAdapter {
+/**
+ * Adapter creato per la gestione della visualizzazione della lista di eventi con relativi puntaggi nella DriveActivity
+ */
+class CustomAdapter implements ListAdapter {
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private Context context;
     private TextView textFirstRow, textSecondRow;
     private ImageView imageFirstRow, imageSecondRow;
 
 
-    public CustomAdapter(Context context, ArrayList<AccelerometerDataEvent> list) {
+    CustomAdapter(Context context, ArrayList<AccelerometerDataEvent> list) {
         this.accelerometerEventList = list;
         this.context = context;
     }
@@ -92,37 +95,37 @@ public class CustomAdapter implements ListAdapter {
 
             if (rowType == 0) {
                 // Se il tipo di evento è VERTICAL_MOTION_EVENT oppure DIRECTION_EVENT
-                chooseTypeOfView(accelerometerEventList.get(position), convertView);
+                chooseTypeOfView(accelerometerEventList.get(position));
             } else {
                 // Se il tipo di evento è BOTH
-                listItemSettingsDirectionAndVerticalMotionEvent(accelerometerEventList.get(position), convertView);
+                listItemSettingsDirectionAndVerticalMotionEvent(accelerometerEventList.get(position));
 
             }
         }
         return convertView;
     }
 
-    private void chooseTypeOfView(AccelerometerDataEvent event, View convertView) {
+    private void chooseTypeOfView(AccelerometerDataEvent event) {
         if(event.getType() == DIRECTION_EVENT) {
-            listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event, convertView);
+            listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event);
         } else {
-            listItemSettingsVerticalMotionEvent(textFirstRow, imageFirstRow, event, convertView);
+            listItemSettingsVerticalMotionEvent(textFirstRow, imageFirstRow, event);
         }
     }
 
     /**
      * Gestisce le impostazioni per la view con una riga e con un evento di tipo VERTICAL_MOTION_EVENT
-     * @param text
-     * @param image
+     * @param text  textView in qui viene mostrata la percentuale ottenuta
+     * @param image immagine che rappresenta il tipo di movimento verticale
      * @param event evento da cui ricavare le informazioni da visualizzare
-     * @param convertView view della singola riga
      */
-    private void listItemSettingsVerticalMotionEvent(TextView text, ImageView image, AccelerometerDataEvent event, View convertView) {
+    private void listItemSettingsVerticalMotionEvent(TextView text, ImageView image, AccelerometerDataEvent event) {
         // Trovo la percentuale da inserire nel testo della listView
         int percentage = event.getVerticalMotionPercentage();
         // Trovo l'immagine da inserire nella listView
         Drawable imageDrawable = context.getResources().getDrawable(R.drawable.img_vertical_motion);
-        text.setText(percentage + "%");
+        String textToShow = percentage + "%";
+        text.setText(textToShow);
         text.setTextColor(BLUE);
 
         image.setImageDrawable(imageDrawable);
@@ -134,16 +137,15 @@ public class CustomAdapter implements ListAdapter {
     /**
      * Imposto le impostazioni per la view con una riga e con un evento di tipo DIRECTION_EVENT
      * @param event evento da cui ricavare le impostazioni da visualizzare
-     * @param convertView view della singola riga
      */
-    private void listItemSettingsDirectionEvent(TextView text, ImageView image, AccelerometerDataEvent event, View convertView) {
+    private void listItemSettingsDirectionEvent(TextView text, ImageView image, AccelerometerDataEvent event) {
         // Trovo la percentuale da inserire nel testo della listView
         int percentage = event.getDirectionPercentage();
         // Trovo l'immagine da inserire nella listView
         int imageResource = getImageResourceFromDirection(event.getDirection());
         Drawable imageDrawable = context.getResources().getDrawable(imageResource);
-
-        text.setText(percentage + "%");
+        String textToShow = percentage + "%";
+        text.setText(textToShow);
         text.setTextColor(BLUE);
 
         image.setImageDrawable(imageDrawable);
@@ -156,14 +158,13 @@ public class CustomAdapter implements ListAdapter {
     /**
      * Imposta le impostazioni per la view con due righe con un evento di tipo BOTH
      * @param event evento da cui recuperare le informazioni da visualizzare
-     * @param convertView view
      */
-    private void listItemSettingsDirectionAndVerticalMotionEvent(AccelerometerDataEvent event, View convertView) {
+    private void listItemSettingsDirectionAndVerticalMotionEvent(AccelerometerDataEvent event) {
         // Per la prima riga uso la direzione
-        listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event, convertView);
+        listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event);
 
         //Per la seconda riga uso il movimento verticale
-        listItemSettingsVerticalMotionEvent(textSecondRow, imageSecondRow, event, convertView);
+        listItemSettingsVerticalMotionEvent(textSecondRow, imageSecondRow, event);
     }
 
 

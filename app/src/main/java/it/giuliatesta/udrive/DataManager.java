@@ -69,6 +69,7 @@ public class DataManager implements SensorEventListener {
             float x = event.values[0];
             float y = getYValue(event.values[1]);
             float z = getZValue(event.values[2]);
+            Log.d("DataManager", "onSensorChanged: " + x + "   "+ y + "   "+ z);
             coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
             AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {

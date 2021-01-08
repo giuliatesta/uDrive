@@ -2,7 +2,6 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -131,11 +130,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                     setDirection(event.getDirection());
                     setVerticalMotion(event.getVerticalMotion());
                     break;
-                default:
-                    setAllImagesWhite();
             }
             listViewSettings(event);
         }
+        setAllImagesWhite();
     }
 
     /**
@@ -143,7 +141,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      * @param verticalMotion movimento verticale
      */
     private void setVerticalMotion(VerticalMotion verticalMotion) {
-        Log.d("DriveActivity", "setVerticalMotion: !!!!!!!!!!!!!!!!!!!!!!!!!!");
         if(verticalMotion == POTHOLE || verticalMotion == ROADBUMP) {
             setImageBlue(img_vertical_motion);
         }

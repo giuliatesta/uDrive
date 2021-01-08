@@ -2,7 +2,6 @@ package it.giuliatesta.udrive.accelerometer;
 
 import java.io.Serializable;
 
-import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.EventType.BOTH;
 import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
 import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
@@ -105,7 +104,7 @@ public class AccelerometerDataEvent implements Serializable {
     private AccelerometerDataEvent(VerticalMotion verticalMotion, int verticalMotionPercentage) {
         this.verticalMotion = verticalMotion;
         this.verticalMotionPercentage = verticalMotionPercentage;
-        this.direction = DEFAULT;
+        this.direction = Direction.NONE;
         this.directionPercentage = 0;
         type = VERTICAL_MOTION_EVENT;
         isAStopEvent=false;
@@ -118,11 +117,7 @@ public class AccelerometerDataEvent implements Serializable {
      */
 
     public Direction getDirection() {
-        if (type == VERTICAL_MOTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. Its type is VERTICAL_MOTION_EVENT!");
-        } else {
-            return direction;
-        }
+        return direction;
     }
 
     /**
@@ -132,11 +127,7 @@ public class AccelerometerDataEvent implements Serializable {
      */
 
     public int getDirectionPercentage() {
-        if (type == VERTICAL_MOTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. Its type is VERTICAL_MOTION_EVENT!");
-        } else {
-            return directionPercentage;
-        }
+        return directionPercentage;
     }
 
     /**
@@ -145,11 +136,7 @@ public class AccelerometerDataEvent implements Serializable {
      * @return percentuale
      */
     public int getVerticalMotionPercentage() {
-        if (type == DIRECTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. Its type is DIRECTION_EVENT!");
-        } else {
-            return verticalMotionPercentage;
-        }
+        return verticalMotionPercentage;
     }
 
     /**
@@ -158,11 +145,7 @@ public class AccelerometerDataEvent implements Serializable {
      * @return movimento verticale
      */
     public VerticalMotion getVerticalMotion() {
-        if (type == DIRECTION_EVENT) {
-            throw new IllegalArgumentException("IMPOSSIBLE. Its type is DIRECTION_EVENT!");
-        } else {
             return verticalMotion;
-        }
     }
 
     public boolean isAStopEvent() {

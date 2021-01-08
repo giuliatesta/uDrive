@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
-import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
+import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
 import static it.giuliatesta.udrive.Constants.MaxValue;
@@ -20,7 +20,6 @@ import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.NEED_OTHER_EVENT
 import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.PROCESSED;
 import static it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent.createDirectionEvent;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
-import static it.giuliatesta.udrive.accelerometer.Direction.DEFAULT;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
 import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
@@ -74,7 +73,7 @@ class DataProcessor {
      @param z  coordinata z dell'accelerazione
      */
     private Direction getDirection(double x, double z) {
-        Direction direction = DEFAULT;
+        Direction direction = Direction.NONE;
         double alpha = getPositionOfAlpha(x, z);
 
         if (alpha >= fourtyFiveDegree && alpha <= oneHundredThirtyFive) {
@@ -180,47 +179,47 @@ class DataProcessor {
     AnalyzeResult analyze(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(coordinatesDataEventArrayList);
         if (isAForwardEvent(accelerometerDataEventArrayList)) {
-            AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
-            if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != FORWARD) {
+            if(previousEvent.getDirection() != FORWARD) {
+                AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
                 notifyListener(straightForwardEvent);
-                previousEvent = straightForwardEvent;
+                setPreviousEvent(straightForwardEvent);
             }
             return PROCESSED;
         } else if(isABackwardEvent(accelerometerDataEventArrayList)) {
-            if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != BACKWARD) {
+            if(previousEvent.getDirection() != BACKWARD) {
                 AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
                 notifyListener(backwardEvent);
-                previousEvent = backwardEvent;
+                setPreviousEvent(backwardEvent);
             }
             return PROCESSED;
         }
         else if (isALeftTurnEvent(coordinatesDataEventArrayList)) {
-            if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != RIGHT) {
+            if(previousEvent.getDirection() != RIGHT) {
                 AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
                 notifyListener(leftTurnEvent);
-                previousEvent = leftTurnEvent;
+                setPreviousEvent(leftTurnEvent);
             }
             return PROCESSED;
         }
         else if (isARightTurnEvent(coordinatesDataEventArrayList)) {
-            if(previousEvent.getType() != VERTICAL_MOTION_EVENT && previousEvent.getDirection() != LEFT) {
+            if(previousEvent.getDirection() != LEFT) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
                 notifyListener(rightTurnEvent);
                 previousEvent = rightTurnEvent;
             }
         }
         else if (isARoadBumpEvent(coordinatesDataEventArrayList)) {
-            if(previousEvent.getType() != DIRECTION_EVENT && previousEvent.getVerticalMotion() != POTHOLE) {
+            if(previousEvent.getVerticalMotion() != POTHOLE) {
                 AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
                 notifyListener(roadBumpEvent);
-                previousEvent = roadBumpEvent;
+                setPreviousEvent(roadBumpEvent);
             }
         }
         else if (isaPotholeEvent(coordinatesDataEventArrayList)) {
-            if(previousEvent.getType() != DIRECTION_EVENT && previousEvent.getVerticalMotion() != ROADBUMP) {
+            if(previousEvent.getVerticalMotion() != ROADBUMP) {
                 AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
                 notifyListener(potholeEvent);
-                previousEvent = potholeEvent;
+                setPreviousEvent(potholeEvent);
             }
         }
         AccelerometerDataEvent stopEvent = new AccelerometerDataEvent();
@@ -425,12 +424,10 @@ class DataProcessor {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-
-        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(0);
-        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(0);
         float y1 = firstEvent.getY();
         float y2 = secondEvent.getY();
-
         return y1 == 0.0 && y2 > 0.0;
     }
 
@@ -439,11 +436,10 @@ class DataProcessor {
             return false;
         }
 
-        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(0);
-        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(0);
         float y1 = firstEvent.getY();
         float y2 = secondEvent.getY();
-
         return y1 == 0.0 && y2 < 0.0;
     }
 
@@ -453,5 +449,9 @@ class DataProcessor {
      */
     public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         this.accelerometerDataEventListener = accelerometerDataEventListener;
+    }
+
+    private void setPreviousEvent(AccelerometerDataEvent event) {
+        previousEvent = event;
     }
 }

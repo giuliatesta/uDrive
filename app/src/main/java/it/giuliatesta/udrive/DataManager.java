@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,6 @@ public class DataManager implements SensorEventListener {
             float x = event.values[0];
             float y = getYValue(event.values[1]);
             float z = getZValue(event.values[2]);
-
             coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
             AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {
@@ -83,11 +83,11 @@ public class DataManager implements SensorEventListener {
      * @return          valore dell'accelerazione senza l'accelerazione di gravità. Pronto per i calcoli
      */
     private float getYValue(float y) {
-        return (y - 9.77F);
+        return (y - 9.77631F);
     }
 
     private float getZValue(float z) {
-        return (z - 0.81F);
+        return (z - 0.812349F);
     }
 
     @Override

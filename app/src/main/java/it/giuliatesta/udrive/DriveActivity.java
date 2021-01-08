@@ -2,6 +2,7 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,8 @@ import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
 import static it.giuliatesta.udrive.DataManager.getInstance;
 import static it.giuliatesta.udrive.R.id.percentage_list_view;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
+import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
 
 /**
  Classe per la seconda Activity --> da usare quando si avvia la guida
@@ -140,19 +143,11 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      * @param verticalMotion movimento verticale
      */
     private void setVerticalMotion(VerticalMotion verticalMotion) {
-        switch (verticalMotion) {
-            case POTHOLE:
-                setImageBlue(img_vertical_motion);
-                break;
-            case ROADBUMP:
-                setImageBlue(img_vertical_motion);
-                break;
-            case NONE:
-                setImageWhite(img_vertical_motion);
-                break;
-            default:
-                setAllImagesWhite();
+        Log.d("DriveActivity", "setVerticalMotion: !!!!!!!!!!!!!!!!!!!!!!!!!!");
+        if(verticalMotion == POTHOLE || verticalMotion == ROADBUMP) {
+            setImageBlue(img_vertical_motion);
         }
+        setAllImagesWhite();
     }
 
     /**

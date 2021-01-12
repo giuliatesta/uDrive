@@ -67,9 +67,9 @@ public class DataManager implements SensorEventListener {
 
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
             float x = event.values[0];
-            float y = getYValue(event.values[1]);
-            float z = getZValue(event.values[2]);
-            Log.d("DataManager", "onSensorChanged: " + x + "   "+ y + "   "+ z);
+            float y = event.values[1];
+            float z = event.values[2];
+            Log.d("DataManager", "onSensorChanged: " + x + "   "+ (y-9.77631F) + "   "+ (z-0.812349F) );
             coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
             AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {

@@ -42,9 +42,8 @@ import static java.lang.Math.sqrt;
 class DataProcessor {
 
     private AccelerometerDataEventListener accelerometerDataEventListener;
-    private AccelerometerDataEvent previousEvent = new AccelerometerDataEvent();
     public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
-    private boolean leftTurn = false, rightTurn = false;
+    private boolean leftTurn = false, rightTurn = false, pothole = false, roadBump = false;
 
     /**
         Calcola il modulo del vettore accelerazione
@@ -180,23 +179,15 @@ class DataProcessor {
 
     AnalyzeResult analyze(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(coordinatesDataEventArrayList);
-        if (isAForwardEvent(accelerometerDataEventArrayList)) {
+        if (isAForwardEvent(coordinatesDataEventArrayList)) {
             Log.d("DataProcessor", "analyze: FORWARD");
-            if(previousEvent.getDirection() != FORWARD) {
-                AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
-                notifyListener(straightForwardEvent);
-                setPreviousEvent(straightForwardEvent);
-                Log.d("DataProcessor", "analyze: FORWARD " +straightForwardEvent);
-            }
+            AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
+            notifyListener(straightForwardEvent);
             return PROCESSED;
-        } else if(isABackwardEvent(accelerometerDataEventArrayList)) {
+        } else if(isABackwardEvent(coordinatesDataEventArrayList)) {
             Log.d("DataProcessor", "analyze: BACKWARD");
-            if(previousEvent.getDirection() != BACKWARD) {
-                AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
-                notifyListener(backwardEvent);
-                setPreviousEvent(backwardEvent);
-                Log.d("DataProcessor", "analyze: BACKWARD "+ backwardEvent);
-            }
+            AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
+            notifyListener(backwardEvent);
             return PROCESSED;
         }
         else if (startOfLeftTurnEvent(coordinatesDataEventArrayList)) {
@@ -204,19 +195,17 @@ class DataProcessor {
             if(!rightTurn) {
                 AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
                 notifyListener(leftTurnEvent);
-                setPreviousEvent(leftTurnEvent);
                 leftTurn = true;
-                Log.d("DataProcessor", "analyze: LEFT "+leftTurnEvent);
             }
             return PROCESSED;
         }
         else if(endOfLeftTurnEvent(coordinatesDataEventArrayList) && leftTurn) {
-            Log.d("DataProcessor", "analyze: FINE DELLA CURVA A SINISTRA");
+            Log.d("DataProcessor", "analyze: END OF LEFT");
             leftTurn = false;
             return NEED_OTHER_EVENTS;
         }
         else if(endOfRightTurnEvent(coordinatesDataEventArrayList) && rightTurn) {
-            Log.d("DataProcessor", "analyze: FINE DELLA CURVA A DESTRA");
+            Log.d("DataProcessor", "analyze: END OF RIGHT");
             rightTurn = false;
             return NEED_OTHER_EVENTS;
         }
@@ -225,37 +214,65 @@ class DataProcessor {
             if(!leftTurn) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
                 notifyListener(rightTurnEvent);
-                setPreviousEvent(rightTurnEvent);
                 rightTurn = true;
-                Log.d("DataProcessor", "analyze: RIGHT " +rightTurnEvent);
             }
             return PROCESSED;
         }
-        else if (isARoadBumpEvent(coordinatesDataEventArrayList)) {
+        else if (startOfRoadBumpEvent(coordinatesDataEventArrayList)) {
             Log.d("DataProcessor", "analyze: ROADBUMP");
-            if(previousEvent.getVerticalMotion() != POTHOLE) {
+            if(!pothole) {
                 AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
                 notifyListener(roadBumpEvent);
-                setPreviousEvent(roadBumpEvent);
-                Log.d("DataProcessor", "analyze: ROADBUMP " +roadBumpEvent);
+                roadBump = true;
             }
             return PROCESSED;
         }
-        else if (isaPotholeEvent(coordinatesDataEventArrayList)) {
-            Log.d("DataProcessor", "analyze: FORWARD");
-            if(previousEvent.getVerticalMotion() != ROADBUMP) {
+        else if(endOfRoadBumpEvent(coordinatesDataEventArrayList) && roadBump) {
+            Log.d("DataProcessor", "analyze: END OF ROADBUMP");
+            roadBump = false;
+            return NEED_OTHER_EVENTS;
+        }
+        else if (startOfPotholeEvent(coordinatesDataEventArrayList)) {
+            Log.d("DataProcessor", "analyze: POTHOLE");
+            if(!roadBump) {
                 AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
                 notifyListener(potholeEvent);
-                setPreviousEvent(potholeEvent);
-                Log.d("DataProcessor", "analyze: POTHOLE " +potholeEvent);
+                pothole = true;
             }
             return PROCESSED;
         }
+        else if(endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
+            Log.d("DataProcessor", "analyze: END OF POTHOLE");
+            pothole = true;
+            return NEED_OTHER_EVENTS;
+        }
+        Log.d("DataProcessor", "analyze: STOPEVENT");
         AccelerometerDataEvent stopEvent = new AccelerometerDataEvent();
         stopEvent.setAStopEvent(true);
         notifyListener(stopEvent);
-        Log.d("DataProcessor", "analyze: STOPEVENT ");
         return NEED_OTHER_EVENTS;
+    }
+
+    private boolean endOfPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
+            return false;
+        }
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        float previousY = previousEvent.getY();
+        float currentY = currentEvent.getY();
+        return previousY > 0.0 && currentY == 0.0;
+    }
+
+    private boolean endOfRoadBumpEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
+            return false;
+        }
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        float previousY = previousEvent.getY();
+        float currentY = currentEvent.getY();
+        return previousY < 0.0 && currentY == 0.0;
     }
 
     private boolean endOfRightTurnEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
@@ -266,28 +283,19 @@ class DataProcessor {
         CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
         float previousX = previousEvent.getX();
         float currentX = currentEvent.getX();
-        Log.d("DataProcessor", "endOfRightTurnEvent: " + previousX + "    "+ currentX);
         return previousX < 0.0 && currentX == 0.0;
     }
 
     private boolean endOfLeftTurnEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        if(coordinatesDataEventArrayList.size() < 2) {
+        if (coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
         CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
         CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
         float previousX = previousEvent.getX();
         float currentX = currentEvent.getX();
-        Log.d("DataProcessor", "endOfLeftTurnEvent: " + previousX + "    "+ currentX);
         return previousX > 0.0 && currentX == 0.0;
     }
-
-    /*
-    private void checkCorrectLength(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList, int size) {
-        if (accelerometerDataEventArrayList.size() > size) {
-            throw new IllegalArgumentException("The list is too long! Expected list size: 1  Real list size: "+ accelerometerDataEventArrayList.size());
-        }
-    }*/
 
     private void notifyListener(AccelerometerDataEvent event) {
         if (accelerometerDataEventListener != null) {
@@ -413,16 +421,16 @@ class DataProcessor {
      * @return  true se è una curva a sinistra
      */
     private boolean startOfLeftTurnEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-            if(coordinatesDataEventArrayList.size() < 2) {
+        if(coordinatesDataEventArrayList.size() < 2) {
                 return false;
-            }
-
-            CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-            CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-            float previousX = previousEvent.getX();
-            float currentX = currentEvent.getX();
-        Log.d("", "startOfRightTurnEvent: " + previousX + "    "+ currentX);
-        return previousX == 0.0 && currentX < 0.0;
+        }
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        float previousX = previousEvent.getX();
+        float currentX = currentEvent.getX();
+        float currentY = currentEvent.getY();
+        float currentZ = currentEvent.getZ();
+        return previousX == 0.0 && currentX < 0.0 && currentY < currentX && currentZ < currentX;
     }
 
     /**
@@ -439,61 +447,72 @@ class DataProcessor {
         CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
         float previousX = previousEvent.getX();
         float currentX = currentEvent.getX();
-
-        Log.d("", "startOfRightTurnEvent: " + previousX + "    "+ currentX);
-        return previousX == 0.0 && currentX > 0.0;
+        float currentY = currentEvent.getY();
+        float currentZ = currentEvent.getZ();
+        return previousX == 0.0 && currentX > 0.0 && currentY < currentX && currentZ < currentX;
     }
 
     /**
      * Controlla il tipo di evento che è appena arrivato dal sensore
-     * @param accelerometerDataEventArrayList   lista degli eventi
+     * @param coordinatesDataEventArrayList   lista degli eventi
      * @return  true se l'ultimo è FORWARD
      */
-    private boolean isAForwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        if(accelerometerDataEventArrayList.size() < 1) {
+    private boolean isAForwardEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        AccelerometerDataEvent firstEvent = accelerometerDataEventArrayList.get(0);
-        // Se la direzione dell'ultimo elemento della lista è FORWARD
-        return firstEvent.getDirection() == FORWARD;
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        float currentZ = currentEvent.getZ();
+        float previousZ = previousEvent.getZ();
+        float currentX = currentEvent.getX();
+        float currentY = currentEvent.getY();
+        return previousZ == 0.0 && currentZ < 0.0 && currentX < currentZ && currentY < currentZ;
     }
 
     /**
      * Controlla il tipo di evento che è appena arrivato dal sensore
-     * @param accelerometerDataEventArrayList   lista degli eventi
+     * @param coordinatesDataEventArrayList   lista degli eventi
      * @return  true se l'ultimo è BACKARD
      */
-    private boolean isABackwardEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+    private boolean isABackwardEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         // Se la lista è vuota
-        if(accelerometerDataEventArrayList.size() < 1) {
-            return false;
-        }
-
-        AccelerometerDataEvent lastEvent = accelerometerDataEventArrayList.get(0);
-        return lastEvent.getDirection() == BACKWARD;
-    }
-
-    private boolean isARoadBumpEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(0);
-        float y1 = firstEvent.getY();
-        float y2 = secondEvent.getY();
-        return y1 == 0.0 && y2 > 0.0;
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        float currentZ = currentEvent.getZ();
+        float previousZ = previousEvent.getZ();
+        float currentX = currentEvent.getX();
+        float currentY = currentEvent.getY();
+        return previousZ == 0.0 && currentZ > 0.0 && currentX < currentZ && currentY < currentZ;
     }
 
-    private boolean isaPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+    private boolean startOfRoadBumpEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        float previousY = previousEvent.getY();
+        float currentY = currentEvent.getY();
+        float currentX = currentEvent.getX();
+        float currentZ = currentEvent.getZ();
+        return previousY == 0.0 && currentY > 0.0 && currentX < currentY && currentZ < currentY;
+    }
 
-        CoordinatesDataEvent firstEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent secondEvent = coordinatesDataEventArrayList.get(0);
-        float y1 = firstEvent.getY();
-        float y2 = secondEvent.getY();
-        return y1 == 0.0 && y2 < 0.0;
+    private boolean startOfPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.size() < 2) {
+            return false;
+        }
+        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
+        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
+        float previousY = previousEvent.getY();
+        float currentY = currentEvent.getY();
+        float currentX = currentEvent.getX();
+        float currentZ = currentEvent.getZ();
+        return previousY == 0.0 && currentY < 0.0 && currentX < currentY && currentZ < currentY;
     }
 
     /**
@@ -504,11 +523,4 @@ class DataProcessor {
         this.accelerometerDataEventListener = accelerometerDataEventListener;
     }
 
-    /**
-     * Imposta un nuovo valore per previousEvent
-     * @param event     evento da sostituire
-     */
-    private void setPreviousEvent(AccelerometerDataEvent event) {
-        previousEvent = event;
-    }
 }

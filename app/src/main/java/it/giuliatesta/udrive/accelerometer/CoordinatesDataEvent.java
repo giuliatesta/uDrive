@@ -17,8 +17,16 @@ public class CoordinatesDataEvent {
      */
     public CoordinatesDataEvent(float x, float y, float z) {
         this.x = x;
-        this.y = y;
-        this.z = z;
+        this.y = getAbsoluteYValue(y);
+        this.z = getAbsoluteZValue(z);
+    }
+
+    private float getAbsoluteZValue(float z) {
+        return (z - 0.812349F);
+    }
+
+    private float getAbsoluteYValue(float y) {
+        return (y - 9.77631F);
     }
 
     public float getX() {

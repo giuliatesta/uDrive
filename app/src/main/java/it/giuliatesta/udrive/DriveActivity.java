@@ -119,6 +119,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     public void onDataChanged(AccelerometerDataEvent event) {
         // In base al tipo di evento, imposto diverse visualizzazioni
         if(event.isAStopEvent() == false) {
+            listViewSettings(event);
             switch (event.getType()) {
                 case DIRECTION_EVENT:
                     setDirection(event.getDirection());
@@ -131,7 +132,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                     setVerticalMotion(event.getVerticalMotion());
                     break;
             }
-            listViewSettings(event);
         }
     }
 
@@ -142,6 +142,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private void setVerticalMotion(VerticalMotion verticalMotion) {
         if(verticalMotion == POTHOLE || verticalMotion == ROADBUMP) {
             setImageBlue(img_vertical_motion);
+        } else {
+            setAllImagesWhite();
         }
     }
 

@@ -1,6 +1,7 @@
 package it.giuliatesta.udrive.dataProcessing;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
@@ -19,7 +20,40 @@ import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
 import static java.lang.Math.abs;
 
-public class AnalyzerHelper {
+class AnalyzerHelper {
+
+    private static class EventsUnderObservation {
+        private final List<CoordinatesDataEvent> eventsList;
+
+        private EventsUnderObservation(List<CoordinatesDataEvent> eventsList) {
+            this.eventsList = eventsList;
+        }
+
+
+        public double previousZ() {
+            return eventsList.get(1).getZ();
+        }
+
+        public double currentZ() {
+            return eventsList.get(0).getZ();
+        }
+
+        public double currentX() {
+            return eventsList.get(0).getX();
+        }
+
+        public double currentY() {
+            return eventsList.get(0).getY();
+        }
+
+        public double previousX() {
+            return eventsList.get(1).getX();
+        }
+
+        public double previousY() {
+            return eventsList.get(1).getY();
+        }
+    }
     /**
      * Controlla il tipo di evento che è appena arrivato dal sensore
      * @param coordinatesDataEventArrayList   lista degli eventi
@@ -29,14 +63,10 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        float currentZ = currentEvent.getZ();
-        float previousZ = previousEvent.getZ();
-        float currentX = currentEvent.getX();
-        float currentY = currentEvent.getY();
-
-        return previousZ == 0.0 && currentZ > 0.0 && abs(currentX) < abs(currentZ) && abs(currentY) < abs(currentZ);
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousZ() == 0.0) && (events.currentZ() > 0.0)
+                && (abs(events.currentX()) < abs(events.currentZ()))
+                && (abs(events.currentY()) < abs(events.currentZ()));
     }
 
     /**
@@ -49,13 +79,10 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        float currentZ = currentEvent.getZ();
-        float previousZ = previousEvent.getZ();
-        float currentX = currentEvent.getX();
-        float currentY = currentEvent.getY();
-        return previousZ == 0.0 && currentZ < 0.0 && abs(currentX) < abs(currentZ) && abs(currentY) < abs(currentZ);
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousZ() == 0.0) && (events.currentZ() < 0.0)
+                && (abs(events.currentX()) < abs(events.currentZ()))
+                && (abs(events.currentY()) < abs(events.currentZ()));
     }
 
     /**
@@ -67,13 +94,10 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousX = previousEvent.getX();
-        float currentX = currentEvent.getX();
-        float currentY = currentEvent.getY();
-        float currentZ = currentEvent.getZ();
-        return previousX == 0.0 && currentX < 0.0 && abs(currentY) < abs(currentX) && abs(currentZ) < abs(currentX);
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousX() == 0.0) && (events.currentX() < 0.0)
+                && (abs(events.currentY()) < abs(events.currentX()))
+                && (abs(events.currentZ()) < abs(events.currentX()));
     }
 
     /**
@@ -85,11 +109,8 @@ public class AnalyzerHelper {
         if (coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousX = previousEvent.getX();
-        float currentX = currentEvent.getX();
-        return previousX > 0.0 && currentX == 0.0;
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousX() > 0.0) && (events.currentX() == 0.0);
     }
 
     /**
@@ -101,14 +122,10 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousX = previousEvent.getX();
-        float currentX = currentEvent.getX();
-        float currentY = currentEvent.getY();
-        float currentZ = currentEvent.getZ();
-        return previousX == 0.0 && currentX > 0.0 && abs(currentY) < abs(currentX) && abs(currentZ) < abs(currentX);
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return events.previousX() == 0.0 && events.currentX() > 0.0
+                && abs(events.currentY()) < abs(events.currentX())
+                && abs(events.currentZ()) < abs(events.currentX());
     }
 
     /**
@@ -120,11 +137,8 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousX = previousEvent.getX();
-        float currentX = currentEvent.getX();
-        return previousX < 0.0 && currentX == 0.0;
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousX() < 0.0) && (events.currentX() == 0.0);
     }
 
     /**
@@ -136,13 +150,9 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousY = previousEvent.getY();
-        float currentY = currentEvent.getY();
-        float currentX = currentEvent.getX();
-        float currentZ = currentEvent.getZ();
-        return previousY == 0.0 && currentY > 0.0 && abs(currentX) < abs(currentY) && abs(currentZ) < abs(currentY);
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousY() == 0.0) && (events.currentY() > 0.0)
+                && (abs(events.currentX()) < abs(events.currentY())) && (abs(events.currentZ()) < abs(events.currentY()));
     }
 
     /**
@@ -154,11 +164,8 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousY = previousEvent.getY();
-        float currentY = currentEvent.getY();
-        return previousY < 0.0 && currentY == 0.0;
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousY() < 0.0) && (events.currentY() == 0.0);
     }
 
     /**
@@ -170,13 +177,10 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousY = previousEvent.getY();
-        float currentY = currentEvent.getY();
-        float currentX = currentEvent.getX();
-        float currentZ = currentEvent.getZ();
-        return previousY == 0.0 && currentY < 0.0 && abs(currentX) < abs(currentY) && abs(currentZ) < abs(currentY);
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousY() == 0.0) && (events.currentY() < 0.0)
+                && (abs(events.currentX()) < abs(events.currentY()))
+                && (abs(events.currentZ()) < abs(events.currentY()));
     }
 
     /**
@@ -188,11 +192,8 @@ public class AnalyzerHelper {
         if(coordinatesDataEventArrayList.size() < 2) {
             return false;
         }
-        CoordinatesDataEvent previousEvent = coordinatesDataEventArrayList.get(1);
-        CoordinatesDataEvent currentEvent = coordinatesDataEventArrayList.get(0);
-        float previousY = previousEvent.getY();
-        float currentY = currentEvent.getY();
-        return previousY > 0.0 && currentY == 0.0;
+        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
+        return (events.previousY() > 0.0) && (events.currentY() == 0.0);
     }
 
     /**

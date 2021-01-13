@@ -22,7 +22,7 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-public class CalculatorHelper {
+class CalculatorHelper {
 
 
     /**

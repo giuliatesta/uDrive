@@ -17,10 +17,11 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
+import it.giuliatesta.udrive.dataProcessing.DataManager;
 
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
-import static it.giuliatesta.udrive.DataManager.getInstance;
+import static it.giuliatesta.udrive.dataProcessing.DataManager.getInstance;
 import static it.giuliatesta.udrive.R.id.percentage_list_view;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;

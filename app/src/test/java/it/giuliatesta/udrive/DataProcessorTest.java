@@ -3,8 +3,7 @@ package it.giuliatesta.udrive;
 import org.junit.Test;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
-
-import static org.junit.Assert.*;
+import it.giuliatesta.udrive.dataProcessing.DataProcessor;
 
 public class DataProcessorTest {
 

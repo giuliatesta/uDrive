@@ -1,4 +1,4 @@
-package it.giuliatesta.udrive;
+package it.giuliatesta.udrive.dataProcessing;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -9,14 +9,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import it.giuliatesta.udrive.DataProcessor.AnalyzeResult;
+import it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
-import static it.giuliatesta.udrive.DataProcessor.AnalyzeResult.PROCESSED;
+import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.PROCESSED;
 
 /**
  Classe per la gestione degli eventi causati dalla modifica dei valori del sensore
@@ -55,7 +55,7 @@ public class DataManager implements SensorEventListener {
         Metodo per restituire l'unica instanza di DataManager se è già stata creata una volta
         oppure la crea.
      */
-    static DataManager getInstance(Context context) {
+    public static DataManager getInstance(Context context) {
         if(dataManager == null) {
             dataManager = new DataManager(context);
         }
@@ -69,7 +69,7 @@ public class DataManager implements SensorEventListener {
             float x = event.values[0];
             float y = event.values[1];
             float z = event.values[2];
-            Log.d("DataManager", "onSensorChanged: " + x + "   "+ (y-9.77631F) + "   "+ (z-0.812349F) );
+            Log.d("DataManager", "onSensorChanged: " + x + "   "+ (y-9.77631F) + "   "+ (z-0.81235F) );
             coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
             AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {
@@ -98,7 +98,7 @@ public class DataManager implements SensorEventListener {
     /**
         Metodo per registrare il listener
      */
-    void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
+    public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         accelerometerDataProcessor.registerListener(accelerometerDataEventListener);
     }
 }

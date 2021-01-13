@@ -20,37 +20,71 @@ import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
 import static java.lang.Math.abs;
 
+/**
+ * Classe di supporto per l'analisi degli eventi che arrivano dall'accelerometro
+ */
 class AnalyzerHelper {
 
+    /**
+     * Classe per la il recupero delle coordinate degli eventi nella lista,
+     * in particolare dell'ultimo e del penultimo
+     */
     private static class EventsUnderObservation {
         private final List<CoordinatesDataEvent> eventsList;
 
+        /**
+         * Costruttore
+         * @param eventsList    lista di eventi
+         */
         private EventsUnderObservation(List<CoordinatesDataEvent> eventsList) {
             this.eventsList = eventsList;
         }
 
-
-        public double previousZ() {
+        /**
+         * Restituisce il valore della coordinata Z del penultimo evento
+         * @return  coordinata Z
+         */
+        double previousZ() {
             return eventsList.get(1).getZ();
         }
 
-        public double currentZ() {
+        /**
+         * Restituisce il valore della coordinata Z dell'ultimo evento
+         * @return  coordinata Z
+         */
+        double currentZ() {
             return eventsList.get(0).getZ();
         }
 
-        public double currentX() {
+        /**
+         * Restituisce il valore della coordinata X dell'ultimo evento
+         * @return  coordinata X
+         */
+        double currentX() {
             return eventsList.get(0).getX();
         }
 
-        public double currentY() {
+        /**
+         * Restituisce il valore della coordinata Y dell'ultimo evento
+         * @return  coordinata Y
+         */
+        double currentY() {
             return eventsList.get(0).getY();
         }
 
-        public double previousX() {
+        /**
+         * Restituisce il valore della coordinata X del penultimo evento
+         * @return  coordinata X
+         */
+        double previousX() {
             return eventsList.get(1).getX();
         }
 
-        public double previousY() {
+        /**
+         * Restituisce il valore della coordinata Y del penultimo evento
+         * @return  coordinata Y
+         */
+        double previousY() {
             return eventsList.get(1).getY();
         }
     }

@@ -9,7 +9,7 @@ import static it.giuliatesta.udrive.dataProcessing.Constants.fourtyFiveDegree;
 import static it.giuliatesta.udrive.dataProcessing.Constants.oneHundredThirtyFive;
 import static it.giuliatesta.udrive.dataProcessing.Constants.threeHundredFifteen;
 import static it.giuliatesta.udrive.dataProcessing.Constants.threeHundredSixty;
-import static it.giuliatesta.udrive.dataProcessing.Constants.twoHundrenTwentyFive;
+import static it.giuliatesta.udrive.dataProcessing.Constants.twoHundredTwentyFive;
 import static it.giuliatesta.udrive.dataProcessing.Constants.zeroDegree;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
@@ -22,6 +22,9 @@ import static java.lang.Math.atan2;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+/**
+ * Classe di supporto per il calcolo della direzione, del movimento verticale e dei loro rispettivi punteggi
+ */
 class CalculatorHelper {
 
 
@@ -61,13 +64,13 @@ class CalculatorHelper {
         if (alpha >= fourtyFiveDegree && alpha <= oneHundredThirtyFive) {
             // Se l'angolo è compreso tra 45 e 135
             direction = FORWARD;
-        } else if (alpha >= twoHundrenTwentyFive && alpha <= threeHundredFifteen) {
+        } else if (alpha >= twoHundredTwentyFive && alpha <= threeHundredFifteen) {
             // Se l'angolo è compreso tra 225 e 315
             direction = BACKWARD;
         } else if ((alpha > threeHundredFifteen && alpha <= threeHundredSixty) || (alpha >= zeroDegree && alpha < fourtyFiveDegree)) {
             // Se l'angolo è compreso tra -45 e 45
             direction = RIGHT;
-        } else if (alpha > oneHundredThirtyFive && alpha < twoHundrenTwentyFive) {
+        } else if (alpha > oneHundredThirtyFive && alpha < twoHundredTwentyFive) {
             direction = LEFT;
         }
         return direction;

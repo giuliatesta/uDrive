@@ -5,13 +5,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
-import it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
+import it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
@@ -29,14 +28,15 @@ public class DataManager implements SensorEventListener {
     private DataProcessor accelerometerDataProcessor;
     private ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList;
     private static DataManager dataManager = null;
-
+    private final StorageListener storageListener;
     /**
         Costruttore singleton
      */
     private DataManager(Context context) {
         this.context = context;
-
+        storageListener = new StorageListener(context);
         sensorSettings();
+        this.registerListener(storageListener);
     }
 
     /**
@@ -69,7 +69,6 @@ public class DataManager implements SensorEventListener {
             float x = event.values[0];
             float y = event.values[1];
             float z = event.values[2];
-            Log.d("DataManager", "onSensorChanged: " + x + "   "+ (y-9.77631F) + "   "+ (z-0.81235F) );
             coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
             AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {

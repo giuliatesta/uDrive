@@ -40,7 +40,7 @@ import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.P
  */
 public class DataProcessor {
 
-    private AccelerometerDataEventListener accelerometerDataEventListener;
+    private ArrayList<AccelerometerDataEventListener> eventListeners = new ArrayList<>();
     public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
     private boolean leftTurn = false, rightTurn = false, pothole = false, roadBump = false;
 
@@ -143,8 +143,8 @@ public class DataProcessor {
     }
 
     private void notifyListener(AccelerometerDataEvent event) {
-        if (accelerometerDataEventListener != null) {
-            accelerometerDataEventListener.onDataChanged(event);
+        for(AccelerometerDataEventListener listener : eventListeners) {
+            listener.onDataChanged(event);
         }
     }
 
@@ -169,7 +169,7 @@ public class DataProcessor {
      * @param accelerometerDataEventListener    listener da registrare
      */
     void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
-        this.accelerometerDataEventListener = accelerometerDataEventListener;
+        eventListeners.add(accelerometerDataEventListener);
     }
 
 }

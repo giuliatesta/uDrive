@@ -88,6 +88,7 @@ class AnalyzerHelper {
             return eventsList.get(1).getY();
         }
     }
+
     /**
      * Controlla il tipo di evento che è appena arrivato dal sensore
      * @param coordinatesDataEventArrayList   lista degli eventi

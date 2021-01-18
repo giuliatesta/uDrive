@@ -35,13 +35,7 @@
     </application>
 
     <!-- Richiede necessariamente che il dispositivo abbia l'accelerometro -->
-    <uses-feature android:name="android.hardware.sensor.accelerometer"
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
         android:required="true" />
-    <!-- Richiede necessariamente che il dispositivo abbia il giroscopio -->
-    <uses-feature android:name="android.hardware.sensor.gyroscope"
-        android:required="true" />
-    <!-- Richiede necessariamente che il dispositivo abbia il sensore per l'orientamento -->
-    <uses-feature android:name="android.hardware.sensor.orientation"
-        android:required="true" />
-
 </manifest>

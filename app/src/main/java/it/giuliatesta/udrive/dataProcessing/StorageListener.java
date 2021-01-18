@@ -1,7 +1,6 @@
 package it.giuliatesta.udrive.dataProcessing;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +28,6 @@ public class StorageListener implements AccelerometerDataEventListener {
         try (FileWriter writer = new FileWriter(storageFile,true)){
             String line = createLine(event, writer);
             writer.append(line);
-            Log.d("StorageListener", "writeFile: REGISTRATO");
         } catch (IOException e) {
             e.printStackTrace();
         }

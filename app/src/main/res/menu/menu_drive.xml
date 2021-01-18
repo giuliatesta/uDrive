@@ -6,9 +6,4 @@
         android:title="@string/stop"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/home"
-        android:icon="@drawable/img_home"
-        android:title="@string/home"
-        app:showAsAction="ifRoom"/>
-
 </menu>

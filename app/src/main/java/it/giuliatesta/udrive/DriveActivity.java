@@ -106,9 +106,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
-                changeActivity(MainActivity.class);
-                return true;
             case R.id.stop:
                 changeActivity(ResultsActivity.class);
                 return true;

@@ -11,12 +11,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
+
 import static android.graphics.Color.WHITE;
 
 /**
  * Classe per la terza Activity --> da usare quando si termina la guida
  */
 public class ResultsActivity extends AppCompatActivity {
+    private ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList;
     private ArrayList<Integer> percentageList;
 
     @Override
@@ -26,7 +29,8 @@ public class ResultsActivity extends AppCompatActivity {
 
         // Impostazioni per le percentuali
         Intent intent = getIntent();
-        percentageList = (ArrayList<Integer>)intent.getSerializableExtra("percentageList");
+        accelerometerDataEventArrayList = (ArrayList<AccelerometerDataEvent>) intent.getSerializableExtra("percentageList");
+        percentageList = extractPercentageValues(accelerometerDataEventArrayList);
         textViewSettings();
 
         // Impostazioni del listener
@@ -34,6 +38,25 @@ public class ResultsActivity extends AppCompatActivity {
 
         //Impostazioni dell'immagine
         imageSettings();
+    }
+
+    private ArrayList<Integer> extractPercentageValues(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
+        ArrayList<Integer> percentages = new ArrayList<>();
+        for(AccelerometerDataEvent event : accelerometerDataEventArrayList) {
+            switch (event.getType()) {
+                case VERTICAL_MOTION_EVENT:
+                    percentages.add(0, event.getVerticalMotionPercentage());
+                    break;
+                case DIRECTION_EVENT:
+                    percentages.add(0, event.getDirectionPercentage());
+                    break;
+                case BOTH:
+                    percentages.add(0, event.getDirectionPercentage());
+                    percentages.add(0, event.getVerticalMotionPercentage());
+                    break;
+            }
+        }
+        return percentages;
     }
 
     /**

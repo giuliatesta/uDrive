@@ -16,7 +16,7 @@
     <string name="textview">TextView</string>
     <string name="thumbs_up">Thumbs up</string>
     <string name="stop">Stop</string>
-    <string name="home">Home</string>
+    <string name="reset">Reset History</string>
     <string name="road_bump">Road bump</string>
     <string name="secondrow">secondRow</string>
     <string name="firstrow">firstRow</string>

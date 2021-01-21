@@ -2,23 +2,37 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import it.giuliatesta.udrive.dataProcessing.DataManager;
+import it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus;
+
 import static android.graphics.Color.WHITE;
+import static it.giuliatesta.udrive.dataProcessing.DataManager.getInstance;
+import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.SUCCESS;
 
 /**
  * Classe per la prima Activity --> da usare quando si avvia l'applicazione
  */
 public class MainActivity extends AppCompatActivity {
+    private DataManager dataManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dataManager = getInstance(this);
         // Impostazioni per il listener
         listenerSettings();
 
@@ -51,10 +65,39 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Metodo per cambiare l'activity
+     *
      * @param view view
      */
     public void changeActivity(View view) {
         Intent intent = new Intent(this, DriveActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.resetStorage:
+                Log.d("MainActivity", "onOptionsItemSelected: RESET STORAGE FILE");
+                ResetStatus status = dataManager.getStorageListener().resetStorageFile();
+                makeFeedbackToast(status);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void makeFeedbackToast(ResetStatus status) {
+        if (status == SUCCESS) {
+            Toast.makeText(this, "Reset storage file successful!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "ERROR! Reset storage file impossible!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

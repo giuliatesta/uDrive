@@ -22,7 +22,7 @@ public class CoordinatesDataEvent {
     }
 
     private float getAbsoluteZValue(float z) {
-        return (z - 0.81235F);
+        return (z - 0.812349F);
     }
 
     private float getAbsoluteYValue(float y) {

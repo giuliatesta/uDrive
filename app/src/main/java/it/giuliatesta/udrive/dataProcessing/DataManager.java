@@ -29,6 +29,11 @@ public class DataManager implements SensorEventListener {
     private ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList;
     private static DataManager dataManager = null;
     private final StorageListener storageListener;
+
+    public StorageListener getStorageListener() {
+        return storageListener;
+    }
+
     /**
         Costruttore singleton
      */

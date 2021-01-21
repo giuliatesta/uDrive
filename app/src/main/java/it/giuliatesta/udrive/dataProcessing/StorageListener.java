@@ -10,18 +10,47 @@ import java.sql.Timestamp;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
+import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.*;
+import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.SUCCESS;
+
 public class StorageListener implements AccelerometerDataEventListener {
 
     private final Context context;
     private File storageFile;
+    public enum ResetStatus {
+        SUCCESS, FAILURE
+    };
 
     public StorageListener(Context context) {
         this.context = context;
         storageFile = createFile();
+        writeLine(createHeadLine(), storageFile);
+    }
+
+    private void writeLine(String line, File storageFile) {
+        try (FileWriter writer = new FileWriter(storageFile,true)){
+            writer.append(line);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private File createFile() {
-        return new File(context.getFilesDir(), "storageFile.txt");
+        String path = context.getFilesDir().getPath() + "/storageFile.txt";
+        File file = new File(path);
+        if(file.exists()) {
+            return file;
+        } else {
+            return new File(context.getFilesDir(), "storageFile.txt");
+        }
+    }
+
+    private String createHeadLine() {
+        return "\n---STARTED A NEW DRIVING---\n";
+    }
+
+    private String createEndLine() {
+        return "---FINISHED DRIVING--- \n\n";
     }
 
     private void writeFile(AccelerometerDataEvent event) {
@@ -76,6 +105,22 @@ public class StorageListener implements AccelerometerDataEventListener {
     public void onDataChanged(AccelerometerDataEvent event) {
         if(!event.isAStopEvent()) {
             writeFile(event);
+        }
+    }
+
+    public void stopWritingStorageFile() {
+        writeLine(createEndLine(), storageFile);
+    }
+
+    public ResetStatus resetStorageFile() {
+        try (FileWriter writer = new FileWriter(storageFile,true)){
+           storageFile.delete();
+           storageFile.createNewFile();
+           return SUCCESS;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return FAILURE;
+
         }
     }
 }

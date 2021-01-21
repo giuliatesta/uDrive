@@ -31,6 +31,7 @@ import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
  */
 
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
+    private DataManager dataManager;
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private ImageView img_forward, img_backward, img_left, img_right, img_vertical_motion;
 
@@ -42,7 +43,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         accelerometerEventList = new ArrayList<>();
 
         // Impostazioni per il dataManager: ottengo la sua istanza e registro il listener
-        DataManager dataManager = getInstance(this);
+        dataManager = getInstance(this);
         dataManager.registerListener(this);
 
         // Impostazioni per le immagini di decorazione
@@ -84,8 +85,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     /**
      *  Metodo per cambiare activity e andare alla Results
      */
-    public void changeActivity(Class cls) {
-        Intent intent = new Intent(this, cls);
+    public void changeActivity() {
+        Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("percentageList", accelerometerEventList);
         startActivity(intent);
     }
@@ -107,7 +108,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.stop:
-                changeActivity(ResultsActivity.class);
+                changeActivity();
+                dataManager.getStorageListener().stopWritingStorageFile();
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -100,4 +100,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR! Reset storage file impossible!", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

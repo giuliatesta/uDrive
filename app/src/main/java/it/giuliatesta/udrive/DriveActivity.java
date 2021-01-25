@@ -2,6 +2,7 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,16 +22,17 @@ import it.giuliatesta.udrive.dataProcessing.DataManager;
 
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
-import static it.giuliatesta.udrive.dataProcessing.DataManager.getInstance;
 import static it.giuliatesta.udrive.R.id.percentage_list_view;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
+import static it.giuliatesta.udrive.dataProcessing.DataManager.getInstance;
 
 /**
  Classe per la seconda Activity --> da usare quando si avvia la guida
  */
 
 public class DriveActivity extends AppCompatActivity implements AccelerometerDataEventListener {
+
     private DataManager dataManager;
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private ImageView img_forward, img_backward, img_left, img_right, img_vertical_motion;
@@ -51,6 +53,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
         // Impostazioni per le immagini delle direzioni
         directionAndVerticalMotionImageSettings();
+
+
     }
 
     /**
@@ -113,6 +117,14 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        SicureExitDialogFragment dialogFragment = new SicureExitDialogFragment();
+        dialogFragment.show(getSupportFragmentManager(), "sicure exit");
+
     }
 
     @Override

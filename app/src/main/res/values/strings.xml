@@ -20,4 +20,8 @@
     <string name="road_bump">Road bump</string>
     <string name="secondrow">secondRow</string>
     <string name="firstrow">firstRow</string>
+    <string name="popup">Sei sicuro di voler uscire?</string>
+    <string name="si">Sì</string>
+    <string name="no">No</string>
+
 </resources>

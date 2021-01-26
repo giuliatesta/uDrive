@@ -2,7 +2,6 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -115,8 +114,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
                 changeActivity();
                 dataManager.getStorageListener().stopWritingStorageFile();
                 return true;
+            default:
+                onBackPressed();
+                return true;
         }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -126,6 +127,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         dialogFragment.show(getSupportFragmentManager(), "sicure exit");
 
     }
+
 
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {

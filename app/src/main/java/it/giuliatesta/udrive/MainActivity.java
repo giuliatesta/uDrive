@@ -2,7 +2,7 @@ package it.giuliatesta.udrive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.resetStorage:
-                Log.d("MainActivity", "onOptionsItemSelected: RESET STORAGE FILE");
                 ResetStatus status = dataManager.getStorageListener().resetStorageFile();
                 makeFeedbackToast(status);
                 return true;
@@ -95,10 +94,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void makeFeedbackToast(ResetStatus status) {
         if (status == SUCCESS) {
-            Toast.makeText(this, "Reset storage file successful!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "File di archivio resettato", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "ERROR! Reset storage file impossible!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ERRORE! Impossibile resettare il file di archivio", Toast.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        boolean exit = false;
+        if (exit) {
+            finishAffinity();
+        }
+        else {
+            Toast.makeText(this, "Premi nuovamente per uscire",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    Intent a = new Intent(Intent.ACTION_MAIN);
+                    a.addCategory(Intent.CATEGORY_HOME);
+                    a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(a);
+                }
+            }, 1000);
+        }}
 }

@@ -88,7 +88,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     /**
      *  Metodo per cambiare activity e andare alla Results
      */
-    public void changeActivity() {
+    private void changeActivity() {
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("percentageList", accelerometerEventList);
         startActivity(intent);
@@ -103,15 +103,13 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.stop:
-                changeActivity();
-                dataManager.getStorageListener().stopWritingStorageFile();
-                return true;
-            default:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == R.id.stop) {
+            changeActivity();
+            dataManager.getStorageListener().stopWritingStorageFile();
+            return true;
         }
+        onBackPressed();
+        return true;
     }
 
 
@@ -126,7 +124,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
         // In base al tipo di evento, imposto diverse visualizzazioni
-        if(event.isAStopEvent() == false) {
+        if(!event.isAStopEvent()) {
             listViewSettings(event);
             switch (event.getType()) {
                 case DIRECTION_EVENT:

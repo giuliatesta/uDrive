@@ -19,7 +19,6 @@ import static android.graphics.Color.WHITE;
  * Classe per la terza Activity --> da usare quando si termina la guida
  */
 public class ResultsActivity extends AppCompatActivity {
-    private ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList;
     private ArrayList<Integer> percentageList;
 
     @Override
@@ -29,7 +28,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         // Impostazioni per le percentuali
         Intent intent = getIntent();
-        accelerometerDataEventArrayList = (ArrayList<AccelerometerDataEvent>) intent.getSerializableExtra("percentageList");
+        ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = (ArrayList<AccelerometerDataEvent>) intent.getSerializableExtra("percentageList");
         percentageList = extractPercentageValues(accelerometerDataEventArrayList);
         textViewSettings();
 
@@ -47,18 +46,20 @@ public class ResultsActivity extends AppCompatActivity {
      */
     private ArrayList<Integer> extractPercentageValues(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         ArrayList<Integer> percentages = new ArrayList<>();
-        for(AccelerometerDataEvent event : accelerometerDataEventArrayList) {
-            switch (event.getType()) {
-                case VERTICAL_MOTION_EVENT:
-                    percentages.add(0, event.getVerticalMotionPercentage());
-                    break;
-                case DIRECTION_EVENT:
-                    percentages.add(0, event.getDirectionPercentage());
-                    break;
-                case BOTH:
-                    percentages.add(0, event.getDirectionPercentage());
-                    percentages.add(0, event.getVerticalMotionPercentage());
-                    break;
+        if(accelerometerDataEventArrayList != null) {
+            for (AccelerometerDataEvent event : accelerometerDataEventArrayList) {
+                switch (event.getType()) {
+                    case VERTICAL_MOTION_EVENT:
+                        percentages.add(0, event.getVerticalMotionPercentage());
+                        break;
+                    case DIRECTION_EVENT:
+                        percentages.add(0, event.getDirectionPercentage());
+                        break;
+                    case BOTH:
+                        percentages.add(0, event.getDirectionPercentage());
+                        percentages.add(0, event.getVerticalMotionPercentage());
+                        break;
+                }
             }
         }
         return percentages;
@@ -80,11 +81,15 @@ public class ResultsActivity extends AppCompatActivity {
      * @return media delle percentuali = voto finale
      */
     private int getMeanValue(ArrayList<Integer> percentageList) {
+        if(percentageList.size() < 1) {
+            return 0;
+        }
+
         int mean = 0;
         for(int percentage: percentageList) {
             mean += percentage;
         }
-        return (int) mean/percentageList.size();
+        return mean /percentageList.size();
     }
 
     /**
@@ -112,7 +117,7 @@ public class ResultsActivity extends AppCompatActivity {
     /**
      *  Metodo per cambiare activity e tornare alla Main
      */
-    public void changeActivity(View view) {
+    private void changeActivity(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

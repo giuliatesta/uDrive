@@ -16,7 +16,6 @@ public class AccelerometerDataEvent implements Serializable {
     private int directionPercentage;
     private VerticalMotion verticalMotion;
     private int verticalMotionPercentage;
-    private double vectorValue;
     private EventType type;
     private boolean isAStopEvent;
 
@@ -24,24 +23,6 @@ public class AccelerometerDataEvent implements Serializable {
      * Costruttore vuoto
      */
     public AccelerometerDataEvent() {
-    }
-
-    /**
-     * Costruttore di un evento completo
-     * @param direction tipo di direzione
-     * @param directionPercentage   punteggio associato alla direzione
-     * @param verticalMotion    tipo di movimento verticale
-     * @param verticalMotionPercentage  punteggio associato al movimento
-     * @param vectorValue modulo del vettore accelerazione
-     */
-    public AccelerometerDataEvent(Direction direction, int directionPercentage, VerticalMotion verticalMotion, int verticalMotionPercentage, double vectorValue) {
-        this.direction = direction;
-        this.directionPercentage = directionPercentage;
-        this.verticalMotion = verticalMotion;
-        this.verticalMotionPercentage = verticalMotionPercentage;
-        this.vectorValue = vectorValue;
-        type = BOTH;
-        isAStopEvent = false;
     }
 
     /**
@@ -56,15 +37,27 @@ public class AccelerometerDataEvent implements Serializable {
         this.directionPercentage = directionPercentage;
         this.verticalMotion = verticalMotion;
         this.verticalMotionPercentage = verticalMotionPercentage;
-        type = BOTH;
-        isAStopEvent=false;
+        this.type = BOTH;
+        this.isAStopEvent=false;
+    }
+
+    /**
+     * Metodo per la creazione di un evento di tipo BOTH
+     * @param direction     tipo di direzione
+     * @param directionPercentage   punteggio associato alla direzione
+     * @param verticalMotion    tipo di movimento verticale
+     * @param verticalMotionPercentage  punteggio associato al movimento verticale
+     * @return nuova istanza dell'AccelerometerDataEvent di tipo BOTH
+     */
+    public static AccelerometerDataEvent createBothEvent(Direction direction, int directionPercentage, VerticalMotion verticalMotion, int verticalMotionPercentage) {
+        return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage);
     }
 
     /**
      * Metodo per la creazione di un evento di tipo DIRECTION_EVENT
      * @param direction     tipo di direzione
      * @param directionPercentage   punteggio associato alla direzione
-     * @return  nuova istanza dell'AccelerometerDataEvent di tipo DIRECTION5_EVENT
+     * @return  nuova istanza dell'AccelerometerDataEvent di tipo DIRECTION_EVENT
      */
     public static AccelerometerDataEvent createDirectionEvent(Direction direction, int directionPercentage) {
         return new AccelerometerDataEvent(direction, directionPercentage);
@@ -80,7 +73,6 @@ public class AccelerometerDataEvent implements Serializable {
         return new AccelerometerDataEvent(verticalMotion, verticalMotionPercentage);
     }
 
-
     /**
      * Costrutore per un evento di tipo DIRECTION_EVENT
      * @param direction tipo di direzione
@@ -91,9 +83,8 @@ public class AccelerometerDataEvent implements Serializable {
         this.directionPercentage = directionPercentage;
         this.verticalMotion = NONE;
         this.verticalMotionPercentage = 0;
-        type = DIRECTION_EVENT;
-        isAStopEvent=false;
-
+        this.type = DIRECTION_EVENT;
+        this.isAStopEvent=false;
     }
 
     /**
@@ -106,8 +97,8 @@ public class AccelerometerDataEvent implements Serializable {
         this.verticalMotionPercentage = verticalMotionPercentage;
         this.direction = Direction.NONE;
         this.directionPercentage = 0;
-        type = VERTICAL_MOTION_EVENT;
-        isAStopEvent=false;
+        this.type = VERTICAL_MOTION_EVENT;
+        this.isAStopEvent=false;
     }
 
     /**
@@ -115,7 +106,6 @@ public class AccelerometerDataEvent implements Serializable {
      * Non dovrebbe mai accadere che viene richiesta la direction quando l'evento è ti tipo VERTICAL_MOTION_EVENT
      * @return direzione indicata dall'accelerometro
      */
-
     public Direction getDirection() {
         return direction;
     }

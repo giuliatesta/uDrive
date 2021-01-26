@@ -26,6 +26,7 @@ import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.S
  */
 public class MainActivity extends AppCompatActivity {
     private DataManager dataManager;
+    private boolean exit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
      * Metodo per cambiare l'activity
      * @param view view
      */
-    public void changeActivity(View view) {
+    private void changeActivity(View view) {
         Intent intent = new Intent(this, DriveActivity.class);
         startActivity(intent);
     }
@@ -81,11 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.resetStorage:
-                ResetStatus status = dataManager.getStorageListener().resetStorageFile();
-                makeFeedbackToast(status);
-                return true;
+        if (item.getItemId() == R.id.resetStorage) {
+            ResetStatus status = dataManager.getStorageListener().resetStorageFile();
+            makeFeedbackToast(status);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        boolean exit = false;
         if (exit) {
             finishAffinity();
         }

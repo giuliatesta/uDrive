@@ -30,8 +30,8 @@ import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
  * Adapter creato per la gestione della visualizzazione della lista di eventi con relativi puntaggi nella DriveActivity
  */
 class CustomAdapter implements ListAdapter {
-    private ArrayList<AccelerometerDataEvent> accelerometerEventList;
-    private Context context;
+    private final ArrayList<AccelerometerDataEvent> accelerometerEventList;
+    private final Context context;
     private TextView textFirstRow, textSecondRow;
     private ImageView imageFirstRow, imageSecondRow;
 

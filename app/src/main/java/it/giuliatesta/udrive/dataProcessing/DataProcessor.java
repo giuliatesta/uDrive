@@ -8,6 +8,7 @@ import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
+import static it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent.createBothEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createBackwardEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createForwardEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createLeftEvent;
@@ -41,7 +42,7 @@ import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.P
  */
 public class DataProcessor {
 
-    private ArrayList<AccelerometerDataEventListener> eventListeners = new ArrayList<>();
+    private final ArrayList<AccelerometerDataEventListener> eventListeners = new ArrayList<>();
     public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
     private boolean leftTurn = false, rightTurn = false, pothole = false, roadBump = false;
 
@@ -69,7 +70,7 @@ public class DataProcessor {
         int verticalMotionPercentage = getVerticalMotionPercentage(verticalMotion, y);
 
         // Genera l'evento
-        return new AccelerometerDataEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage, vector);
+        return createBothEvent(direction, directionPercentage, verticalMotion, verticalMotionPercentage);
     }
 
     /**
@@ -136,7 +137,7 @@ public class DataProcessor {
             return PROCESSED;
         }
         else if (endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
-            pothole = true;
+            pothole = false;
             return NEED_OTHER_EVENTS;
         }
         AccelerometerDataEvent stopEvent = createStopEvent();

@@ -11,7 +11,6 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
 import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.*;
-import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.SUCCESS;
 
 /**
  * Classe listener per la gestione del file di archivio degli eventi ricevuti
@@ -19,7 +18,7 @@ import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.S
 public class StorageListener implements AccelerometerDataEventListener {
 
     private final Context context;
-    private File storageFile;
+    private final File storageFile;
 
     /**
      * Enum per indicare se l'operazione di reset del file di archivio è stata un successo o un fallimento
@@ -30,7 +29,7 @@ public class StorageListener implements AccelerometerDataEventListener {
          * FAILURE: se l'operazione non è andata a buon fine
          */
         SUCCESS, FAILURE
-    };
+    }
 
     /**
      * Costruttore
@@ -164,9 +163,11 @@ public class StorageListener implements AccelerometerDataEventListener {
     public ResetStatus resetStorageFile() {
         try (FileWriter writer = new FileWriter(storageFile,true)){
             // Cancello il precedente e ne creo uno nuovo vuoto
-           storageFile.delete();
-           storageFile.createNewFile();
-           return SUCCESS;
+           if(storageFile.delete() && storageFile.createNewFile()) {
+               return SUCCESS;
+           } else {
+               return FAILURE;
+           }
         } catch (IOException e) {
             e.printStackTrace();
             return FAILURE;

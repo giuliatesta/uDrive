@@ -24,7 +24,7 @@ import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.P
 public class DataManager implements SensorEventListener {
 
     private Sensor accelerometer;
-    private Context context;
+    private final Context context;
     private DataProcessor accelerometerDataProcessor;
     private ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList;
     private static DataManager dataManager = null;

@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Metodo per cambiare l'activity
-     *
      * @param view view
      */
     public void changeActivity(View view) {
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -92,10 +90,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Crea un toast per notificare all'utente lo stato dell'operazione
+     * @param status    stato dell'operazione
+     */
     private void makeFeedbackToast(ResetStatus status) {
         if (status == SUCCESS) {
+            // Se è stato un successo
             Toast.makeText(this, "File di archivio resettato", Toast.LENGTH_SHORT).show();
         } else {
+            // Se è stato un fallimento
             Toast.makeText(this, "ERRORE! Impossibile resettare il file di archivio", Toast.LENGTH_SHORT).show();
         }
     }

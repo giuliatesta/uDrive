@@ -40,6 +40,11 @@ public class ResultsActivity extends AppCompatActivity {
         imageSettings();
     }
 
+    /**
+     * Metodo per estrarre tutti i punteggi ottenuti dalla guida
+     * @param accelerometerDataEventArrayList   elenco di eventi ricevuti
+     * @return  lista di punteggi
+     */
     private ArrayList<Integer> extractPercentageValues(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
         ArrayList<Integer> percentages = new ArrayList<>();
         for(AccelerometerDataEvent event : accelerometerDataEventArrayList) {

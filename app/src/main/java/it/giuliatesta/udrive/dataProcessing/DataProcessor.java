@@ -32,6 +32,7 @@ import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getVerticalM
 import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getVerticalMotionPercentage;
 import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.NEED_OTHER_EVENTS;
 import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.PROCESSED;
+
 /**
     Classe che si occupa di elaborare i dati del sensore e generare i dati usati dalla UI
     x = indica destra sinistra
@@ -84,7 +85,8 @@ public class DataProcessor {
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
             notifyListener(straightForwardEvent);
             return PROCESSED;
-        } else if(isABackwardEvent(coordinatesDataEventArrayList)) {
+        }
+        else if (isABackwardEvent(coordinatesDataEventArrayList)) {
             AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
             notifyListener(backwardEvent);
             return PROCESSED;
@@ -97,7 +99,7 @@ public class DataProcessor {
             }
             return PROCESSED;
         }
-        else if(endOfLeftTurnEvent(coordinatesDataEventArrayList) && leftTurn) {
+        else if (endOfLeftTurnEvent(coordinatesDataEventArrayList) && leftTurn) {
             leftTurn = false;
             return NEED_OTHER_EVENTS;
         }
@@ -121,7 +123,7 @@ public class DataProcessor {
             }
             return PROCESSED;
         }
-        else if(endOfRoadBumpEvent(coordinatesDataEventArrayList) && roadBump) {
+        else if (endOfRoadBumpEvent(coordinatesDataEventArrayList) && roadBump) {
             roadBump = false;
             return NEED_OTHER_EVENTS;
         }
@@ -133,7 +135,7 @@ public class DataProcessor {
             }
             return PROCESSED;
         }
-        else if(endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
+        else if (endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
             pothole = true;
             return NEED_OTHER_EVENTS;
         }
@@ -142,12 +144,15 @@ public class DataProcessor {
         return NEED_OTHER_EVENTS;
     }
 
+    /**
+     * Metodo per notificare tutti i listener
+     * @param event evento da notificare
+     */
     private void notifyListener(AccelerometerDataEvent event) {
         for(AccelerometerDataEventListener listener : eventListeners) {
             listener.onDataChanged(event);
         }
     }
-
 
     /**
      * Crea una lista di AccelerometerDataEvent a partire da SensorEvent
@@ -162,7 +167,6 @@ public class DataProcessor {
         }
         return accelerometerDataEventArrayList;
     }
-
 
     /**
      * Metodo per registrare il listener.

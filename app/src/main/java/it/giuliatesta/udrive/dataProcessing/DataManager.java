@@ -30,10 +30,6 @@ public class DataManager implements SensorEventListener {
     private static DataManager dataManager = null;
     private final StorageListener storageListener;
 
-    public StorageListener getStorageListener() {
-        return storageListener;
-    }
-
     /**
         Costruttore singleton
      */
@@ -42,6 +38,14 @@ public class DataManager implements SensorEventListener {
         storageListener = new StorageListener(context);
         sensorSettings();
         this.registerListener(storageListener);
+    }
+
+    /**
+     * Metodo get che resistuisce il listener legato allo storage
+     * @return  storageListener
+     */
+    public StorageListener getStorageListener() {
+        return storageListener;
     }
 
     /**
@@ -69,7 +73,6 @@ public class DataManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
             float x = event.values[0];
             float y = event.values[1];
@@ -80,19 +83,6 @@ public class DataManager implements SensorEventListener {
                 coordinatesDataEventArrayList.clear();
             }
         }
-    }
-
-    /**
-     * Metodo per eliminare la componente di gravità da y.
-     * @param y         valore di accelerazione misurata al momento dell'evento
-     * @return          valore dell'accelerazione senza l'accelerazione di gravità. Pronto per i calcoli
-     */
-    private float getYValue(float y) {
-        return (y - 9.77631F);
-    }
-
-    private float getZValue(float z) {
-        return (z - 0.812349F);
     }
 
     @Override

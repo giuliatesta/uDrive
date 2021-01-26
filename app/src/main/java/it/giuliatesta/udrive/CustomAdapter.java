@@ -35,7 +35,11 @@ class CustomAdapter implements ListAdapter {
     private TextView textFirstRow, textSecondRow;
     private ImageView imageFirstRow, imageSecondRow;
 
-
+    /**
+     * Costruttore
+     * @param context context
+     * @param list lista di eventi da mostrare
+     */
     CustomAdapter(Context context, ArrayList<AccelerometerDataEvent> list) {
         this.accelerometerEventList = list;
         this.context = context;
@@ -105,6 +109,10 @@ class CustomAdapter implements ListAdapter {
         return convertView;
     }
 
+    /**
+     * In base al tipo di evento, mostra una rappresentazione diversa
+     * @param event evento considerato
+     */
     private void chooseTypeOfView(AccelerometerDataEvent event) {
         if(event.getType() == DIRECTION_EVENT) {
             listItemSettingsDirectionEvent(textFirstRow, imageFirstRow, event);
@@ -154,7 +162,6 @@ class CustomAdapter implements ListAdapter {
         image.setColorFilter(colorFilter);
     }
 
-
     /**
      * Imposta le impostazioni per la view con due righe con un evento di tipo BOTH
      * @param event evento da cui recuperare le informazioni da visualizzare
@@ -166,7 +173,6 @@ class CustomAdapter implements ListAdapter {
         //Per la seconda riga uso il movimento verticale
         listItemSettingsVerticalMotionEvent(textSecondRow, imageSecondRow, event);
     }
-
 
     /**
      * Sceglie il colore di sfondo in base al punteggio ottenuto

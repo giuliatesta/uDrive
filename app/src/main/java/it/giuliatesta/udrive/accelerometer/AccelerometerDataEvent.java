@@ -125,7 +125,6 @@ public class AccelerometerDataEvent implements Serializable {
      * Non dovrebbe mai accadere che viene richiesta la directionPercentage quando l'evento è ti tipo VERTICAL_MOTION_EVENT
      * @return percentuale
      */
-
     public int getDirectionPercentage() {
         return directionPercentage;
     }
@@ -148,10 +147,19 @@ public class AccelerometerDataEvent implements Serializable {
             return verticalMotion;
     }
 
+    /**
+     * chiede se l'evento è un evento di STOP, in cui non c'è nessun movimento
+     * @return  flag che indica se è un evento STOP
+     */
     public boolean isAStopEvent() {
         return isAStopEvent;
     }
 
+    /**
+     * Imposta il tipo di evento
+     * Se è un evento di tipo STOP il paramentro sarà TRUE, altrimenti FALSE
+     * @param AStopEvent    TRUE se è un evento STOP
+     */
     public void setAStopEvent(boolean AStopEvent) {
         isAStopEvent = AStopEvent;
     }

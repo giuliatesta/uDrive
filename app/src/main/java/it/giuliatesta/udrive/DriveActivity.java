@@ -94,9 +94,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         startActivity(intent);
     }
 
-    /**
-     *   Metodo per la creazione del menù
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -104,9 +101,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         return true;
     }
 
-    /**
-     * Metodo per gestire cosa viene selezionato nel menù
-     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -123,11 +117,11 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
     @Override
     public void onBackPressed() {
+        // Mostro un pop up per l'uscita in sicurezza
         SicureExitDialogFragment dialogFragment = new SicureExitDialogFragment();
         dialogFragment.show(getSupportFragmentManager(), "sicure exit");
 
     }
-
 
     @Override
     public void onDataChanged(AccelerometerDataEvent event) {
@@ -185,6 +179,9 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         }
     }
 
+    /**
+     * Imposta tutte le immagini di direzione e di movimento verticale bianche
+     */
     private void setAllImagesWhite() {
         setImageWhite(img_forward);
         setImageWhite(img_backward);

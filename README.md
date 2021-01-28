@@ -1,6 +1,6 @@
 # uDrive
 
-La app si occupa di valutare la guida. Per ora gestisce solo il sensore legato all'accelerometro. 
+La app si occupa di valutare la guida. 
 
 Nel package accelerometer, ci sono tutte le classi necessarie per la gestione dell'accelerometro. In particolare, AccelerometerDataEvent che rappresenta l'evento di modifica dei valori dell'accelerometro e AccelerometerDataEventListener che è una interfaccia per la gestione di questi eventi.
 

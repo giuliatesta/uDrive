@@ -33,9 +33,12 @@
 
     </application>
 
+    <!-- DEVICE FEATURES -->
     <!-- Richiede necessariamente che il dispositivo abbia l'accelerometro -->
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest>

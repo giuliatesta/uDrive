@@ -15,7 +15,6 @@
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/btn_guida_name"
         android:textColor="@color/outlineColor"
-        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -24,8 +23,7 @@
 
     <ImageView
         android:id="@+id/img_driving"
-        android:layout_width="225dp"
-        android:layout_height="225dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:contentDescription="@string/driving"
         app:layout_constraintBottom_toTopOf="@+id/btn_guida"
@@ -33,6 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/img_driving_main_activity" />
+        app:srcCompat="@drawable/img_driving_main_activity"
+        android:layout_width="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,9 +19,33 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <!-- Stile per i bottoni -->
     <style name="buttonStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="backgroundTint">@color/colorPrimary</item>
         <item name="android:textColor">@color/outlineColor</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="fontFamily">sans-serif</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">20sp</item>
     </style>
+
+    <!-- Stile per i frame -->
+    <style name="lowerFrameStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/backgroundColorFrame</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="layout_constraintTop_toTopOf">@+id/guideline_half</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+    </style>
+
+    <!-- Stile per le immagini -->
+    <style name="decorationImageStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+
+    </style>
+
 </resources>

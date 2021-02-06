@@ -48,12 +48,12 @@ public class DataProcessor {
 
     /**
         Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
-        @param x coordinata x dell'accelerazione
-        @param y coordinata y dell'accelerazione
-        @param z coordinata z dell'accelerazione
-        @return evento legato alla modifica valori rilevati dall'accelerometro
+     @return evento legato alla modifica valori rilevati dall'accelerometro
+      * @param x coordinata x dell'accelerazione
+     * @param y coordinata y dell'accelerazione
+     * @param z coordinata z dell'accelerazione
      */
-    public AccelerometerDataEvent calculateData(double x, double y, double z) {
+    public AccelerometerDataEvent calculateData(float x, float y, float z) {
         // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
 

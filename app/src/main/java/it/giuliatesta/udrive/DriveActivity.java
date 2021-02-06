@@ -78,10 +78,10 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      */
     private void directionAndVerticalMotionImageSettings() {
         img_forward = findViewById(R.id.img_diction_forward);
-        img_backward = findViewById(R.id.img_direction_backward);
+        img_backward = findViewById(R.id.img_diction_backard);
         img_left = findViewById(R.id.img_direction_left);
         img_right = findViewById(R.id.img_direction_right);
-        img_vertical_motion = findViewById(R.id.img_road_bump);
+        img_vertical_motion = findViewById(R.id.img_vertical_motion);
         setAllImagesWhite();
     }
 
@@ -146,10 +146,9 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      * @param verticalMotion movimento verticale
      */
     private void setVerticalMotion(VerticalMotion verticalMotion) {
+        setAllImagesWhite();
         if(verticalMotion == POTHOLE || verticalMotion == ROADBUMP) {
             setImageBlue(img_vertical_motion);
-        } else {
-            setAllImagesWhite();
         }
     }
 

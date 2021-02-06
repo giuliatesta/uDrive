@@ -9,13 +9,9 @@
 
     <Button
         android:id="@+id/btn_home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
+        style="@style/buttonStyle"
         android:onClick="changeActivity"
         android:text="@string/btn_home_name"
-        android:textColor="@color/outlineColor"
-        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,13 +19,13 @@
 
     <ImageView
         android:id="@+id/img_thumbs_up"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="100dp"
+        style="@style/decorationImageStyle"
+        android:layout_marginBottom="1dp"
         android:contentDescription="@string/thumbs_up"
         app:layout_constraintBottom_toTopOf="@+id/btn_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/img_thumbs_up" />
 
     <TextView
@@ -37,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/textview"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

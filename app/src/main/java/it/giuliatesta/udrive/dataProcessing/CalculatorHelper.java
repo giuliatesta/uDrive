@@ -34,7 +34,7 @@ class CalculatorHelper {
     static double getAccelerationVector(double x, double y, double z) {
 
         // Calcola la radice quadrata della somma dei quadrati delle coordinate
-        double absVector = sqrt(pow(x,2) + pow(y - 9.81,2) + pow(z,2));
+        double absVector = sqrt(pow(x,2) + pow(y, 2) + pow(z,2));
         if(z > 0) {
             // Se la componente z è positiva significa che sta accelerando nel senso di marcia --> accelera
             return absVector;

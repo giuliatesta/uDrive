@@ -1,249 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/AppTheme"
-    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary">
 
-    <FrameLayout
-        android:id="@+id/lower_frame"
-        android:layout_width="200dp"
-        android:layout_height="420dp"
-        android:background="@color/outlineColor"
-        android:backgroundTint="@color/outlineColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_half"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.43"/>
 
-        <View
-            android:id="@+id/dividerR"
-            android:layout_width="7dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="195dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_lower_left"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.27" />
 
-        <View
-            android:id="@+id/dividerL"
-            android:layout_width="7dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_lower_right"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.73" />
 
-        <ListView
-            android:id="@+id/percentage_list_view"
-            android:layout_width="208dp"
-            android:layout_height="match_parent"
-            android:divider="@color/backgroundColorFrame"
-            android:dividerHeight="5dp"
-            android:footerDividersEnabled="false"
-            android:headerDividersEnabled="false">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_upper_left"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.17031631" />
 
-        </ListView>
-    </FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_upper_right"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8321168" />
 
-    <FrameLayout
-        android:id="@+id/upper_frame"
-        android:layout_width="275dp"
-        android:layout_height="275dp"
-        android:background="@color/backgroundColorFrame"
-        android:backgroundTint="@color/backgroundColorFrame"
-        app:layout_constraintBottom_toTopOf="@+id/lower_frame"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_upper_horizontal"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.03009576" />
 
-        <ImageView
-            android:id="@+id/img_direction_left"
-            android:layout_width="80dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="15dp"
-            android:contentDescription="@string/left_turn"
-            app:layout_constraintEnd_toStartOf="@+id/img_direction_backward"
-            app:layout_constraintStart_toStartOf="@id/img_diction_forward"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/img_direction_left" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_lower_horizontal"
+        android:layout_width="26dp"
+        android:layout_height="42dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.40218878" />
 
-        <ImageView
-            android:id="@+id/img_diction_forward"
-            android:layout_width="75dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="20dp"
-            android:contentDescription="@string/straight_forward"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/img_direction_forward" />
-
-        <ImageView
-            android:id="@+id/img_direction_right"
-            android:layout_width="80dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="176dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="45dp"
-            android:contentDescription="@string/right_turn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/img_direction_backward"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/img_direction_right" />
-
-        <ImageView
-            android:id="@+id/img_direction_backward"
-            android:layout_width="75dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="175dp"
-            android:contentDescription="@string/backward"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/img_direction_backward"
-            tools:layout_editor_absoluteY="202dp" />
-
-        <ImageView
-            android:id="@+id/img_road_bump"
-            android:layout_width="70dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="102dp"
-            android:layout_marginTop="105dp"
-            android:contentDescription="@string/road_bump"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/img_vertical_motion" />
-
-        <View
-            android:id="@+id/divider_up"
-            android:layout_width="match_parent"
-            android:layout_height="7dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <View
-            android:id="@+id/divider_left"
-            android:layout_width="7dp"
-            android:layout_height="275dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/divider_up"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/divider_right"
-            android:layout_width="7dp"
-            android:layout_height="275dp"
-            android:background="@color/outlineColor"
-            android:backgroundTint="@color/outlineColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/divider_up"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </FrameLayout>
-
+    <!-- Frame per la parte sinistra, che contiene due immagini-->
     <FrameLayout
         android:id="@+id/left_frame"
-        android:layout_width="105dp"
-        android:layout_height="420dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="1dp"
-        android:background="@color/backgroundColorFrame"
+        style="@style/lowerFrameStyle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/lower_frame"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_lower_left"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_upper_lower">
+        app:layout_constraintTop_toTopOf="@+id/guideline_half">
 
         <ImageView
             android:id="@+id/img_steering_wheel"
-            android:layout_width="75dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="35dp"
+            style="@style/decorationImageStyle"
+            android:layout_marginTop="30dp"
             android:contentDescription="@string/steering_wheel"
             android:rotation="15"
             app:srcCompat="@drawable/img_steering_wheel_drive_activity" />
 
         <ImageView
             android:id="@+id/img_racing_cars"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
+            style="@style/decorationImageStyle"
             android:layout_marginTop="220dp"
-            android:layout_marginBottom="16dp"
             android:contentDescription="@string/racing_cars"
             android:rotation="-15"
             app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/img_racing_cars_drive_activity" />
     </FrameLayout>
 
+    <!-- Frame per la parte destra, che contiene due immagini-->
     <FrameLayout
         android:id="@+id/right_frame"
-        android:layout_width="105dp"
-        android:layout_height="420dp"
-        android:background="@color/backgroundColorFrame"
+        style="@style/lowerFrameStyle"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_lower_right"
+        app:layout_constraintTop_toTopOf="@+id/guideline_half">
 
         <ImageView
             android:id="@+id/img_traffic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="35dp"
+            style="@style/decorationImageStyle"
             android:contentDescription="@string/traffic"
+            android:layout_marginTop="30dp"
             android:rotation="-15"
             app:srcCompat="@drawable/img_traffic_drive_activity" />
 
         <ImageView
             android:id="@+id/img_car_road"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
+            style="@style/decorationImageStyle"
             android:layout_marginTop="220dp"
             android:contentDescription="@string/car_road"
             android:rotation="15"
             app:srcCompat="@drawable/img_car_road_drive_activity" />
-
     </FrameLayout>
 
-    <View
-        android:id="@+id/divider_upper_lower"
-        android:layout_width="409dp"
-        android:layout_height="7dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="427dp"
+    <!-- Frame per la parte centrale in basso, che contiene la listView per le percentuali-->
+    <FrameLayout
+        android:id="@+id/lower_frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/outlineColor"
-        android:backgroundTint="@color/outlineColor"
-        app:layout_constraintBottom_toBottomOf="@+id/lower_frame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_lower_right"
+        app:layout_constraintStart_toStartOf="@+id/guideline_lower_left"
+        app:layout_constraintTop_toTopOf="@+id/guideline_half">
+
+        <ListView
+            android:id="@+id/percentage_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:divider="@color/backgroundColorFrame"
+            android:dividerHeight="5dp"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"/>
+    </FrameLayout>
+
+    <!-- Frame per la parte alta, che conterrà le frecce e l'indicazione di movimento verticale-->
+    <FrameLayout
+        android:id="@+id/upper_frame_outline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/outlineColor"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_lower_horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_upper_right"
+        app:layout_constraintStart_toStartOf="@+id/guideline_upper_left"
+        app:layout_constraintTop_toTopOf="@id/guideline_upper_horizontal"
+        app:layout_constraintEnd_toEndOf="@id/guideline_upper_right"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_lower_horizontal">
+
+        <FrameLayout
+            android:id="@+id/upper_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@color/backgroundColorFrame">
+
+            <ImageView
+                android:id="@+id/img_diction_forward"
+                android:layout_width="wrap_content"
+                android:contentDescription="@string/straight_forward"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/img_direction_forward" />
+
+            <ImageView
+                android:id="@+id/img_diction_backard"
+                android:contentDescription="@string/backward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="10dp"
+                app:srcCompat="@drawable/img_direction_backward"/>
+
+            <ImageView
+                android:id="@+id/img_direction_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:contentDescription="@string/right_turn"
+                android:layout_marginEnd="10dp"
+                app:srcCompat="@drawable/img_direction_right" />
+
+            <ImageView
+                android:id="@+id/img_direction_left"
+                android:contentDescription="@string/left_turn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/img_direction_left" />
+
+            <ImageView
+                android:id="@+id/img_vertical_motion"
+                android:contentDescription="@string/vertical_motion"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/img_vertical_motion" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <!-- Divisore della parte superiore con la parte inferiore-->
+    <View
+        android:id="@+id/divider_half"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/outlineColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upper_frame" />
+        app:layout_constraintTop_toTopOf="@id/guideline_half"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_half"
+        tools:layout_editor_absoluteY="313dp" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="7dp"
-        android:layout_height="280dp"
-        android:layout_marginEnd="61dp"
-        android:background="@color/outlineColor"
-        android:backgroundTint="@color/outlineColor"
-        app:layout_constraintBottom_toTopOf="@+id/divider_upper_lower"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/upper_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

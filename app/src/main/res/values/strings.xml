@@ -3,7 +3,7 @@
     <string name="btn_guida_name">Comincia a guidare!</string>
     <string name="btn_home_name">Torna alla home</string>
     <string name="direction_image">Direction image</string>
-    <string name="percentage_value">percentage value</string>
+    <string name="percentage_value">Percentage value</string>
     <string name="left_turn">Left turn</string>
     <string name="straight_forward">Straight forward</string>
     <string name="right_turn">Right turn</string>
@@ -17,7 +17,7 @@
     <string name="thumbs_up">Thumbs up</string>
     <string name="stop">Stop</string>
     <string name="reset">Reset History</string>
-    <string name="road_bump">Road bump</string>
+    <string name="vertical_motion">Vertical Motion</string>
     <string name="secondrow">secondRow</string>
     <string name="firstrow">firstRow</string>
     <string name="popup">Sei sicuro di voler uscire?</string>

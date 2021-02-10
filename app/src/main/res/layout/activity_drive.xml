@@ -66,7 +66,7 @@
 
         <ImageView
             android:id="@+id/img_steering_wheel"
-            style="@style/decorationImageStyle"
+            style="@style/imageStyle"
             android:layout_marginTop="30dp"
             android:contentDescription="@string/steering_wheel"
             android:rotation="15"
@@ -74,7 +74,7 @@
 
         <ImageView
             android:id="@+id/img_racing_cars"
-            style="@style/decorationImageStyle"
+            style="@style/imageStyle"
             android:layout_marginTop="220dp"
             android:contentDescription="@string/racing_cars"
             android:rotation="-15"
@@ -93,7 +93,7 @@
 
         <ImageView
             android:id="@+id/img_traffic"
-            style="@style/decorationImageStyle"
+            style="@style/imageStyle"
             android:contentDescription="@string/traffic"
             android:layout_marginTop="30dp"
             android:rotation="-15"
@@ -101,7 +101,7 @@
 
         <ImageView
             android:id="@+id/img_car_road"
-            style="@style/decorationImageStyle"
+            style="@style/imageStyle"
             android:layout_marginTop="220dp"
             android:contentDescription="@string/car_road"
             android:rotation="15"
@@ -111,9 +111,7 @@
     <!-- Frame per la parte centrale in basso, che contiene la listView per le percentuali-->
     <FrameLayout
         android:id="@+id/lower_frame"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/outlineColor"
+        style="@style/upperFrameStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline_lower_right"
         app:layout_constraintStart_toStartOf="@+id/guideline_lower_left"
@@ -132,9 +130,7 @@
     <!-- Frame per la parte alta, che conterrà le frecce e l'indicazione di movimento verticale-->
     <FrameLayout
         android:id="@+id/upper_frame_outline"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/outlineColor"
+        style="@style/upperFrameStyle"
         app:layout_constraintBottom_toTopOf="@+id/guideline_lower_horizontal"
         app:layout_constraintEnd_toStartOf="@+id/guideline_upper_right"
         app:layout_constraintStart_toStartOf="@+id/guideline_upper_left"
@@ -151,26 +147,23 @@
 
             <ImageView
                 android:id="@+id/img_diction_forward"
-                android:layout_width="wrap_content"
+                style="@style/imageStyle"
                 android:contentDescription="@string/straight_forward"
-                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 app:srcCompat="@drawable/img_direction_forward" />
 
             <ImageView
                 android:id="@+id/img_diction_backard"
+                style="@style/imageStyle"
                 android:contentDescription="@string/backward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="10dp"
                 app:srcCompat="@drawable/img_direction_backward"/>
 
             <ImageView
                 android:id="@+id/img_direction_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/imageStyle"
                 android:layout_gravity="center_vertical|end"
                 android:contentDescription="@string/right_turn"
                 android:layout_marginEnd="10dp"
@@ -178,19 +171,17 @@
 
             <ImageView
                 android:id="@+id/img_direction_left"
+                style="@style/imageStyle"
                 android:contentDescription="@string/left_turn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 app:srcCompat="@drawable/img_direction_left" />
 
             <ImageView
                 android:id="@+id/img_vertical_motion"
+                style="@style/imageStyle"
                 android:contentDescription="@string/vertical_motion"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 app:srcCompat="@drawable/img_vertical_motion" />
         </FrameLayout>
     </FrameLayout>
@@ -200,7 +191,7 @@
         android:id="@+id/divider_half"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@color/outlineColor"
+        android:background="@color/whiteColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline_half"

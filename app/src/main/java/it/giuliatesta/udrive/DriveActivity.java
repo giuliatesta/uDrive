@@ -21,6 +21,7 @@ import it.giuliatesta.udrive.dataProcessing.DataManager;
 
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
+import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 import static it.giuliatesta.udrive.R.id.percentage_list_view;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
@@ -176,6 +177,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         }
     }
 
+
     /**
      * Imposta tutte le immagini di direzione e di movimento verticale bianche
      */
@@ -211,5 +213,17 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
      */
     private void setImageWhite(ImageView image) {
         image.setColorFilter(WHITE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dataManager.getSensorManager().registerListener(dataManager, dataManager.getAccelerometer(), SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dataManager.getSensorManager().unregisterListener(dataManager);
     }
 }

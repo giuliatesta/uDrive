@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,6 @@ import it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_ACCELEROMETER;
-import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
 import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.PROCESSED;
 
 /**
@@ -24,6 +24,7 @@ import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.P
 public class DataManager implements SensorEventListener {
 
     private Sensor accelerometer;
+    private SensorManager sensorManager;
     private final Context context;
     private DataProcessor accelerometerDataProcessor;
     private ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList;
@@ -35,8 +36,8 @@ public class DataManager implements SensorEventListener {
      */
     private DataManager(Context context) {
         this.context = context;
-        storageListener = new StorageListener(context);
         sensorSettings();
+        storageListener = new StorageListener(context);
         this.registerListener(storageListener);
     }
 
@@ -48,16 +49,20 @@ public class DataManager implements SensorEventListener {
         return storageListener;
     }
 
+    public Sensor getAccelerometer() {
+        return accelerometer;
+    }
+
     /**
      * Metodo per le impostazioni del sensore: scelgo il tipo di sensore, registro
      * il suo listener e credo un nuovo DataProcessor per manipolare i dati
      */
     private void sensorSettings() {
-        SensorManager manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        accelerometer = manager.getDefaultSensor(TYPE_ACCELEROMETER);
-        manager.registerListener(this, accelerometer, SENSOR_DELAY_NORMAL);
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(TYPE_ACCELEROMETER);
         accelerometerDataProcessor = new DataProcessor();
         coordinatesDataEventArrayList = new ArrayList<>();
+
     }
 
     /**
@@ -78,6 +83,7 @@ public class DataManager implements SensorEventListener {
             float y = event.values[1];
             float z = event.values[2];
             coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
+            Log.d("DataManager", "onSensorChanged: " + x + "\t"+y+"\t"+z);
             AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
             if (result == PROCESSED) {
                 coordinatesDataEventArrayList.clear();
@@ -94,5 +100,9 @@ public class DataManager implements SensorEventListener {
      */
     public void registerListener(AccelerometerDataEventListener accelerometerDataEventListener) {
         accelerometerDataProcessor.registerListener(accelerometerDataEventListener);
+    }
+
+    public SensorManager getSensorManager() {
+        return sensorManager;
     }
 }

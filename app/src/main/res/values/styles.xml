@@ -4,7 +4,12 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@color/outlineColor</item>
+        <item name="android:textColor">@color/whiteColor</item>
+    </style>
+
+    <style name="activityStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <!-- stile per l'AlertDialog della DriveActivity -->
@@ -22,15 +27,23 @@
     <!-- Stile per i bottoni -->
     <style name="buttonStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="backgroundTint">@color/colorPrimary</item>
-        <item name="android:textColor">@color/outlineColor</item>
+        <item name="android:textColor">@color/whiteColor</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="textStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/whiteColor</item>
         <item name="fontFamily">sans-serif</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">20sp</item>
     </style>
-
-    <!-- Stile per i frame -->
+    <!-- Stile per i frame inferiori -->
     <style name="lowerFrameStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:background">@color/backgroundColorFrame</item>
         <item name="android:layout_width">0dp</item>
@@ -40,11 +53,17 @@
         <item name="layout_constraintStart_toStartOf">parent</item>
     </style>
 
+    <!-- Stile per il frame superiore -->
+    <style name="upperFrameStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:background">@color/whiteColor</item>
+    </style>
+
     <!-- Stile per le immagini -->
-    <style name="decorationImageStyle" parent="Theme.AppCompat.Light.Dialog">
+    <style name="imageStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
 
     </style>
 

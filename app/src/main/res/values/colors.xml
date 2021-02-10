@@ -3,5 +3,5 @@
     <color name="colorPrimary">#0553C9</color>
     <color name="colorPrimaryDark">#004183</color>
     <color name = "backgroundColorFrame">#B8C5D8</color>
-    <color name = "outlineColor">#FFFFFF</color>
+    <color name = "whiteColor">#FFFFFF</color>
 </resources>

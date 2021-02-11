@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private void changeActivity(View view) {
         Intent intent = new Intent(this, DriveActivity.class);
         startActivity(intent);
+        Toast.makeText(this, "Tenere il dispositivo in verticale", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
-import it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult;
 
 import static android.content.Context.SENSOR_SERVICE;
-import static android.hardware.Sensor.TYPE_ACCELEROMETER;
+import static android.hardware.Sensor.TYPE_LINEAR_ACCELERATION;
+import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.lowPassFiltering;
 import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.PROCESSED;
 
 /**
@@ -59,7 +59,7 @@ public class DataManager implements SensorEventListener {
      */
     private void sensorSettings() {
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        accelerometer = sensorManager.getDefaultSensor(TYPE_ACCELEROMETER);
+        accelerometer = sensorManager.getDefaultSensor(TYPE_LINEAR_ACCELERATION);
         accelerometerDataProcessor = new DataProcessor();
         coordinatesDataEventArrayList = new ArrayList<>();
 
@@ -78,18 +78,22 @@ public class DataManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-            coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(x, y, z));
-            Log.d("DataManager", "onSensorChanged: " + x + "\t"+y+"\t"+z);
-            AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
-            if (result == PROCESSED) {
-                coordinatesDataEventArrayList.clear();
-            }
+         if(event.sensor.getType()==accelerometer.getType()) {       //Se gli eventi sono dell'accelerometro
+            analyzeSensorEvent(event);
         }
     }
+
+    private void analyzeSensorEvent(SensorEvent event) {
+        float accelerometerValues[] = new float[3];
+        accelerometerValues = lowPassFiltering(event.values.clone(), accelerometerValues);
+        coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(accelerometerValues[0], accelerometerValues[1], accelerometerValues[2]));
+        Log.d("DataManager", "onSensorChanged: x:" + (accelerometerValues[0]) + "\t y:" + (accelerometerValues[1]) + "\t z:" + (accelerometerValues[2]));
+        DataProcessor.AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
+        if (result == PROCESSED) {
+            coordinatesDataEventArrayList.clear();
+        }
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -105,4 +109,5 @@ public class DataManager implements SensorEventListener {
     public SensorManager getSensorManager() {
         return sensorManager;
     }
+
 }

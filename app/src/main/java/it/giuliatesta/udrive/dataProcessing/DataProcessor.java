@@ -1,5 +1,7 @@
 package it.giuliatesta.udrive.dataProcessing;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
@@ -84,23 +86,27 @@ public class DataProcessor {
 
         if (isAForwardEvent(coordinatesDataEventArrayList)) {
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
+            Log.d("DataProcessor", "analyze: FORWARD" );
             notifyListener(straightForwardEvent);
             return PROCESSED;
         }
         else if (isABackwardEvent(coordinatesDataEventArrayList)) {
             AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
             notifyListener(backwardEvent);
+            Log.d("DataProcessor", "analyze: BACKWARD" );
             return PROCESSED;
         }
         else if (startOfLeftTurnEvent(coordinatesDataEventArrayList)) {
             if(!rightTurn) {
                 AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
                 notifyListener(leftTurnEvent);
+                Log.d("DataProcessor", "analyze: LEFT");
                 leftTurn = true;
             }
             return PROCESSED;
         }
         else if (endOfLeftTurnEvent(coordinatesDataEventArrayList) && leftTurn) {
+            Log.d("DataProcessor", "analyze: END OF LEFT" );
             leftTurn = false;
             return NEED_OTHER_EVENTS;
         }
@@ -108,11 +114,13 @@ public class DataProcessor {
             if(!leftTurn) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
                 notifyListener(rightTurnEvent);
+                Log.d("DataProcessor", "analyze: RIGHT" );
                 rightTurn = true;
             }
             return PROCESSED;
         }
         else if(endOfRightTurnEvent(coordinatesDataEventArrayList) && rightTurn) {
+            Log.d("DataProcessor", "analyze: END OF RIGHT" );
             rightTurn = false;
             return NEED_OTHER_EVENTS;
         }
@@ -120,11 +128,13 @@ public class DataProcessor {
             if(!pothole) {
                 AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
                 notifyListener(roadBumpEvent);
+                Log.d("DataProcessor", "analyze: ROADBUMP" );
                 roadBump = true;
             }
             return PROCESSED;
         }
         else if (endOfRoadBumpEvent(coordinatesDataEventArrayList) && roadBump) {
+            Log.d("DataProcessor", "analyze: END OF ROADBUMP" );
             roadBump = false;
             return NEED_OTHER_EVENTS;
         }
@@ -132,16 +142,19 @@ public class DataProcessor {
             if(!roadBump) {
                 AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
                 notifyListener(potholeEvent);
+                Log.d("DataProcessor", "analyze: POTHOLE" );
                 pothole = true;
             }
             return PROCESSED;
         }
         else if (endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
+            Log.d("DataProcessor", "analyze: END OF POTHOLE" );
             pothole = false;
             return NEED_OTHER_EVENTS;
         }
         AccelerometerDataEvent stopEvent = createStopEvent();
         notifyListener(stopEvent);
+        Log.d("DataProcessor", "analyze: STOPEVENT");
         return NEED_OTHER_EVENTS;
     }
 

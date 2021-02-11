@@ -100,7 +100,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousZ()) < MinValue) && (events.currentZ() > 0.0)
+        return (abs(events.previousZ()) < MinValue) && (events.currentZ() > MinValue)
                 && (abs(events.currentX()) < abs(events.currentZ()))
                 && (abs(events.currentY()) < abs(events.currentZ()));
     }
@@ -116,7 +116,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousZ()) < MinValue) && (events.currentZ() < 0.0)
+        return (abs(events.previousZ()) < MinValue) && (events.currentZ() < -MinValue)
                 && (abs(events.currentX()) < abs(events.currentZ()))
                 && (abs(events.currentY()) < abs(events.currentZ()));
     }
@@ -131,7 +131,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousX()) < MinValue) && (events.currentX() < 0.0)
+        return (abs(events.previousX()) < MinValue) && (events.currentX() < -MinValue)
                 && (abs(events.currentY()) < abs(events.currentX()))
                 && (abs(events.currentZ()) < abs(events.currentX()));
     }
@@ -146,7 +146,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (events.previousX() > 0.0) && (events.currentX() == 0.0);
+        return (events.previousX() > MinValue) && (events.currentX() < MinValue);
     }
 
     /**
@@ -159,7 +159,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousX()) < MinValue) && (events.currentX() > 0.0)
+        return (abs(events.previousX()) < MinValue) && (events.currentX() > MinValue)
                 && (abs(events.currentY()) < abs(events.currentX()))
                 && (abs(events.currentZ()) < abs(events.currentX()));
     }
@@ -174,7 +174,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (events.previousX() < 0.0) && (abs(events.currentX()) < MinValue);
+        return (events.previousX() < -MinValue) && (abs(events.currentX()) < MinValue);
     }
 
     /**
@@ -187,7 +187,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousY()) < MinValue) && (events.currentY() > 0.0)
+        return (abs(events.previousY()) < MinValue) && (events.currentY() > MinValue)
                 && (abs(events.currentX()) < abs(events.currentY())) && (abs(events.currentZ()) < abs(events.currentY()));
     }
 
@@ -201,7 +201,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (events.previousY() < 0.0) && (abs(events.currentY()) < MinValue);
+        return (events.previousY() < -MinValue) && (abs(events.currentY()) < MinValue);
     }
 
     /**
@@ -214,7 +214,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousY()) < MinValue) && (events.currentY() < 0.0)
+        return (abs(events.previousY()) < MinValue) && (events.currentY() < -MinValue)
                 && (abs(events.currentX()) < abs(events.currentY()))
                 && (abs(events.currentZ()) < abs(events.currentY()));
     }
@@ -229,7 +229,7 @@ class AnalyzerHelper {
             return false;
         }
         EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (events.previousY() > 0.0) && (abs(events.currentY()) < MinValue);
+        return (events.previousY() > MinValue) && (abs(events.currentY()) < MinValue);
     }
 
     /**

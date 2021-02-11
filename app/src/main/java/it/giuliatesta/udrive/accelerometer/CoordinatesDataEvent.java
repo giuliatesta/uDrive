@@ -17,27 +17,29 @@ public class CoordinatesDataEvent {
      */
     public CoordinatesDataEvent(float x, float y, float z) {
         this.x = x;
-        this.y = getAbsoluteYValue(y);
-        this.z = getAbsoluteZValue(z);
+        this.y = y;
+        this.z = z;
     }
 
     /**
-     * Resistuisce il valore della coordinata z senza il valore iniziale di disturbo
-     * @param z     coordinata con il disturbo
-     * @return      coordinata senza il disturbo
+     * Filtro passa alto applicato ai valori che arrivano dall'accelerometro
+     * @param input     coordinata x
+     * @param output     coordinata y
+     * @return      valori filtrati
      */
-    private float getAbsoluteZValue(float z) {
-        return (z - 0.812349F);
+    public static float[] lowPassFiltering(float[] input, float[] output) {
+        float alpha = 0.25F;
+        if(output == null) {
+            return input;
+        }
+
+        for(int i = 0; i < input.length ; i++) {
+            output[i] = output[i] + alpha * (input[i]-output[i]);
+        }
+        return output;
     }
 
-    /**
-     * Restituisce il valore della coordinata y senza il valore iniziale che considera l'accelerazione di gravità
-     * @param y     coordinata con accelerazione di gravità
-     * @return      coordinata senza accelerazione di gravità
-     */
-    private float getAbsoluteYValue(float y) {
-        return (y - 9.77631F);
-    }
+
 
     /**
      * Metodo get per la coordinata x

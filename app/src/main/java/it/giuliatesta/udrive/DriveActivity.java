@@ -1,6 +1,8 @@
 package it.giuliatesta.udrive;
 
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +12,8 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
@@ -19,6 +23,8 @@ import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 import it.giuliatesta.udrive.dataProcessing.DataManager;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
@@ -36,6 +42,8 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     private DataManager dataManager;
     private ArrayList<AccelerometerDataEvent> accelerometerEventList;
     private ImageView img_forward, img_backward, img_left, img_right, img_vertical_motion;
+    private static final int WRITE_EXTERNAL_STORAGE = 0;
+    private static final int REQUEST_PERMISSION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,6 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
 
         // Impostazioni per il dataManager: ottengo la sua istanza e registro il listener
         dataManager = getInstance(this);
-        dataManager.registerListener(this);
 
         // Impostazioni per le immagini di decorazione
         decorationImageSettings();
@@ -54,7 +61,26 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         // Impostazioni per le immagini delle direzioni
         directionAndVerticalMotionImageSettings();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkPermissions()) {
+                dataManager.registerListener(this);
+            } else {
+                requestPermissions();
+            }
+        } else {
+            dataManager.registerListener(this);
+        }
+    }
 
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+    }
+
+    private boolean checkPermissions() {
+        int writePermissionCheckStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readPermissionCheckStorage = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+        return writePermissionCheckStorage == PERMISSION_GRANTED && readPermissionCheckStorage == PERMISSION_GRANTED;
     }
 
     /**

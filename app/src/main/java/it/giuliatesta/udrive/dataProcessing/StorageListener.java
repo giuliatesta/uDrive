@@ -10,7 +10,9 @@ import java.sql.Timestamp;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
-import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.*;
+import static android.os.Environment.getExternalStorageDirectory;
+import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.FAILURE;
+import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.SUCCESS;
 
 /**
  * Classe listener per la gestione del file di archivio degli eventi ricevuti
@@ -19,6 +21,7 @@ public class StorageListener implements AccelerometerDataEventListener {
 
     private final Context context;
     private final File storageFile;
+
 
     /**
      * Enum per indicare se l'operazione di reset del file di archivio è stata un successo o un fallimento
@@ -38,7 +41,6 @@ public class StorageListener implements AccelerometerDataEventListener {
     public StorageListener(Context context) {
         this.context = context;
         storageFile = createFile();
-        writeLine(createHeadLine(), storageFile);
     }
 
     /**
@@ -47,11 +49,12 @@ public class StorageListener implements AccelerometerDataEventListener {
      * @param storageFile   file in cui scrivere la riga
      */
     private void writeLine(String line, File storageFile) {
-        try (FileWriter writer = new FileWriter(storageFile,true)){
+        try (FileWriter writer = new FileWriter(storageFile, true)) {
             writer.append(line);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -60,12 +63,13 @@ public class StorageListener implements AccelerometerDataEventListener {
      * @return  file su cui scrivere
      */
     private File createFile() {
-        String path = context.getFilesDir().getPath() + "/storageFile.txt";
-        File file = new File(path);
+        String path = getExternalStorageDirectory().toString();
+        File file = new File(path, "storageFile.txt");
         if(file.exists()) {
-            // Se il file esiste già non ne crea uno nuovo
+            // Se esiste resituisce il file già esistente
             return file;
         } else {
+            // Se non esiste ne crea uno
             return new File(context.getFilesDir(), "storageFile.txt");
         }
     }
@@ -154,6 +158,10 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     public void stopWritingStorageFile() {
         writeLine(createEndLine(), storageFile);
+    }
+
+    public void startWritingStorageFile() {
+        writeLine(createHeadLine(), storageFile);
     }
 
     /**

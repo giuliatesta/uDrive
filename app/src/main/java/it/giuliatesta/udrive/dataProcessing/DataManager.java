@@ -39,6 +39,7 @@ public class DataManager implements SensorEventListener {
         sensorSettings();
         storageListener = new StorageListener(context);
         this.registerListener(storageListener);
+        storageListener.startWritingStorageFile();
     }
 
     /**

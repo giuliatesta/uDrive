@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private DataManager dataManager;
     private boolean exit = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Impostazioni per l'immagine
         imageSettings();
+
     }
 
     /**
@@ -125,4 +127,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 1000);
         }}
+
 }

@@ -72,11 +72,18 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         }
     }
 
+    /**
+     * Richiede i permessi necessari per scrivere e leggere dalla memoria esterna
+     */
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
         ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
     }
 
+    /**
+     * Controlla se i permessi sono stati garantiti
+     * @return  true se sono garantiti, false se non lo sono
+     */
     private boolean checkPermissions() {
         int writePermissionCheckStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int readPermissionCheckStorage = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
@@ -244,12 +251,14 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     @Override
     protected void onResume() {
         super.onResume();
+        // Registra il listener per leggere i dati dell'accelerometro elaborati
         dataManager.getSensorManager().registerListener(dataManager, dataManager.getAccelerometer(), SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        // Annulla la registrazione del listener per i dati dell'accelerometro elaborati
         dataManager.getSensorManager().unregisterListener(dataManager);
     }
 }

@@ -17,6 +17,11 @@ import androidx.fragment.app.DialogFragment;
 public class SicureExitDialogFragment extends DialogFragment {
 
     private Activity activity;
+
+    /**
+     * Costruttore
+     * @param activity activity da far ripartire quando viene premuto sì nel popup
+     */
     public SicureExitDialogFragment(Activity activity) {
         this.activity = activity;
     }

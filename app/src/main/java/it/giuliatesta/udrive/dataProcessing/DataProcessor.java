@@ -85,18 +85,21 @@ public class DataProcessor {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(coordinatesDataEventArrayList);
 
         if (isAForwardEvent(coordinatesDataEventArrayList)) {
+            // Se l'evento è un evento di tipo direzione FORWARD
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
             Log.d("DataProcessor", "analyze: FORWARD" );
             notifyListener(straightForwardEvent);
             return PROCESSED;
         }
         else if (isABackwardEvent(coordinatesDataEventArrayList)) {
+            // Se l'evento è un evento di tipo direzione BACKWARD
             AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
             notifyListener(backwardEvent);
             Log.d("DataProcessor", "analyze: BACKWARD" );
             return PROCESSED;
         }
         else if (startOfLeftTurnEvent(coordinatesDataEventArrayList)) {
+            // Se l'evento è un evento di tipo direzione LEFT
             if(!rightTurn) {
                 AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
                 notifyListener(leftTurnEvent);
@@ -106,11 +109,13 @@ public class DataProcessor {
             return PROCESSED;
         }
         else if (endOfLeftTurnEvent(coordinatesDataEventArrayList) && leftTurn) {
+            // Se l'evento di tipo direzione LEFT è terminato
             Log.d("DataProcessor", "analyze: END OF LEFT" );
             leftTurn = false;
             return NEED_OTHER_EVENTS;
         }
         else if (startOfRightTurnEvent(coordinatesDataEventArrayList)) {
+            // Se l'evento è un evento di tipo direzione RIGHT
             if(!leftTurn) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
                 notifyListener(rightTurnEvent);
@@ -120,11 +125,13 @@ public class DataProcessor {
             return PROCESSED;
         }
         else if(endOfRightTurnEvent(coordinatesDataEventArrayList) && rightTurn) {
+            // Se l'evento di tipo direzione RIGHT è terminato
             Log.d("DataProcessor", "analyze: END OF RIGHT" );
             rightTurn = false;
             return NEED_OTHER_EVENTS;
         }
         else if (startOfRoadBumpEvent(coordinatesDataEventArrayList)) {
+            // Se l'evento è un evento di tipo movimento verticale ROADBUMP
             if(!pothole) {
                 AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
                 notifyListener(roadBumpEvent);
@@ -134,11 +141,13 @@ public class DataProcessor {
             return PROCESSED;
         }
         else if (endOfRoadBumpEvent(coordinatesDataEventArrayList) && roadBump) {
+            // Se l'evento di tipo movimento verticale ROADBUMP è terminato
             Log.d("DataProcessor", "analyze: END OF ROADBUMP" );
             roadBump = false;
             return NEED_OTHER_EVENTS;
         }
         else if (startOfPotholeEvent(coordinatesDataEventArrayList)) {
+            // Se l'evento è un evento di tipo movimento verticale POTHOLE
             if(!roadBump) {
                 AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
                 notifyListener(potholeEvent);
@@ -148,6 +157,7 @@ public class DataProcessor {
             return PROCESSED;
         }
         else if (endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
+            // Se l'evento di tipo movimento verticale POTHOLE è terminato
             Log.d("DataProcessor", "analyze: END OF POTHOLE" );
             pothole = false;
             return NEED_OTHER_EVENTS;

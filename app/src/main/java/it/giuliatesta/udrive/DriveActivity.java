@@ -143,7 +143,7 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
     @Override
     public void onBackPressed() {
         // Mostro un pop up per l'uscita in sicurezza
-        SicureExitDialogFragment dialogFragment = new SicureExitDialogFragment();
+        SicureExitDialogFragment dialogFragment = new SicureExitDialogFragment(this);
         dialogFragment.show(getSupportFragmentManager(), "sicure exit");
 
     }

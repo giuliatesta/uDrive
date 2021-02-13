@@ -28,7 +28,7 @@ public class CoordinatesDataEvent {
      * @return      valori filtrati
      */
     public static float[] lowPassFiltering(float[] input, float[] output) {
-        float alpha = 0.25F;
+        float alpha = 0.5F;
         if(output == null) {
             return input;
         }

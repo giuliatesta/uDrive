@@ -1,5 +1,6 @@
 package it.giuliatesta.udrive;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -14,6 +15,11 @@ import androidx.fragment.app.DialogFragment;
  * Classe per la creazione del pop up di uscita sicura
  */
 public class SicureExitDialogFragment extends DialogFragment {
+
+    private Activity activity;
+    public SicureExitDialogFragment(Activity activity) {
+        this.activity = activity;
+    }
 
     @NonNull
     @Override
@@ -34,8 +40,8 @@ public class SicureExitDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        startActivity(intent);
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        getContext().startActivity(intent);
                     }
                 });
 

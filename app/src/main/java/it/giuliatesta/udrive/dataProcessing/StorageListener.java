@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 
-import static android.os.Environment.getExternalStorageDirectory;
 import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.FAILURE;
 import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.SUCCESS;
 
@@ -41,6 +40,7 @@ public class StorageListener implements AccelerometerDataEventListener {
     public StorageListener(Context context) {
         this.context = context;
         storageFile = createFile();
+        writeLine(createHeadLine(), storageFile);
     }
 
     /**
@@ -63,15 +63,9 @@ public class StorageListener implements AccelerometerDataEventListener {
      * @return  file su cui scrivere
      */
     private File createFile() {
-        String path = getExternalStorageDirectory().toString();
+        String path = context.getFilesDir().getPath();
         File file = new File(path, "storageFile.txt");
-        if(file.exists()) {
-            // Se esiste resituisce il file già esistente
-            return file;
-        } else {
-            // Se non esiste ne crea uno
-            return new File(context.getFilesDir(), "storageFile.txt");
-        }
+        return file;
     }
 
     /**
@@ -158,10 +152,6 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     public void stopWritingStorageFile() {
         writeLine(createEndLine(), storageFile);
-    }
-
-    public void startWritingStorageFile() {
-        writeLine(createHeadLine(), storageFile);
     }
 
     /**

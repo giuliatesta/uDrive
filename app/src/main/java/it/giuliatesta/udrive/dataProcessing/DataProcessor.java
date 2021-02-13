@@ -49,13 +49,13 @@ public class DataProcessor {
     private boolean leftTurn = false, rightTurn = false, pothole = false, roadBump = false;
 
     /**
-        Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
+     Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
      @return evento legato alla modifica valori rilevati dall'accelerometro
       * @param x coordinata x dell'accelerazione
      * @param y coordinata y dell'accelerazione
      * @param z coordinata z dell'accelerazione
      */
-    public AccelerometerDataEvent calculateData(float x, float y, float z) {
+    private AccelerometerDataEvent calculateData(float x, float y, float z) {
         // Calcola il vettore accelerazione
         double vector = getAccelerationVector(x, y, z);
 

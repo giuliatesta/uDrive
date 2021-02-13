@@ -85,7 +85,7 @@ public class DataManager implements SensorEventListener {
     }
 
     private void analyzeSensorEvent(SensorEvent event) {
-        float accelerometerValues[] = new float[3];
+        float[] accelerometerValues = new float[3];
         accelerometerValues = lowPassFiltering(event.values.clone(), accelerometerValues);
         coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(accelerometerValues[0], accelerometerValues[1], accelerometerValues[2]));
         Log.d("DataManager", "onSensorChanged: x:" + (accelerometerValues[0]) + "\t y:" + (accelerometerValues[1]) + "\t z:" + (accelerometerValues[2]));
@@ -94,7 +94,6 @@ public class DataManager implements SensorEventListener {
             coordinatesDataEventArrayList.clear();
         }
     }
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {

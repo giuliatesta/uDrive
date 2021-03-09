@@ -12,18 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-/**
- * Classe per la creazione del pop up di uscita sicura
- */
-public class SicureExitDialogFragment extends DialogFragment {
+import it.giuliatesta.udrive.dataProcessing.DataManager;
+
+import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation.HORIZONTAL;
+import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation.VERTICAL;
+
+public class OrientationDialogFragment extends DialogFragment {
 
     private Activity activity;
 
-    /**
-     * Costruttore
-     * @param activity activity da far ripartire quando viene premuto sì nel popup
-     */
-    public SicureExitDialogFragment(Activity activity) {
+
+    public OrientationDialogFragment(Activity activity) {
         this.activity = activity;
     }
 
@@ -32,27 +31,31 @@ public class SicureExitDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Builder builder = new Builder(getActivity(), R.style.dialogFragment);
 
-        // Imposto il messaggio da mostrare
-        builder.setMessage(R.string.popup)
-                // Imposto un bottone per il no
-                .setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
+        builder.setMessage("Scegli l'orientamento del dispositivo")
+                .setPositiveButton("Verticale", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        Intent intent = new Intent(activity, DriveActivity.class);
+                        getContext().startActivity(intent);
+                        DataManager.setDeviceOrientation(VERTICAL);
+
                     }
                 })
-                // Imposto un bottone per il sì
-                .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                .setNegativeButton("Orizzontale", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Intent intent = new Intent(activity, MainActivity.class);
+                        Intent intent = new Intent(activity, DriveActivity.class);
                         getContext().startActivity(intent);
+                        DataManager.setDeviceOrientation(HORIZONTAL);
                     }
                 });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-        return alertDialog;
+        return builder.create();
     }
+
+
 }

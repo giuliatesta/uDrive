@@ -64,7 +64,7 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     private File createFile() {
         String path = context.getFilesDir().getPath();
-        File file = new File(path, "storageFile.txt");
+        File file = new File(path, "uDrive.txt");
         return file;
     }
 

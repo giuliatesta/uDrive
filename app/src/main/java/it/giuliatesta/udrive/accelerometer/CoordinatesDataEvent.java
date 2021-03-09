@@ -1,5 +1,8 @@
 package it.giuliatesta.udrive.accelerometer;
 
+import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation.HORIZONTAL;
+import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation.VERTICAL;
+
 /**
  * Classe intermedia per la rappresentazione degli eventi raccolti dal sensore
  */
@@ -8,7 +11,11 @@ public class CoordinatesDataEvent {
     private final float x;
     private final float y;
     private final float z;
+    public enum DeviceOrientation {
+        VERTICAL, HORIZONTAL;
+    };
 
+    private static DeviceOrientation deviceOrientation = VERTICAL;
     /**
      * Costruttore
      * @param x     coordinata x dell'accelerazione
@@ -20,7 +27,6 @@ public class CoordinatesDataEvent {
         this.y = y;
         this.z = z;
     }
-
     /**
      * Filtro passa alto applicato ai valori che arrivano dall'accelerometro
      * @param input     coordinata x
@@ -28,7 +34,7 @@ public class CoordinatesDataEvent {
      * @return      valori filtrati
      */
     public static float[] lowPassFiltering(float[] input, float[] output) {
-        float alpha = 0.5F;
+        float alpha = 0.25F;
         if(output == null) {
             return input;
         }
@@ -39,6 +45,15 @@ public class CoordinatesDataEvent {
         return output;
     }
 
+    public static float[] setOrientation(float[] input, DeviceOrientation deviceOrientation) {
+        if(deviceOrientation == HORIZONTAL) {
+            // Se il dispositivo è utilizzato orizzontalmente, la coordinata z e la coordinata y sono da scambiare
+            float temp = input[1];
+            input[1] = input[2];
+            input[2] = temp;
+        }
+        return input;
+    }
 
 
     /**
@@ -63,5 +78,14 @@ public class CoordinatesDataEvent {
      */
     public float getZ() {
         return z;
+    }
+
+
+    public void setDeviceOrientation(DeviceOrientation deviceOrientation) {
+        this.deviceOrientation = deviceOrientation;
+    }
+
+    public static DeviceOrientation getDeviceOrientation() {
+        return deviceOrientation;
     }
 }

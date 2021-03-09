@@ -11,10 +11,12 @@ import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
+import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_LINEAR_ACCELERATION;
 import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.lowPassFiltering;
+import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.setOrientation;
 import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.PROCESSED;
 
 /**
@@ -30,6 +32,7 @@ public class DataManager implements SensorEventListener {
     private ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList;
     private static DataManager dataManager = null;
     private final StorageListener storageListener;
+    private static DeviceOrientation deviceOrientation = null;
 
     /**
         Costruttore singleton
@@ -85,9 +88,12 @@ public class DataManager implements SensorEventListener {
 
     private void analyzeSensorEvent(SensorEvent event) {
         float[] accelerometerValues = new float[3];
+        Log.d("DataManager", "non filtrati: x:" + (event.values[0]) + "\t y:" + (event.values[1]) + "\t z:" + (event.values[2]) + "\t" + deviceOrientation);
         accelerometerValues = lowPassFiltering(event.values.clone(), accelerometerValues);
-        coordinatesDataEventArrayList.add(0, new CoordinatesDataEvent(accelerometerValues[0], accelerometerValues[1], accelerometerValues[2]));
-        Log.d("DataManager", "onSensorChanged: x:" + (accelerometerValues[0]) + "\t y:" + (accelerometerValues[1]) + "\t z:" + (accelerometerValues[2]));
+        accelerometerValues = setOrientation(accelerometerValues, deviceOrientation);
+        CoordinatesDataEvent coordinatesDataEvent = new CoordinatesDataEvent(accelerometerValues[0], accelerometerValues[1], accelerometerValues[2]);
+        coordinatesDataEventArrayList.add(0, coordinatesDataEvent);
+        Log.d("DataManager", "filtrati: x:" + (accelerometerValues[0]) + "\t y:" + (accelerometerValues[1]) + "\t z:" + (accelerometerValues[2]));
         DataProcessor.AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
         if (result == PROCESSED) {
             coordinatesDataEventArrayList.clear();
@@ -109,4 +115,7 @@ public class DataManager implements SensorEventListener {
         return sensorManager;
     }
 
+    public static void setDeviceOrientation(DeviceOrientation deviceOrientation) {
+        DataManager.deviceOrientation = deviceOrientation;
+    }
 }

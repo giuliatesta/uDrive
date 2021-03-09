@@ -7,7 +7,7 @@ class Constants {
 
     // Intervalli
     static final double MaxValue = 15.0;     // 1.5g = circa 15 m/s^2
-    static final double MinValue = 0.5;
+    static final double MinValue = 1;
 
     // Angoli
     static final double zeroDegree = 0.0;

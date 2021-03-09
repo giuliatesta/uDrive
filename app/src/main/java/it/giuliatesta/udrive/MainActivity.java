@@ -61,9 +61,14 @@ public class MainActivity extends AppCompatActivity {
         btn_drive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeActivity(v);
+               showOrientationFragment();
             }
         });
+    }
+
+    private void showOrientationFragment() {
+        OrientationDialogFragment dialogFragment = new OrientationDialogFragment(this);
+        dialogFragment.show(getSupportFragmentManager(), "orientation");
     }
 
     /**

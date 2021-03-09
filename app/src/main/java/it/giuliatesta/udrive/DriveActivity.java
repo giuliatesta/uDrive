@@ -261,4 +261,5 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         // Annulla la registrazione del listener per i dati dell'accelerometro elaborati
         dataManager.getSensorManager().unregisterListener(dataManager);
     }
+
 }

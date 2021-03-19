@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
 import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation;
+import it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult;
 
 import static android.content.Context.SENSOR_SERVICE;
 import static android.hardware.Sensor.TYPE_LINEAR_ACCELERATION;
@@ -88,14 +89,16 @@ public class DataManager implements SensorEventListener {
 
     private void analyzeSensorEvent(SensorEvent event) {
         float[] accelerometerValues = new float[3];
-        Log.d("DataManager", "non filtrati: x:" + (event.values[0]) + "\t y:" + (event.values[1]) + "\t z:" + (event.values[2]) + "\t" + deviceOrientation);
+        //Log.d("DataManager", "non filtrati: x:" + (event.values[0]) + "\t y:" + (event.values[1]) + "\t z:" + (event.values[2]) + "\t" + deviceOrientation);
         accelerometerValues = lowPassFiltering(event.values.clone(), accelerometerValues);
         accelerometerValues = setOrientation(accelerometerValues, deviceOrientation);
         CoordinatesDataEvent coordinatesDataEvent = new CoordinatesDataEvent(accelerometerValues[0], accelerometerValues[1], accelerometerValues[2]);
         coordinatesDataEventArrayList.add(0, coordinatesDataEvent);
         Log.d("DataManager", "filtrati: x:" + (accelerometerValues[0]) + "\t y:" + (accelerometerValues[1]) + "\t z:" + (accelerometerValues[2]));
-        DataProcessor.AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
+        AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
         if (result == PROCESSED) {
+            Log.d("DataManager", "analyzeSensorEvent: PROCESSED");
+            storageListener.writeCoordinates(coordinatesDataEventArrayList);
             coordinatesDataEventArrayList.clear();
         }
     }

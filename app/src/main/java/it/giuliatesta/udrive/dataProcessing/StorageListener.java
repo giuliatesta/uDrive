@@ -1,14 +1,17 @@
 package it.giuliatesta.udrive.dataProcessing;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEventListener;
+import it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent;
 
 import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.FAILURE;
 import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.SUCCESS;
@@ -20,6 +23,24 @@ public class StorageListener implements AccelerometerDataEventListener {
 
     private final Context context;
     private final File storageFile;
+
+    public void writeCoordinates(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        String line = createCoordinatesLine(coordinatesDataEventArrayList);
+        try (FileWriter writer = new FileWriter(storageFile, true)) {
+            writer.append(line);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String createCoordinatesLine(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        String line = "";
+        for(CoordinatesDataEvent event : coordinatesDataEventArrayList) {
+            line = "X: " + event.getX() + "\tY: " + event.getY() + "\tZ: " + event.getZ() + "\n";
+        }
+        return line;
+    }
+
 
 
     /**
@@ -64,8 +85,8 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     private File createFile() {
         String path = context.getFilesDir().getPath();
-        File file = new File(path, "uDrive.txt");
-        return file;
+        Log.d("StorageListener", "createFile: " + path);
+        return new File(path, "uDrive.txt");
     }
 
     /**
@@ -152,6 +173,7 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     public void stopWritingStorageFile() {
         writeLine(createEndLine(), storageFile);
+
     }
 
     /**

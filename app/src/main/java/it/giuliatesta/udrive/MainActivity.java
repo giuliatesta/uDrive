@@ -27,6 +27,7 @@ import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.S
 public class MainActivity extends AppCompatActivity {
     private DataManager dataManager;
     private boolean exit = false;
+    private OrientationDialogFragment dialogFragment;
 
 
     @Override
@@ -61,18 +62,19 @@ public class MainActivity extends AppCompatActivity {
         btn_drive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               showOrientationFragment();
+                showOrientationFragment();
             }
         });
     }
 
     private void showOrientationFragment() {
-        OrientationDialogFragment dialogFragment = new OrientationDialogFragment(this);
+        dialogFragment = new OrientationDialogFragment(this);
         dialogFragment.show(getSupportFragmentManager(), "orientation");
     }
 
     /**
      * Metodo per cambiare l'activity
+     *
      * @param view view
      */
     private void changeActivity(View view) {
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.resetStorage) {
             ResetStatus status = dataManager.getStorageListener().resetStorageFile();
-            makeFeedbackToast(status);
+            makeResetFeedbackToast(status);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -100,9 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Crea un toast per notificare all'utente lo stato dell'operazione
-     * @param status    stato dell'operazione
+     *
+     * @param status stato dell'operazione
      */
-    private void makeFeedbackToast(ResetStatus status) {
+    private void makeResetFeedbackToast(ResetStatus status) {
         if (status == SUCCESS) {
             // Se è stato un successo
             Toast.makeText(this, "File di archivio resettato", Toast.LENGTH_SHORT).show();
@@ -113,11 +116,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         if (exit) {
             finishAffinity();
-        }
-        else {
+        } else {
             Toast.makeText(this, "Premi nuovamente per uscire",
                     Toast.LENGTH_SHORT).show();
             exit = true;
@@ -131,6 +133,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(a);
                 }
             }, 1000);
-        }}
-
+        }
+    }
 }

@@ -70,6 +70,7 @@
             android:layout_marginTop="30dp"
             android:contentDescription="@string/steering_wheel"
             android:rotation="15"
+            android:layout_marginStart="10dp"
             app:srcCompat="@drawable/img_steering_wheel_drive_activity" />
 
         <ImageView
@@ -78,6 +79,7 @@
             android:layout_marginTop="220dp"
             android:contentDescription="@string/racing_cars"
             android:rotation="-15"
+            android:layout_marginStart="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/img_racing_cars_drive_activity" />
     </FrameLayout>
@@ -97,6 +99,7 @@
             android:contentDescription="@string/traffic"
             android:layout_marginTop="30dp"
             android:rotation="-15"
+            android:layout_marginStart="10dp"
             app:srcCompat="@drawable/img_traffic_drive_activity" />
 
         <ImageView
@@ -105,6 +108,7 @@
             android:layout_marginTop="220dp"
             android:contentDescription="@string/car_road"
             android:rotation="15"
+            android:layout_marginStart="10dp"
             app:srcCompat="@drawable/img_car_road_drive_activity" />
     </FrameLayout>
 

@@ -1,6 +1,7 @@
 package it.giuliatesta.udrive.dataProcessing;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
@@ -84,7 +85,7 @@ public class StorageListener implements AccelerometerDataEventListener {
      * @return  file su cui scrivere
      */
     private File createFile() {
-        String path = context.getFilesDir().getPath();
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
         Log.d("StorageListener", "createFile: " + path);
         return new File(path, "uDrive.txt");
     }

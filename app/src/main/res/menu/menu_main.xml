@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/resetStorage"
-        android:icon="@drawable/img_reset_history"
+        android:icon="@drawable/img_reset_storage"
         android:title="@string/reset"
         app:showAsAction="always" />
+
 </menu>

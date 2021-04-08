@@ -32,6 +32,13 @@
                 android:value="it.giuliatesta.udrive.DriveActivity"/>
         </activity>
 
+        <activity android:name="it.giuliatesta.udrive.SettingsActivity"
+            android:parentActivityName="it.giuliatesta.udrive.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.giuliatesta.udrive.MainActivity" />
+        </activity>
+
     </application>
 
     <!-- DEVICE FEATURES -->

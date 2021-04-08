@@ -3,6 +3,7 @@ package it.giuliatesta.udrive.dataProcessing;
 import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
+import static it.giuliatesta.udrive.dataProcessing.Configuration.INSTANCE;
 import static it.giuliatesta.udrive.dataProcessing.Constants.MaxValue;
 import static it.giuliatesta.udrive.dataProcessing.Constants.MinValue;
 import static it.giuliatesta.udrive.dataProcessing.Constants.fourtyFiveDegree;
@@ -111,9 +112,9 @@ class CalculatorHelper {
      */
     static VerticalMotion getVerticalMotion(double y) {
         VerticalMotion verticalMotion = NONE;
-        if (y > MinValue) {
+        if (y > INSTANCE.getMinValueY()) {
             verticalMotion = ROADBUMP;
-        } else if (y < -MinValue) {
+        } else if (y < -INSTANCE.getMinValueY()) {
             verticalMotion = POTHOLE;
         }
         return verticalMotion;

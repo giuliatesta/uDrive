@@ -6,4 +6,9 @@
         android:title="@string/reset"
         app:showAsAction="always" />
 
+    <item android:id = "@+id/settings"
+        android:icon="@drawable/img_settings"
+        android:title="@string/settings"
+        app:showAsAction="always"/>
+
 </menu>

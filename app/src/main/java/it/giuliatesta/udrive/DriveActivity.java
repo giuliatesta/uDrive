@@ -62,14 +62,11 @@ public class DriveActivity extends AppCompatActivity implements AccelerometerDat
         directionAndVerticalMotionImageSettings();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkPermissions()) {
-                dataManager.registerListener(this);
-            } else {
+            if (!checkPermissions()) {
                 requestPermissions();
             }
-        } else {
-            dataManager.registerListener(this);
         }
+        dataManager.registerListener(this);
     }
 
     /**

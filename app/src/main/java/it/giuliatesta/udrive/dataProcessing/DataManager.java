@@ -88,6 +88,7 @@ public class DataManager implements SensorEventListener {
     }
 
     private void analyzeSensorEvent(SensorEvent event) {
+        Log.d("DataManager", "MIN VALUES: " + Configuration.INSTANCE.getMinValueX() + "   " + Configuration.INSTANCE.getMinValueY() + "    " + Configuration.INSTANCE.getMinValueZ());
         float[] accelerometerValues = new float[3];
         accelerometerValues = lowPassFiltering(event.values.clone(), accelerometerValues);
         accelerometerValues = setOrientation(accelerometerValues, deviceOrientation);

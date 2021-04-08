@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         // Impostazioni per l'immagine
         imageSettings();
 
+
     }
 
     /**
@@ -96,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
             ResetStatus status = dataManager.getStorageListener().resetStorageFile();
             makeResetFeedbackToast(status);
             return true;
+        } else if(item.getItemId() == R.id.settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -73,17 +73,6 @@ public class MainActivity extends AppCompatActivity {
         dialogFragment.show(getSupportFragmentManager(), "orientation");
     }
 
-    /**
-     * Metodo per cambiare l'activity
-     *
-     * @param view view
-     */
-    private void changeActivity(View view) {
-        Intent intent = new Intent(this, DriveActivity.class);
-        startActivity(intent);
-        Toast.makeText(this, "Tenere il dispositivo in verticale", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -115,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "File di archivio resettato", Toast.LENGTH_SHORT).show();
         } else {
             // Se è stato un fallimento
-            Toast.makeText(this, "ERRORE! Impossibile resettare il file di archivio", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ERRORE! Impossibile resettare il file", Toast.LENGTH_SHORT).show();
         }
     }
 

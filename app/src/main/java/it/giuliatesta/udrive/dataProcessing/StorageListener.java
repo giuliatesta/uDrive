@@ -52,7 +52,7 @@ public class StorageListener implements AccelerometerDataEventListener {
          * SUCCESS: se l'operazione è avvenuta correttamente
          * FAILURE: se l'operazione non è andata a buon fine
          */
-        SUCCESS, FAILURE
+        SUCCESS, FAILURE;
     }
 
     /**
@@ -194,5 +194,9 @@ public class StorageListener implements AccelerometerDataEventListener {
             return FAILURE;
 
         }
+    }
+
+    public File getStorageFile() {
+        return storageFile;
     }
 }

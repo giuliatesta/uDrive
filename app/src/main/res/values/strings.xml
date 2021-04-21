@@ -28,4 +28,5 @@
     <string name="min_value_x">Modifica la soglia minima per x:</string>
     <string name="min_value_y">Modifica la soglia minima per y:</string>
     <string name="min_value_z">Modifica la soglia minima per z:</string>
+    <string name="max_value">Modifica la soglia massima:</string>
 </resources>

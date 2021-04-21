@@ -24,24 +24,28 @@ public class SettingsActivity extends AppCompatActivity {
         SeekBar seekBarX = findViewById(R.id.seek_bar_x);
         SeekBar seekBarY = findViewById(R.id.seek_bar_y);
         SeekBar seekBarZ = findViewById(R.id.seek_bar_z);
+        SeekBar seekBarMax = findViewById(R.id.seek_bar_max);
 
         double minValueX = Configuration.INSTANCE.getMinValueX();
         double minValueY = Configuration.INSTANCE.getMinValueY();
         double minValueZ = Configuration.INSTANCE.getMinValueZ();
+        double maxValue = Configuration.INSTANCE.getMaxValue();
 
         final TextView textViewX = findViewById(R.id.x_value);
         final TextView textViewY = findViewById(R.id.y_value);
         final TextView textViewZ = findViewById(R.id.z_value);
+        final TextView textViewMax = findViewById(R.id.max_value);
 
-        textViewX.setText(""+ minValueX);
-        textViewY.setText(""+ minValueY);
-        textViewZ.setText(""+ minValueZ);
+        textViewX.setText(String.valueOf(minValueX));
+        textViewY.setText(String.valueOf(minValueY));
+        textViewZ.setText(String.valueOf(minValueZ));
+        textViewMax.setText(String.valueOf(maxValue));
 
         // Listener per il seek bar della componente x
         OnSeekBarChangeListener seekBarXChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                double newMinValue = Configuration.INSTANCE.calculateProportion(progress);
+                double newMinValue = Configuration.INSTANCE.calculateProportionForMinValue(progress);
                 textViewX.setText("" + newMinValue);
                 Configuration.INSTANCE.setMinValueX(newMinValue);
             }
@@ -60,7 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
         OnSeekBarChangeListener seekBarYChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                double newMinValue = Configuration.INSTANCE.calculateProportion(progress);
+                double newMinValue = Configuration.INSTANCE.calculateProportionForMinValue(progress);
                 textViewY.setText("" + newMinValue);
                 Configuration.INSTANCE.setMinValueY(newMinValue);
             }
@@ -79,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
         OnSeekBarChangeListener seekBarZChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                double newMinValue = Configuration.INSTANCE.calculateProportion(progress);
+                double newMinValue = Configuration.INSTANCE.calculateProportionForMinValue(progress);
                 textViewZ.setText("" + newMinValue);
                 Configuration.INSTANCE.setMinValueZ(newMinValue);
             }
@@ -94,6 +98,25 @@ public class SettingsActivity extends AppCompatActivity {
         };
         seekBarZ.setOnSeekBarChangeListener(seekBarZChangeListener);
 
+        OnSeekBarChangeListener seekBarMaxChangeListener = new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                double newMaxValue = Configuration.INSTANCE.calculateProportionForMaxValue(progress);
+                textViewMax.setText(String.valueOf(newMaxValue));
+                Configuration.INSTANCE.setMaxValue(newMaxValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        };
+        seekBarMax.setOnSeekBarChangeListener(seekBarMaxChangeListener);
     }
 
 

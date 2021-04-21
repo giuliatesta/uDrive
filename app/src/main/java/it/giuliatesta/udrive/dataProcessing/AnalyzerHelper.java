@@ -9,15 +9,14 @@ import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
 import static it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent.createDirectionEvent;
-import static it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent.createVerticalMotionEvent;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
 import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
-import static it.giuliatesta.udrive.accelerometer.EventType.DIRECTION_EVENT;
 import static it.giuliatesta.udrive.accelerometer.EventType.VERTICAL_MOTION_EVENT;
-import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
-import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
+import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getAccelerationVector;
+import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getVerticalMotion;
+import static it.giuliatesta.udrive.dataProcessing.Configuration.INSTANCE;
 import static java.lang.Math.abs;
 
 /**
@@ -25,9 +24,10 @@ import static java.lang.Math.abs;
  */
 class AnalyzerHelper {
 
-    private static double minX = Configuration.INSTANCE.getMinValueX();
-    private static double minY = Configuration.INSTANCE.getMinValueY();
-    private static double minZ = Configuration.INSTANCE.getMinValueZ();
+    private static double minX = INSTANCE.getMinValueX();
+    private static double minY = INSTANCE.getMinValueY();
+    private static double minZ = INSTANCE.getMinValueZ();
+
     /**
      * Classe per la il recupero delle coordinate degli eventi nella lista,
      * in particolare dell'ultimo e del penultimo
@@ -91,7 +91,6 @@ class AnalyzerHelper {
             return eventsList.get(1).getY();
         }
     }
-
 
     /**
      * Controlla il tipo di evento che è appena arrivato dal sensore
@@ -181,58 +180,32 @@ class AnalyzerHelper {
     }
 
     /**
-     * Controlla se il tipo di evento che è appena arrivato dal sensore è l'inizio di un dosso
-     * @param coordinatesDataEventArrayList   lista degli eventi grezzi (senza elaborazione)
-     * @return  true se è l'inizio di un dosso
+     * Controlla se il tipo di evento che è arrivato dal sensore è un movimento verticale (o dosso o buca)
+     * @param coordinatesDataEventArrayList     lista degli eventi grezzi
+     * @return  true se è un movimento verticale
      */
-    static boolean startOfRoadBumpEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        if(coordinatesDataEventArrayList.size() < 2) {
+    static boolean isARoadBumpEventOrPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        if(coordinatesDataEventArrayList.isEmpty()) {
             return false;
         }
-        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousY()) < minY) && (events.currentY() > minY)
-                && (abs(events.currentX()) < abs(events.currentY())) && (abs(events.currentZ()) < abs(events.currentY()));
+        CoordinatesDataEvent maxEvent = calculateEventWithMaximumIntensityForY(coordinatesDataEventArrayList);
+        return (abs(maxEvent.getY()) > minY);
+
     }
 
     /**
-     * Controlla se il tipo di evento che è appena arrivato dal sensore è la fine di un dosso
-     * @param coordinatesDataEventArrayList   lista degli eventi grezzi (senza elaborazione)
-     * @return  true se è la fine di un dosso
+     * Calcola nell'elenco di eventi grezzi quale è quello con intensità maggiore sulla coordinata Y
+     * @param coordinatesDataEventArrayList     lista degli eventi grezzi
+     * @return      evento grezzo con intensità massima sulla Y
      */
-    static boolean endOfRoadBumpEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        if(coordinatesDataEventArrayList.size() < 2) {
-            return false;
+    static CoordinatesDataEvent calculateEventWithMaximumIntensityForY(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        CoordinatesDataEvent max = coordinatesDataEventArrayList.get(0);
+        for(CoordinatesDataEvent event : coordinatesDataEventArrayList){
+            if(abs(event.getY()) > abs(max.getY())) {
+                max = event;
+            }
         }
-        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (events.previousY() < -minY) && (abs(events.currentY()) < minY);
-    }
-
-    /**
-     * Controlla se il tipo di evento che è appena arrivato dal sensore è l'inizio di un buco
-     * @param coordinatesDataEventArrayList   lista degli eventi grezzi (senza elaborazione)
-     * @return  true se è l'inizio di un buco
-     */
-    static boolean startOfPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        if(coordinatesDataEventArrayList.size() < 2) {
-            return false;
-        }
-        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (abs(events.previousY()) < minY) && (events.currentY() < -minY)
-                && (abs(events.currentX()) < abs(events.currentY()))
-                && (abs(events.currentZ()) < abs(events.currentY()));
-    }
-
-    /**
-     * Controlla se il tipo di evento che è appena arrivato dal sensore è la fine di un buco
-     * @param coordinatesDataEventArrayList   lista degli eventi grezzi (senza elaborazione)
-     * @return  true se è la fine di un buco
-     */
-    static boolean endOfPotholeEvent(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        if(coordinatesDataEventArrayList.size() < 2) {
-            return false;
-        }
-        EventsUnderObservation events = new EventsUnderObservation(coordinatesDataEventArrayList);
-        return (events.previousY() > minY) && (abs(events.currentY()) < minY);
+        return max;
     }
 
     /**
@@ -296,25 +269,14 @@ class AnalyzerHelper {
     }
 
     /**
-     * Crea un evento dell'accelerometro che ha un movimento verticale di tipo ROADBUMP
-     * @param accelerometerDataEventArrayList lista degli eventi considerati
-     * @return evento ROADBUMP
+     * Crea un evento di tipo VERTICAL_MOTION, calcolando quale movimento sia in base al valore di Y
+     * @param maximumIntensityEvent     evento grezzo
+     * @return      evento elaborato finale
      */
-    static AccelerometerDataEvent createRoadBumpEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        VerticalMotion verticalMotion = ROADBUMP;
-        int verticalMotionPercentage = findVerticalMotionPercentage(verticalMotion, accelerometerDataEventArrayList);
-        return createVerticalMotionEvent(verticalMotion, verticalMotionPercentage);
-    }
-
-    /**
-     * Crea un evento dell'accelerometro che ha un movimento verticale di tipo POTHOLE
-     * @param accelerometerDataEventArrayList lista degli eventi considerati
-     * @return evento POTHOLE
-     */
-    static AccelerometerDataEvent createPotholeEvent(ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        VerticalMotion verticalMotion = POTHOLE;
-        int verticalMotionPercentage = findVerticalMotionPercentage(verticalMotion, accelerometerDataEventArrayList);
-        return createVerticalMotionEvent(verticalMotion, verticalMotionPercentage);
+    static AccelerometerDataEvent createARoadBumpOrPotholeEvent(CoordinatesDataEvent maximumIntensityEvent) {
+        VerticalMotion verticalMotion = getVerticalMotion(maximumIntensityEvent.getY());
+        int percentage = CalculatorHelper.getPercentage(getAccelerationVector(maximumIntensityEvent.getX(), maximumIntensityEvent.getY(), maximumIntensityEvent.getZ()));
+        return AccelerometerDataEvent.createVerticalMotionEvent(verticalMotion, percentage);
     }
 
     /**
@@ -325,22 +287,6 @@ class AnalyzerHelper {
         AccelerometerDataEvent stopEvent = new AccelerometerDataEvent();
         stopEvent.setAStopEvent(true);
         return stopEvent;
-    }
-
-    /**
-     *Cerca il valore della percentuale ottenuta dall'evento in base ad un movimento verticale particolare
-     * @param verticalMotion    movemento verticale da cercare nella lista di eventi
-     * @param accelerometerDataEventArrayList   lista di eventi
-     * @return  il punteggio ottenuto da quel particolare movimento verticale
-     */
-    private static int findVerticalMotionPercentage(VerticalMotion verticalMotion, ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList) {
-        int percentage = 0;
-        for(AccelerometerDataEvent event : accelerometerDataEventArrayList) {
-            if(event.getType() != DIRECTION_EVENT && event.getVerticalMotion() == verticalMotion) {
-                percentage = event.getVerticalMotionPercentage();
-            }
-        }
-        return percentage;
     }
 
 }

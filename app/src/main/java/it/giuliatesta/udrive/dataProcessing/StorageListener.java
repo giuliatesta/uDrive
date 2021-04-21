@@ -1,8 +1,6 @@
 package it.giuliatesta.udrive.dataProcessing;
 
-import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,27 +20,7 @@ import static it.giuliatesta.udrive.dataProcessing.StorageListener.ResetStatus.S
  */
 public class StorageListener implements AccelerometerDataEventListener {
 
-    private final Context context;
     private final File storageFile;
-
-    public void writeCoordinates(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        String line = createCoordinatesLine(coordinatesDataEventArrayList);
-        try (FileWriter writer = new FileWriter(storageFile, true)) {
-            writer.append(line);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String createCoordinatesLine(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
-        String line = "";
-        for(CoordinatesDataEvent event : coordinatesDataEventArrayList) {
-            line = "X: " + event.getX() + "\tY: " + event.getY() + "\tZ: " + event.getZ() + "\n";
-        }
-        return line;
-    }
-
-
 
     /**
      * Enum per indicare se l'operazione di reset del file di archivio è stata un successo o un fallimento
@@ -52,17 +30,40 @@ public class StorageListener implements AccelerometerDataEventListener {
          * SUCCESS: se l'operazione è avvenuta correttamente
          * FAILURE: se l'operazione non è andata a buon fine
          */
-        SUCCESS, FAILURE;
+        SUCCESS, FAILURE
     }
 
     /**
      * Costruttore
-     * @param context   context
      */
-    public StorageListener(Context context) {
-        this.context = context;
+    StorageListener() {
         storageFile = createFile();
         writeLine(createHeadLine(), storageFile);
+    }
+
+    /**
+     * Scrive nello storageFile i valori delle coordinate x, y, z relativi al movimento appena effettuato
+     * @param coordinatesDataEventArrayList     lista di coordinate da scrivere
+     */
+    void writeCoordinates(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        try (FileWriter writer = new FileWriter(storageFile, true)) {
+            writer.append(createCoordinatesLine(coordinatesDataEventArrayList));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Crea le righe da inserire nel file, in base al numero di eventi nella lista
+     * @param coordinatesDataEventArrayList     lista di coordinate da scrivere
+     * @return  linea da appendere al file
+     */
+    private String createCoordinatesLine(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        String line = "";
+        for(CoordinatesDataEvent event : coordinatesDataEventArrayList) {
+            line = "X: " + event.getX() + "\tY: " + event.getY() + "\tZ: " + event.getZ() + "\n";
+        }
+        return line;
     }
 
     /**
@@ -86,7 +87,6 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     private File createFile() {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        Log.d("StorageListener", "createFile: " + path);
         return new File(path, "uDrive.txt");
     }
 
@@ -174,7 +174,6 @@ public class StorageListener implements AccelerometerDataEventListener {
      */
     public void stopWritingStorageFile() {
         writeLine(createEndLine(), storageFile);
-
     }
 
     /**
@@ -182,7 +181,7 @@ public class StorageListener implements AccelerometerDataEventListener {
      * @return stato dell'operazione SUCCESS se è stata fatta, FAILURE se non è andata a buon fine
      */
     public ResetStatus resetStorageFile() {
-        try (FileWriter writer = new FileWriter(storageFile,true)){
+        try {
             // Cancello il precedente e ne creo uno nuovo vuoto
            if(storageFile.delete() && storageFile.createNewFile()) {
                return SUCCESS;
@@ -196,6 +195,10 @@ public class StorageListener implements AccelerometerDataEventListener {
         }
     }
 
+    /**
+     * Metodo get per lo storageFile
+     * @return file di storico
+     */
     public File getStorageFile() {
         return storageFile;
     }

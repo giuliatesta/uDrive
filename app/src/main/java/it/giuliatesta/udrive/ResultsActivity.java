@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
-
-import static android.graphics.Color.WHITE;
 
 /**
  * Classe per la terza Activity --> da usare quando si termina la guida
@@ -35,8 +32,6 @@ public class ResultsActivity extends AppCompatActivity {
         // Impostazioni del listener
         listenerSettings();
 
-        //Impostazioni dell'immagine
-        imageSettings();
     }
 
     /**
@@ -90,15 +85,6 @@ public class ResultsActivity extends AppCompatActivity {
             mean += percentage;
         }
         return mean /percentageList.size();
-    }
-
-    /**
-     * Metodo per le impostazioni dell'immagine: associo l'immagine e le applico un filtro colore
-     *
-     */
-    private void imageSettings() {
-        ImageView img_thumbs_up = findViewById(R.id.img_thumbs_up);
-        img_thumbs_up.setColorFilter(WHITE);
     }
 
     /**

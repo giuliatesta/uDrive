@@ -3,15 +3,6 @@ package it.giuliatesta.udrive.dataProcessing;
 import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
-import static it.giuliatesta.udrive.dataProcessing.Configuration.INSTANCE;
-import static it.giuliatesta.udrive.dataProcessing.Constants.MaxValue;
-import static it.giuliatesta.udrive.dataProcessing.Constants.MinValue;
-import static it.giuliatesta.udrive.dataProcessing.Constants.fourtyFiveDegree;
-import static it.giuliatesta.udrive.dataProcessing.Constants.oneHundredThirtyFive;
-import static it.giuliatesta.udrive.dataProcessing.Constants.threeHundredFifteen;
-import static it.giuliatesta.udrive.dataProcessing.Constants.threeHundredSixty;
-import static it.giuliatesta.udrive.dataProcessing.Constants.twoHundredTwentyFive;
-import static it.giuliatesta.udrive.dataProcessing.Constants.zeroDegree;
 import static it.giuliatesta.udrive.accelerometer.Direction.BACKWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.FORWARD;
 import static it.giuliatesta.udrive.accelerometer.Direction.LEFT;
@@ -19,6 +10,7 @@ import static it.giuliatesta.udrive.accelerometer.Direction.RIGHT;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.NONE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.POTHOLE;
 import static it.giuliatesta.udrive.accelerometer.VerticalMotion.ROADBUMP;
+import static it.giuliatesta.udrive.dataProcessing.Configuration.INSTANCE;
 import static java.lang.Math.atan2;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -28,6 +20,12 @@ import static java.lang.Math.sqrt;
  */
 class CalculatorHelper {
 
+    private static final double ZERO_DEGREE = 0.0;
+    private static final double FOURTY_FIVE_DEGREE = 45.0;
+    private static final double ONE_HUNDRED_THIRTY_FIVE = 135.0;
+    private static final double TWO_HUNDRED_TWENTY_FIVE = 225.0;
+    private static final double THREE_HUNDRED_FIFTEEN = 315.0;
+    private static final double THREE_HUNDRED_SIXTY = 360.0;
 
     /**
      Calcola il modulo del vettore accelerazione
@@ -62,28 +60,28 @@ class CalculatorHelper {
         Direction direction = Direction.NONE;
         double alpha = getPositionOfAlpha(x, z);
 
-        if (alpha >= fourtyFiveDegree && alpha <= oneHundredThirtyFive) {
+        if (alpha >= FOURTY_FIVE_DEGREE && alpha <= ONE_HUNDRED_THIRTY_FIVE) {
             // Se l'angolo è compreso tra 45 e 135
             direction = FORWARD;
-        } else if (alpha >= twoHundredTwentyFive && alpha <= threeHundredFifteen) {
+        } else if (alpha >= TWO_HUNDRED_TWENTY_FIVE && alpha <= THREE_HUNDRED_FIFTEEN) {
             // Se l'angolo è compreso tra 225 e 315
             direction = BACKWARD;
-        } else if ((alpha > threeHundredFifteen && alpha <= threeHundredSixty) || (alpha >= zeroDegree && alpha < fourtyFiveDegree)) {
+        } else if ((alpha > THREE_HUNDRED_FIFTEEN && alpha <= THREE_HUNDRED_SIXTY) || (alpha >= ZERO_DEGREE && alpha < FOURTY_FIVE_DEGREE)) {
             // Se l'angolo è compreso tra -45 e 45
             direction = RIGHT;
-        } else if (alpha > oneHundredThirtyFive && alpha < twoHundredTwentyFive) {
+        } else if (alpha > ONE_HUNDRED_THIRTY_FIVE && alpha < TWO_HUNDRED_TWENTY_FIVE) {
             direction = LEFT;
         }
         return direction;
     }
 
     /**
-     Calcola una percentuale. Fa la proporzione x : 100 = vector : MaxValue
+     Calcola una percentuale. Fa la proporzione x : 100 = vector : maxValue
      @param vector vettore accelerazione
      @return percentuale
      */
     private static int calculatePercentage(double vector) {
-        return (int) ((vector*100)/MaxValue);
+        return (int) ((vector*100)/INSTANCE.getMaxValue());
     }
 
     /**
@@ -93,10 +91,10 @@ class CalculatorHelper {
      @return percentuale ottenuta
      */
     static int getPercentage(double vector) {
-        if(vector > MaxValue) {
+        if(vector > INSTANCE.getMaxValue()) {
             // Se si trova al di sopra dell'intervallo significa che si ha il minimo comfort
             return 0;
-        } else if (vector< MinValue) {
+        } else if (vector< INSTANCE.calculateMediumMinValue()) {
             // Se si trova al di sotto dell'intervallo significa che si ha il massimo comfort
             return 100;
         } else {

@@ -13,6 +13,12 @@ import it.giuliatesta.udrive.dataProcessing.Configuration;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    // valori delle soglie minime e massima
+    private double minValueX = Configuration.INSTANCE.getMinValueX();
+    private double minValueY = Configuration.INSTANCE.getMinValueY();
+    private double minValueZ = Configuration.INSTANCE.getMinValueZ();
+    private double maxValue = Configuration.INSTANCE.getMaxValue();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,17 +26,16 @@ public class SettingsActivity extends AppCompatActivity {
         seekBarSettings();
     }
 
+    /**
+     * Metodo per la gestione delle seekBar
+     */
     private void seekBarSettings() {
         SeekBar seekBarX = findViewById(R.id.seek_bar_x);
         SeekBar seekBarY = findViewById(R.id.seek_bar_y);
         SeekBar seekBarZ = findViewById(R.id.seek_bar_z);
         SeekBar seekBarMax = findViewById(R.id.seek_bar_max);
 
-        double minValueX = Configuration.INSTANCE.getMinValueX();
-        double minValueY = Configuration.INSTANCE.getMinValueY();
-        double minValueZ = Configuration.INSTANCE.getMinValueZ();
-        double maxValue = Configuration.INSTANCE.getMaxValue();
-
+        // TextView dove scrivere il nuovo valore della soglia
         final TextView textViewX = findViewById(R.id.x_value);
         final TextView textViewY = findViewById(R.id.y_value);
         final TextView textViewZ = findViewById(R.id.z_value);
@@ -45,8 +50,11 @@ public class SettingsActivity extends AppCompatActivity {
         OnSeekBarChangeListener seekBarXChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //Calcola il nuovo valore della soglia
                 double newMinValue = Configuration.INSTANCE.calculateProportionForMinValue(progress);
-                textViewX.setText("" + newMinValue);
+                // Lo mostra nella textView
+                textViewX.setText(String.valueOf(newMinValue));
+                // E lo salva
                 Configuration.INSTANCE.setMinValueX(newMinValue);
             }
 
@@ -64,8 +72,11 @@ public class SettingsActivity extends AppCompatActivity {
         OnSeekBarChangeListener seekBarYChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Calcola il nuovo valore della soglia
                 double newMinValue = Configuration.INSTANCE.calculateProportionForMinValue(progress);
-                textViewY.setText("" + newMinValue);
+                // Lo mostra nella textView
+                textViewY.setText(String.valueOf(newMinValue));
+                // E lo salva
                 Configuration.INSTANCE.setMinValueY(newMinValue);
             }
 
@@ -83,8 +94,11 @@ public class SettingsActivity extends AppCompatActivity {
         OnSeekBarChangeListener seekBarZChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Calcola il nuovo valore della soglia
                 double newMinValue = Configuration.INSTANCE.calculateProportionForMinValue(progress);
-                textViewZ.setText("" + newMinValue);
+                // Lo mostra nella textView
+                textViewZ.setText(String.valueOf(newMinValue));
+                // E lo salva
                 Configuration.INSTANCE.setMinValueZ(newMinValue);
             }
 
@@ -98,11 +112,15 @@ public class SettingsActivity extends AppCompatActivity {
         };
         seekBarZ.setOnSeekBarChangeListener(seekBarZChangeListener);
 
+        // Listener per il seek bar della soglia massima
         OnSeekBarChangeListener seekBarMaxChangeListener = new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Calcola la nuova soglia massima
                 double newMaxValue = Configuration.INSTANCE.calculateProportionForMaxValue(progress);
+                // La mostra nella textView
                 textViewMax.setText(String.valueOf(newMaxValue));
+                // E la salva
                 Configuration.INSTANCE.setMaxValue(newMaxValue);
             }
 
@@ -119,14 +137,9 @@ public class SettingsActivity extends AppCompatActivity {
         seekBarMax.setOnSeekBarChangeListener(seekBarMaxChangeListener);
     }
 
-
-    private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public void onBackPressed() {
-        startMainActivity();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

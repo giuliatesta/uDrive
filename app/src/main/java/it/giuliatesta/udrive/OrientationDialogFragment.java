@@ -1,7 +1,6 @@
 package it.giuliatesta.udrive;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -17,12 +16,14 @@ import it.giuliatesta.udrive.dataProcessing.DataManager;
 import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation.HORIZONTAL;
 import static it.giuliatesta.udrive.accelerometer.CoordinatesDataEvent.DeviceOrientation.VERTICAL;
 
+/**
+ * Classe per creare il pop up necessario per la richiesta di orientamento verticale o orizzontale
+ */
 public class OrientationDialogFragment extends DialogFragment {
 
     private Activity activity;
 
-
-    public OrientationDialogFragment(Activity activity) {
+    OrientationDialogFragment(Activity activity) {
         this.activity = activity;
     }
 
@@ -52,8 +53,6 @@ public class OrientationDialogFragment extends DialogFragment {
                     }
                 });
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
         return builder.create();
     }
 

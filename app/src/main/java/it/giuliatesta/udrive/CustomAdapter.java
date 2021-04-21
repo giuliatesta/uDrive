@@ -2,7 +2,6 @@ package it.giuliatesta.udrive;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
 import it.giuliatesta.udrive.accelerometer.Direction;
 
 import static android.graphics.Color.BLUE;
+import static android.graphics.Color.parseColor;
 import static it.giuliatesta.udrive.R.drawable.img_direction_backward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_forward;
 import static it.giuliatesta.udrive.R.drawable.img_direction_left;
@@ -34,6 +34,11 @@ class CustomAdapter implements ListAdapter {
     private final Context context;
     private TextView textFirstRow, textSecondRow;
     private ImageView imageFirstRow, imageSecondRow;
+
+    // Colori da utilizzare per la codifica dei movimenti nella lista
+    private static final String YELLOW = "#ffbf00";
+    private static final String RED = "#ff0000";
+    private static final String GREEN = "#04c717";
 
     /**
      * Costruttore
@@ -181,14 +186,11 @@ class CustomAdapter implements ListAdapter {
      */
     private int setColor(int percentage) {
         if(percentage >= 75) {
-            // Verde
-             return Color.parseColor("#04c717");
+             return parseColor(GREEN);
         } else if (percentage <= 25) {
-            // Rosso
-            return Color.parseColor("#ff0000");
+            return parseColor(RED);
         } else {
-            // Giallo
-            return Color.parseColor("#ffbf00");
+            return parseColor(YELLOW);
         }
     }
 

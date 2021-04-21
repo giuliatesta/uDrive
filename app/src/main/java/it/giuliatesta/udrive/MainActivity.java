@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Metodo per la creazione del pop up per l'orientamento
+     */
     private void showOrientationFragment() {
         dialogFragment = new OrientationDialogFragment(this);
         dialogFragment.show(getSupportFragmentManager(), "orientation");
@@ -104,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "File di archivio resettato", Toast.LENGTH_SHORT).show();
         } else {
             // Se è stato un fallimento
-            Toast.makeText(this, "ERRORE! Impossibile resettare il file", Toast.LENGTH_SHORT).show();
+            String path = dataManager.getStorageListener().getStorageFile().getAbsolutePath();
+            Toast.makeText(this, "ERRORE! Impossibile resettare il file al percorso" + path, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -128,4 +132,5 @@ public class MainActivity extends AppCompatActivity {
             }, 1000);
         }
     }
+
 }

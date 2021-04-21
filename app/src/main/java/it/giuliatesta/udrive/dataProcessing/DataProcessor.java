@@ -1,7 +1,5 @@
 package it.giuliatesta.udrive.dataProcessing;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent;
@@ -11,23 +9,20 @@ import it.giuliatesta.udrive.accelerometer.Direction;
 import it.giuliatesta.udrive.accelerometer.VerticalMotion;
 
 import static it.giuliatesta.udrive.accelerometer.AccelerometerDataEvent.createBothEvent;
+import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.calculateEventWithMaximumIntensityForY;
+import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createARoadBumpOrPotholeEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createBackwardEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createForwardEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createLeftEvent;
-import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createPotholeEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createRightEvent;
-import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createRoadBumpEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.createStopEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.endOfLeftTurnEvent;
-import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.endOfPotholeEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.endOfRightTurnEvent;
-import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.endOfRoadBumpEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.isABackwardEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.isAForwardEvent;
+import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.isARoadBumpEventOrPotholeEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.startOfLeftTurnEvent;
-import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.startOfPotholeEvent;
 import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.startOfRightTurnEvent;
-import static it.giuliatesta.udrive.dataProcessing.AnalyzerHelper.startOfRoadBumpEvent;
 import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getAccelerationVector;
 import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getDirection;
 import static it.giuliatesta.udrive.dataProcessing.CalculatorHelper.getPercentage;
@@ -42,11 +37,13 @@ import static it.giuliatesta.udrive.dataProcessing.DataProcessor.AnalyzeResult.P
     y = indica sopra sotto
     z = indica avanti indietro
  */
-public class DataProcessor {
+class DataProcessor {
 
     private final ArrayList<AccelerometerDataEventListener> eventListeners = new ArrayList<>();
     public enum AnalyzeResult { PROCESSED, NEED_OTHER_EVENTS }
-    private boolean leftTurn = false, rightTurn = false, pothole = false, roadBump = false;
+    private boolean leftTurn = false, rightTurn = false;
+    private long currentWindowStartTime = 0L;
+    private static final long MAX_WINDOW = 1_500_000_000L;      // Dimensione massima della finestra
 
     /**
      Produce il dataEvent chiamando tutti i metodi che permettono di creare tutte le informazioni
@@ -84,88 +81,80 @@ public class DataProcessor {
     AnalyzeResult analyze(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = generateAccelerometerEvents(coordinatesDataEventArrayList);
 
+        // Inizializzo la finestra al valore in nanosecondi del primo evento arrivato della lista
+        if(currentWindowStartTime == 0L) {
+            currentWindowStartTime = coordinatesDataEventArrayList.get(0).getEventTime();
+        }
+
+        // Se l'evento è un evento di tipo direzione FORWARD
         if (isAForwardEvent(coordinatesDataEventArrayList)) {
-            // Se l'evento è un evento di tipo direzione FORWARD
             AccelerometerDataEvent straightForwardEvent = createForwardEvent(accelerometerDataEventArrayList);
-            Log.d("DataProcessor", "analyze: FORWARD" );
             notifyListener(straightForwardEvent);
             return PROCESSED;
         }
+        // Se l'evento è un evento di tipo direzione BACKWARD
         else if (isABackwardEvent(coordinatesDataEventArrayList)) {
-            // Se l'evento è un evento di tipo direzione BACKWARD
             AccelerometerDataEvent backwardEvent = createBackwardEvent(accelerometerDataEventArrayList);
             notifyListener(backwardEvent);
-            Log.d("DataProcessor", "analyze: BACKWARD" );
             return PROCESSED;
         }
+
+        // Se l'evento è un evento di tipo direzione LEFT
         else if (startOfLeftTurnEvent(coordinatesDataEventArrayList)) {
-            // Se l'evento è un evento di tipo direzione LEFT
             if(!rightTurn) {
                 AccelerometerDataEvent leftTurnEvent = createLeftEvent(accelerometerDataEventArrayList);
                 notifyListener(leftTurnEvent);
-                Log.d("DataProcessor", "analyze: LEFT");
                 leftTurn = true;
             }
             return PROCESSED;
         }
+        // Se l'evento di tipo direzione LEFT è terminato
         else if (endOfLeftTurnEvent(coordinatesDataEventArrayList) && leftTurn) {
-            // Se l'evento di tipo direzione LEFT è terminato
-            Log.d("DataProcessor", "analyze: END OF LEFT" );
             leftTurn = false;
             return NEED_OTHER_EVENTS;
         }
+        // Se l'evento è un evento di tipo direzione RIGHT
         else if (startOfRightTurnEvent(coordinatesDataEventArrayList)) {
-            // Se l'evento è un evento di tipo direzione RIGHT
             if(!leftTurn) {
                 AccelerometerDataEvent rightTurnEvent = createRightEvent(accelerometerDataEventArrayList);
                 notifyListener(rightTurnEvent);
-                Log.d("DataProcessor", "analyze: RIGHT" );
                 rightTurn = true;
             }
             return PROCESSED;
         }
+        // Se l'evento di tipo direzione RIGHT è terminato
         else if(endOfRightTurnEvent(coordinatesDataEventArrayList) && rightTurn) {
-            // Se l'evento di tipo direzione RIGHT è terminato
-            Log.d("DataProcessor", "analyze: END OF RIGHT" );
             rightTurn = false;
             return NEED_OTHER_EVENTS;
         }
-        else if (startOfRoadBumpEvent(coordinatesDataEventArrayList)) {
-            // Se l'evento è un evento di tipo movimento verticale ROADBUMP
-            if(!pothole) {
-                AccelerometerDataEvent roadBumpEvent = createRoadBumpEvent(accelerometerDataEventArrayList);
-                notifyListener(roadBumpEvent);
-                Log.d("DataProcessor", "analyze: ROADBUMP" );
-                roadBump = true;
+        // Se la finestra di raccolta degli eventi è conclusa e individuo un possibile dosso/buca
+        else if(isCurrentWindowClosed(coordinatesDataEventArrayList)) {
+            if(isARoadBumpEventOrPotholeEvent(coordinatesDataEventArrayList)) {
+                // Calcolo l'evento con intensità massima
+                CoordinatesDataEvent maximumIntensityEvent = calculateEventWithMaximumIntensityForY(coordinatesDataEventArrayList);
+                // Creo l'accelerometerDataEvent corrispondente a partire dall'evento con intensità massima
+                AccelerometerDataEvent event = createARoadBumpOrPotholeEvent(maximumIntensityEvent);
+                // Notifico il listener
+                notifyListener(event);
             }
+
+            // Inizializzo nuovamente la finestra
+            currentWindowStartTime += MAX_WINDOW;
             return PROCESSED;
         }
-        else if (endOfRoadBumpEvent(coordinatesDataEventArrayList) && roadBump) {
-            // Se l'evento di tipo movimento verticale ROADBUMP è terminato
-            Log.d("DataProcessor", "analyze: END OF ROADBUMP" );
-            roadBump = false;
-            return NEED_OTHER_EVENTS;
-        }
-        else if (startOfPotholeEvent(coordinatesDataEventArrayList)) {
-            // Se l'evento è un evento di tipo movimento verticale POTHOLE
-            if(!roadBump) {
-                AccelerometerDataEvent potholeEvent = createPotholeEvent(accelerometerDataEventArrayList);
-                notifyListener(potholeEvent);
-                Log.d("DataProcessor", "analyze: POTHOLE" );
-                pothole = true;
-            }
-            return PROCESSED;
-        }
-        else if (endOfPotholeEvent(coordinatesDataEventArrayList) && pothole) {
-            // Se l'evento di tipo movimento verticale POTHOLE è terminato
-            Log.d("DataProcessor", "analyze: END OF POTHOLE" );
-            pothole = false;
-            return NEED_OTHER_EVENTS;
-        }
+        // Se l'evento è un evento di tipo STOP_EVENT
         AccelerometerDataEvent stopEvent = createStopEvent();
         notifyListener(stopEvent);
-        Log.d("DataProcessor", "analyze: STOPEVENT");
         return NEED_OTHER_EVENTS;
+    }
+
+    /**
+     * Metodo per determinare se la finestra corrente è conclusa
+     * @param coordinatesDataEventArrayList     lista degli eventi grezzi
+     * @return  TRUE    se la finestra è di almeno 2s; FALSE altrimenti
+     */
+    private boolean isCurrentWindowClosed(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
+        return coordinatesDataEventArrayList.get(0).getEventTime() > (currentWindowStartTime + MAX_WINDOW);
     }
 
     /**
@@ -186,7 +175,9 @@ public class DataProcessor {
     private ArrayList<AccelerometerDataEvent> generateAccelerometerEvents(ArrayList<CoordinatesDataEvent> coordinatesDataEventArrayList) {
         ArrayList<AccelerometerDataEvent> accelerometerDataEventArrayList = new ArrayList<>();
         for(CoordinatesDataEvent event : coordinatesDataEventArrayList) {
+            // Crea gli eventi elaborati
             AccelerometerDataEvent accelerometerDataEvent = calculateData(event.getX(), event.getY(), event.getZ());
+            // Li aggiunge alla lista
             accelerometerDataEventArrayList.add(0, accelerometerDataEvent);
         }
         return accelerometerDataEventArrayList;

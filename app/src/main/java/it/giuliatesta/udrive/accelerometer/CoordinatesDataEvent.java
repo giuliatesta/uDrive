@@ -11,9 +11,21 @@ public class CoordinatesDataEvent {
     private final float x;
     private final float y;
     private final float z;
+
+    public long getEventTime() {
+        return eventTime;
+    }
+
+    private final long eventTime;       // nano secondi
+
+    /**
+     * Possibili orintamenti del dispositivo
+     * VERTICAL: il dispositivo è orientato perpendicolarmente al piano orizzontale del veicolo
+     * HORIZONTAL: il dispositivo è orientato parallelamente al piano orizzontale del veicolo, longitudinale al senso di marcia
+     */
     public enum DeviceOrientation {
-        VERTICAL, HORIZONTAL;
-    };
+        VERTICAL, HORIZONTAL
+    }
 
     private static DeviceOrientation deviceOrientation = VERTICAL;
     /**
@@ -26,6 +38,7 @@ public class CoordinatesDataEvent {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.eventTime = System.nanoTime();
     }
     /**
      * Filtro passa alto applicato ai valori che arrivano dall'accelerometro
@@ -80,10 +93,6 @@ public class CoordinatesDataEvent {
         return z;
     }
 
-
-    public void setDeviceOrientation(DeviceOrientation deviceOrientation) {
-        this.deviceOrientation = deviceOrientation;
-    }
 
     public static DeviceOrientation getDeviceOrientation() {
         return deviceOrientation;

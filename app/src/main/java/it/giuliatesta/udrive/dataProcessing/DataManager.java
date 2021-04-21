@@ -5,7 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -40,21 +39,12 @@ public class DataManager implements SensorEventListener {
      */
     private DataManager(Context context) {
         this.context = context;
+
         sensorSettings();
-        storageListener = new StorageListener(context);
+
+        // Registrazione del listener
+        storageListener = new StorageListener();
         this.registerListener(storageListener);
-    }
-
-    /**
-     * Metodo get che resistuisce il listener legato allo storage
-     * @return  storageListener
-     */
-    public StorageListener getStorageListener() {
-        return storageListener;
-    }
-
-    public Sensor getAccelerometer() {
-        return accelerometer;
     }
 
     /**
@@ -66,7 +56,6 @@ public class DataManager implements SensorEventListener {
         accelerometer = sensorManager.getDefaultSensor(TYPE_LINEAR_ACCELERATION);
         accelerometerDataProcessor = new DataProcessor();
         coordinatesDataEventArrayList = new ArrayList<>();
-
     }
 
     /**
@@ -87,15 +76,28 @@ public class DataManager implements SensorEventListener {
         }
     }
 
+    /**
+     * Metodo per analizzare l'evento arrivato: viene filtrato, viene scelto l'orientamento corretto ed elaborato
+     * @param event evento del sensore in arrivo
+     */
     private void analyzeSensorEvent(SensorEvent event) {
-        Log.d("DataManager", "MIN VALUES: " + Configuration.INSTANCE.getMinValueX() + "   " + Configuration.INSTANCE.getMinValueY() + "    " + Configuration.INSTANCE.getMinValueZ());
         float[] accelerometerValues = new float[3];
+        // applico il filtro passa basso alle coordinate dell'evento
         accelerometerValues = lowPassFiltering(event.values.clone(), accelerometerValues);
+
+        // applico l'orientamento richiesto
         accelerometerValues = setOrientation(accelerometerValues, deviceOrientation);
+
+        // creo un evento grezzo con le tre coordinate e il tempo in nanosecondi di arrivo
         CoordinatesDataEvent coordinatesDataEvent = new CoordinatesDataEvent(accelerometerValues[0], accelerometerValues[1], accelerometerValues[2]);
-        coordinatesDataEventArrayList.add(0, coordinatesDataEvent);
-        Log.d("DataManager", "filtrati: x:" + (accelerometerValues[0]) + "\t y:" + (accelerometerValues[1]) + "\t z:" + (accelerometerValues[2]));
+
+        // aggiunto l'evento grezzo alla lista di eventi
+        coordinatesDataEventArrayList.add(0, coordinatesDataEvent);     // L'ultimo arrivato è il primo della lista
+
+        // Passo la lista di eventi grezzi all'elaborazione
         AnalyzeResult result = accelerometerDataProcessor.analyze(coordinatesDataEventArrayList);
+
+        //Se l'elaborazione è completata, scrivo i dati sul file e svuoto la lista
         if (result == PROCESSED) {
             storageListener.writeCoordinates(coordinatesDataEventArrayList);
             coordinatesDataEventArrayList.clear();
@@ -113,10 +115,34 @@ public class DataManager implements SensorEventListener {
         accelerometerDataProcessor.registerListener(accelerometerDataEventListener);
     }
 
+    /**
+     * Metodo get che restituisce il sensor manager
+     * @return  manager dell'accelerometro
+     */
     public SensorManager getSensorManager() {
         return sensorManager;
     }
 
+    /**
+     * Metodo get che resistuisce il listener legato allo storage
+     * @return  storageListener
+     */
+    public StorageListener getStorageListener() {
+        return storageListener;
+    }
+
+    /**
+     * Metodo get che restituisce l'accelerometro
+     * @return  sensore accelerometro
+     */
+    public Sensor getAccelerometer() {
+        return accelerometer;
+    }
+
+    /**
+     * Metodo set per impostare l'orientamento scelto dall'utente
+     * @param deviceOrientation     orientamento scelto
+     */
     public static void setDeviceOrientation(DeviceOrientation deviceOrientation) {
         DataManager.deviceOrientation = deviceOrientation;
     }

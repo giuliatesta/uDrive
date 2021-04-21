@@ -1,7 +1,6 @@
 package it.giuliatesta.udrive;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -23,7 +22,7 @@ public class SicureExitDialogFragment extends DialogFragment {
      * Costruttore
      * @param activity activity da far ripartire quando viene premuto sì nel popup
      */
-    public SicureExitDialogFragment(Activity activity) {
+    SicureExitDialogFragment(Activity activity) {
         this.activity = activity;
     }
 
@@ -50,9 +49,6 @@ public class SicureExitDialogFragment extends DialogFragment {
                         getContext().startActivity(intent);
                     }
                 });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        return alertDialog;
+        return builder.create();
     }
 }
